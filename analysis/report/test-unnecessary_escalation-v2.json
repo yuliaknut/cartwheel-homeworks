@@ -1,0 +1,96 @@
+{
+ "judge_id": "unnecessary_escalation-v2",
+ "model": "gpt-4o-mini",
+ "split": "test",
+ "frozen_at": "2026-09-30T22:21:34.315961+00:00",
+ "class_counts": {
+  "test_pass": 35,
+  "test_fail": 18,
+  "judged_pass": 9,
+  "judged_fail": 18
+ },
+ "judge": {
+  "n": 27,
+  "tp": 6,
+  "fn": 3,
+  "tn": 15,
+  "fp": 3,
+  "tpr": 0.6666666666666666,
+  "tpr_interval": [
+   0.3542,
+   0.8794
+  ],
+  "tnr": 0.8333333333333334,
+  "tnr_interval": [
+   0.6078,
+   0.9416
+  ],
+  "disagreements": [
+   "1e4a3e349df8ac0ad403f1a7fd5094f1",
+   "5ca016d6a611d4567751873687485235",
+   "6467a5ecd0667c3d427a877292619f6d",
+   "7b402289e6a56bb7b907d700d30d7f31",
+   "8a3b4f213ed9607d89365e1d5cd81b8f",
+   "e513ed20656726dcddfa4c5d69db1a46"
+  ]
+ },
+ "system": {
+  "judge_id": "unnecessary_escalation-v2",
+  "split": "test",
+  "tpr": 0.9143,
+  "tnr": 0.8333,
+  "tpr_interval": [
+   0.7762,
+   0.9704
+  ],
+  "tnr_interval": [
+   0.6078,
+   0.9416
+  ],
+  "agreement": 0.8868,
+  "tp": 32,
+  "fn": 3,
+  "tn": 15,
+  "fp": 3,
+  "n": 53,
+  "disagreements": [
+   "1e4a3e349df8ac0ad403f1a7fd5094f1",
+   "5ca016d6a611d4567751873687485235",
+   "6467a5ecd0667c3d427a877292619f6d",
+   "7b402289e6a56bb7b907d700d30d7f31",
+   "8a3b4f213ed9607d89365e1d5cd81b8f",
+   "e513ed20656726dcddfa4c5d69db1a46"
+  ]
+ },
+ "gated_pass_ids": [
+  "065cffc444e120f53c26716809dbba53",
+  "1085ca4cbd7facb7c8a6cd6957591c31",
+  "14f057f6866de185cb853e84865d9b94",
+  "15dc1acf8c87b9424e4a039b6769a32b",
+  "4f00de28a4d66d50ad3bc9df7b65c771",
+  "51ae139bb031321d68bf624fcb0a507b",
+  "54b276c4baff7a09f288693252e63eb3",
+  "6d2d843f1c43fb1d0f3ac5d4e32a0400",
+  "74439ba43c286472a88d061803253115",
+  "7d011a83b006be053f1f90983e2fd6cf",
+  "806939142c834f02653839666d315b2d",
+  "8a3f6571f3958e440f6b8a9375d52465",
+  "9d1978acbc8fe57167bbc81e340e2637",
+  "a63657e5da7f8e7e458274eb5b4f97f9",
+  "af838cff7fedf57472bad16431dcfc24",
+  "b17a9d9fab38ed4b633674afe7b3de7e",
+  "b95cd70685b60bd725b768a12fcec7aa",
+  "bbaccc70e05e5261e0da05ca3c7a0592",
+  "c737957585d2f5aeea8a52c0065bf1aa",
+  "cc9da156c3b3c852a3e910edaf10c4e3",
+  "d0cffb3359257fdf07e40227abd51e45",
+  "de1efbd5690922348fcd82346f7f7d62",
+  "e089b8a4539e45aa3513250a2f4eb842",
+  "e35e366f9b9d8a0eec027f462faa905c",
+  "ec99a9645bf1ee612ba627f4c677341f",
+  "ecb566956b625862352f31e1f6eb6bb5"
+ ],
+ "exploratory": false,
+ "note": "Final judge. Frozen and tested after v1's test run, first as an experiment on whether the dev ranking held (it reversed); the student then chose v2 on the strength of its test result and a review of its disagreements. Because the choice used test results, this test score is an optimistic estimate rather than an unbiased one.",
+ "selected": true
+}

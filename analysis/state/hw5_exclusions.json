@@ -1,0 +1,103 @@
+{
+ "mode": "unnecessary_escalation",
+ "rule": "Handout Part B: one evaluation record per conversation; keep one record from each group of duplicate runs or close scenario variants. Groups found by shared order id or planted data-quality case across all labeled traces. Excluded traces keep their labels; they are left out of prepare_inputs and split_labels.",
+ "decided_by": "student",
+ "decided_at": "2026-09-28",
+ "groups": [
+  {
+   "group": "dq-order-missing-delivery-date",
+   "order_id": 8002,
+   "keep": [
+    "support-0177"
+   ],
+   "exclude": [
+    "support-0176",
+    "support-0178",
+    "support-0180"
+   ],
+   "note": "One per group. Originally both 0177 and 0178 were kept to show agent variance on the same broken record; reversed on 2026-09-29 by the student after the first split put 0177 in test and 0178 in train (a sibling in training could leak into the prompt). 0178 stays labeled and remains the variance example for the write-up.",
+   "keep_trace_ids": [
+    "1e4a3e349df8ac0ad403f1a7fd5094f1"
+   ],
+   "exclude_trace_ids": [
+    "42ff715bbe53cf0cd4a8576a1be548d7",
+    "98c098f878a7510f9aa9e278e65d9281",
+    "f99c94d9331661975748b5dda2c43b43"
+   ]
+  },
+  {
+   "group": "dq-order-reversed-dates",
+   "order_id": 8001,
+   "keep": [
+    "support-0184"
+   ],
+   "exclude": [
+    "support-0181",
+    "support-0182",
+    "support-0183"
+   ],
+   "note": "One per group.",
+   "keep_trace_ids": [
+    "91a33474d2f87cd9fe306f034831a58e"
+   ],
+   "exclude_trace_ids": [
+    "80ae4702de9c245c1dcf4288eb1841da",
+    "f9443269fbf06c237da824b1b898d011",
+    "2000451800333b3109d4392878f10fff"
+   ]
+  },
+  {
+   "group": "dq-order-store-mismatch",
+   "order_id": 8003,
+   "keep": [
+    "support-0187"
+   ],
+   "exclude": [
+    "support-0190"
+   ],
+   "note": "One per group.",
+   "keep_trace_ids": [
+    "8a3b4f213ed9607d89365e1d5cd81b8f"
+   ],
+   "exclude_trace_ids": [
+    "36cd500937b27d6eac69c30270eee90f"
+   ]
+  },
+  {
+   "group": "dq-product-invalid-price",
+   "order_id": null,
+   "keep": [
+    "support-0195"
+   ],
+   "exclude": [
+    "support-0191",
+    "support-0192"
+   ],
+   "note": "One per group; 0195 is the only one that escalated.",
+   "keep_trace_ids": [
+    "b8a46222f3935c1a0d29b8b3dde602d4"
+   ],
+   "exclude_trace_ids": [
+    "a24063a57bd3bf48bc18c86ff6c532f3",
+    "2cbb74ce0f89c33dc9bb2380a2874f91"
+   ]
+  }
+ ],
+ "excluded_trace_ids": [
+  "2000451800333b3109d4392878f10fff",
+  "2cbb74ce0f89c33dc9bb2380a2874f91",
+  "36cd500937b27d6eac69c30270eee90f",
+  "42ff715bbe53cf0cd4a8576a1be548d7",
+  "80ae4702de9c245c1dcf4288eb1841da",
+  "98c098f878a7510f9aa9e278e65d9281",
+  "a24063a57bd3bf48bc18c86ff6c532f3",
+  "f9443269fbf06c237da824b1b898d011",
+  "f99c94d9331661975748b5dda2c43b43"
+ ],
+ "history": [
+  {
+   "date": "2026-09-29",
+   "change": "support-0178 moved from keep to exclude; split re-run with the same seed (7) before any judge run."
+  }
+ ]
+}

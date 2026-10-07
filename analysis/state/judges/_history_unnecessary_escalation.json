@@ -1,0 +1,16 @@
+{
+  "versions": [
+    {
+      "judge_id": "unnecessary_escalation-v0",
+      "prompt_hash": "d94f41e97d62"
+    },
+    {
+      "judge_id": "unnecessary_escalation-v1",
+      "prompt_hash": "ee114b7caa46"
+    },
+    {
+      "judge_id": "unnecessary_escalation-v2",
+      "prompt_hash": "df96ae479ba4"
+    }
+  ]
+}

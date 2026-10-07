@@ -1,0 +1,101 @@
+{
+ "judge_id": "unnecessary_escalation-v1",
+ "model": "gpt-4o-mini",
+ "split": "test",
+ "frozen_at": "2026-09-30T20:41:38.024891+00:00",
+ "class_counts": {
+  "test_pass": 35,
+  "test_fail": 18,
+  "judged_pass": 9,
+  "judged_fail": 18
+ },
+ "judge": {
+  "n": 27,
+  "tp": 5,
+  "fn": 4,
+  "tn": 13,
+  "fp": 5,
+  "tpr": 0.5555555555555556,
+  "tpr_interval": [
+   0.2666,
+   0.8112
+  ],
+  "tnr": 0.7222222222222222,
+  "tnr_interval": [
+   0.4913,
+   0.875
+  ],
+  "disagreements": [
+   "168f0fae6c250264b4fceb199b6d10bb",
+   "1e4a3e349df8ac0ad403f1a7fd5094f1",
+   "21841a0b57b83438fa09bbb765f9ec8e",
+   "21b46942fb05a50565b337c848b100cc",
+   "6467a5ecd0667c3d427a877292619f6d",
+   "7b402289e6a56bb7b907d700d30d7f31",
+   "8a3b4f213ed9607d89365e1d5cd81b8f",
+   "8f51052b3d73e9268d98fde5efeb43b9",
+   "e513ed20656726dcddfa4c5d69db1a46"
+  ]
+ },
+ "system": {
+  "judge_id": "unnecessary_escalation-v1",
+  "split": "test",
+  "tpr": 0.8857,
+  "tnr": 0.7222,
+  "tpr_interval": [
+   0.7405,
+   0.9546
+  ],
+  "tnr_interval": [
+   0.4913,
+   0.875
+  ],
+  "agreement": 0.8302,
+  "tp": 31,
+  "fn": 4,
+  "tn": 13,
+  "fp": 5,
+  "n": 53,
+  "disagreements": [
+   "168f0fae6c250264b4fceb199b6d10bb",
+   "1e4a3e349df8ac0ad403f1a7fd5094f1",
+   "21841a0b57b83438fa09bbb765f9ec8e",
+   "21b46942fb05a50565b337c848b100cc",
+   "6467a5ecd0667c3d427a877292619f6d",
+   "7b402289e6a56bb7b907d700d30d7f31",
+   "8a3b4f213ed9607d89365e1d5cd81b8f",
+   "8f51052b3d73e9268d98fde5efeb43b9",
+   "e513ed20656726dcddfa4c5d69db1a46"
+  ]
+ },
+ "gated_pass_ids": [
+  "065cffc444e120f53c26716809dbba53",
+  "1085ca4cbd7facb7c8a6cd6957591c31",
+  "14f057f6866de185cb853e84865d9b94",
+  "15dc1acf8c87b9424e4a039b6769a32b",
+  "4f00de28a4d66d50ad3bc9df7b65c771",
+  "51ae139bb031321d68bf624fcb0a507b",
+  "54b276c4baff7a09f288693252e63eb3",
+  "6d2d843f1c43fb1d0f3ac5d4e32a0400",
+  "74439ba43c286472a88d061803253115",
+  "7d011a83b006be053f1f90983e2fd6cf",
+  "806939142c834f02653839666d315b2d",
+  "8a3f6571f3958e440f6b8a9375d52465",
+  "9d1978acbc8fe57167bbc81e340e2637",
+  "a63657e5da7f8e7e458274eb5b4f97f9",
+  "af838cff7fedf57472bad16431dcfc24",
+  "b17a9d9fab38ed4b633674afe7b3de7e",
+  "b95cd70685b60bd725b768a12fcec7aa",
+  "bbaccc70e05e5261e0da05ca3c7a0592",
+  "c737957585d2f5aeea8a52c0065bf1aa",
+  "cc9da156c3b3c852a3e910edaf10c4e3",
+  "d0cffb3359257fdf07e40227abd51e45",
+  "de1efbd5690922348fcd82346f7f7d62",
+  "e089b8a4539e45aa3513250a2f4eb842",
+  "e35e366f9b9d8a0eec027f462faa905c",
+  "ec99a9645bf1ee612ba627f4c677341f",
+  "ecb566956b625862352f31e1f6eb6bb5"
+ ],
+ "selected": false,
+ "note": "The version chosen on dev, frozen, then tested once: the one result produced exactly by the handout's procedure. First attempt: 1 of 27 judge outputs was malformed ('Not found' instead of Pass/Fail); that batch was re-sampled once with DocETL's cache bypassed, without inspecting any verdicts; all 27 final outputs are valid. Superseded by v2."
+}

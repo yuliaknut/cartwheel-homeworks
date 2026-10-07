@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trace review</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23539bf5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/theme.css">
+<style>/* project hook: a sample may carry dot_class; ring = judge and human disagree */ .dot.ring { box-shadow: 0 0 0 2px var(--orange); } details.card > summary { list-style: none; cursor: pointer; } details.card > summary::-webkit-details-marker { display: none; } details.card[open] .tgl { transform: rotate(90deg); display: inline-block; } details.card .tgl { margin-left: auto; }
+  details.summary { margin: 0; padding: 8px 20px 10px; background: var(--panel); border-bottom: 1px solid var(--line); font-size: 13px; }
+  details.summary > summary { cursor: pointer; color: var(--fg-muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: 12px; margin-bottom: 6px; }
+  details.summary table { border-collapse: collapse; font-family: var(--mono); font-size: 12.5px; }
+  details.summary th { color: var(--fg-muted); font-weight: 400; text-align: left; padding: 2px 14px 2px 0; }
+  details.summary td { color: var(--fg); padding: 2px 14px 2px 0; }
+  details.summary tr.cur td { color: var(--fg-strong); font-weight: 600; }
+  details.summary .snote { color: var(--fg-muted); margin-top: 6px; font-size: 12.5px; }</style>
+<!--
+  trace-review-kit: one-item-at-a-time review page. Generic: everything project-specific comes
+  from the normalized samples file (see SKILL.md, "The sample contract") and review.json.
+  Reads  GET /api/samples  GET /api/config  GET /api/annotations
+  Writes POST /api/annotations (autosaved on every change; one "item" record per reviewed item, plus "inline" records)
+-->
+</head>
+<body>
+<div class="topbar">
+  <h1 id="title">Trace review</h1>
+  <div class="nav">
+    <button id="prev" title="previous (←)">◀</button>
+    <span class="counter" id="counter">– / –</span>
+    <button id="next" title="next (→)">▶</button>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div class="status" id="status">loading…</div>
+</div>
+<details class="summary" id="summary" open hidden></details>
+<div class="item-head" id="item-head"></div>
+<div class="main" id="main"></div>
+<button class="fab" id="fab" title="annotate the selected text">＋ annotate</button>
+
+<script>
+const state = { samples: [], annotations: [], config: { fields: [] }, idx: 0, saveTimer: null, dirty: false, pendingSel: null };
+const api = {
+  async get(p) { const r = await fetch(p); return r.json(); },
+  async post(p, body) { const r = await fetch(p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return r.json(); },
+};
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pretty = (v) => { if (typeof v === 'string') { try { v = JSON.parse(v); } catch { return v; } } return JSON.stringify(v, null, 2); };
+function asList(a) { if (Array.isArray(a)) return a; if (a && Array.isArray(a.annotations)) return a.annotations; return []; }
+/* Minimal, escape-first markdown for assistant text: **bold**, `code`, "- " bullets, pipe tables. */
+function mdLite(text) {
+  const lines = esc(text).split('\n'); const out = []; let inList = false; let table = null;
+  const flushTable = () => { if (!table) return; out.push('<table>' + table.map((r, i) => `<tr>${r.map(c => i === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join('')}</tr>`).join('') + '</table>'); table = null; };
+  for (const raw of lines) {
+    if (/^\s*\|.*\|\s*$/.test(raw)) {
+      const cells = raw.trim().slice(1, -1).split('|').map(c => c.trim().replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'));
+      if (cells.every(c => /^:?-{2,}:?$/.test(c))) continue;
+      (table = table || []).push(cells); continue;
+    }
+    flushTable();
+    const line = raw.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>');
+    const li = line.match(/^\s*[-*]\s+(.*)$/);
+    if (li) { if (!inList) { out.push('<ul>'); inList = true; } out.push(`<li>${li[1]}</li>`); continue; }
+    if (inList) { out.push('</ul>'); inList = false; }
+    out.push(line);
+  }
+  if (inList) out.push('</ul>');
+  flushTable();
+  return out.join('\n').replace(/\n(<\/?ul>|<li>|<table>)/g, '$1').replace(/(<\/li>|<ul>|<\/ul>|<\/table>)\n/g, '$1');
+}
+
+/* ---------- data ---------- */
+async function load() {
+  const [samples, annotations, config] = await Promise.all([api.get('/api/samples'), api.get('/api/annotations'), api.get('/api/config')]);
+  state.samples = Array.isArray(samples) ? samples : [];
+  state.annotations = asList(annotations);
+  state.config = config && Array.isArray(config.fields) ? config : { fields: [] };
+  if (state.config.title) { document.getElementById('title').textContent = state.config.title; document.title = state.config.title; }
+  renderSummary(state.config.summary);
+  try { const backup = JSON.parse(localStorage.getItem('trace_review_annotations:' + location.port + ':' + (state.config.store_key || '')) || 'null');
+        if (Array.isArray(backup) && backup.length > state.annotations.length) state.annotations = backup; } catch {}
+  const hash = parseInt(location.hash.replace('#', ''), 10);
+  state.idx = Number.isFinite(hash) && hash >= 1 && hash <= state.samples.length ? hash - 1 : firstUnreviewed();
+  render();
+}
+function firstUnreviewed() { const i = state.samples.findIndex(s => !isReviewed(s)); return i < 0 ? 0 : i; }
+function recFor(s) {
+  let a = state.annotations.find(x => x.kind === 'item' && x.item_id === s.id);
+  if (!a) { a = { id: 'item-' + s.id, kind: 'item', item_id: s.id, fields: {}, ts: null }; state.annotations.push(a); }
+  a.fields = a.fields || {};
+  return a;
+}
+const inlineFor = (s) => state.annotations.filter(x => x.kind === 'inline' && x.item_id === s.id);
+const fieldSet = (v) => !(v === null || v === undefined || v === '' || (Array.isArray(v) && !v.length));
+function isReviewed(s) { const a = state.annotations.find(x => x.kind === 'item' && x.item_id === s.id); return !!((a && Object.values(a.fields || {}).some(fieldSet)) || inlineFor(s).length); }
+const verdictField = () => state.config.fields.find(f => f.type === 'verdict');
+function verdictOpt(s) { const f = verdictField(); if (!f) return null; const a = state.annotations.find(x => x.kind === 'item' && x.item_id === s.id); const v = a && a.fields ? a.fields[f.key] : null; return (f.options || []).find(o => o.value === v) || null; }
+function isFlagged(s) { const a = state.annotations.find(x => x.kind === 'item' && x.item_id === s.id); if (!a) return false;
+  return state.config.fields.some(f => f.type === 'flag' && a.fields[f.key] !== undefined && a.fields[f.key] !== null && a.fields[f.key] !== (f.default !== false)); }
+function scheduleSave() { state.dirty = true; setStatus(); clearTimeout(state.saveTimer); state.saveTimer = setTimeout(save, 500); }
+async function save() {
+  try { localStorage.setItem('trace_review_annotations:' + location.port + ':' + (state.config.store_key || ''), JSON.stringify(state.annotations)); } catch {}
+  try { const r = await api.post('/api/annotations', state.annotations); state.dirty = !r || !r.ok; setStatus(r && r.error ? r.error : null); }
+  catch (e) { state.dirty = true; setStatus('save failed: ' + e.message); }
+  renderDots();
+}
+function setStatus(err) {
+  const el = document.getElementById('status');
+  let summary;
+  if (verdictField()) { const decided = state.samples.filter(verdictOpt).length; const notesOnly = state.samples.filter(s => !verdictOpt(s) && isReviewed(s)).length; summary = `${decided} of ${state.samples.length} decided${notesOnly ? ` · ${notesOnly} note only` : ''}`; }
+  else summary = `${state.samples.filter(isReviewed).length} of ${state.samples.length} reviewed`;
+  el.innerHTML = err ? `<span class="saved dirty">${esc(err)}</span>` : `${summary} · <span class="saved ${state.dirty ? 'dirty' : 'ok'}">${state.dirty ? 'saving…' : 'saved ✓'}</span>`;
+}
+
+/* ---------- navigation ---------- */
+function go(i) { if (!state.samples.length) return; state.idx = Math.max(0, Math.min(state.samples.length - 1, i)); location.hash = String(state.idx + 1); render(); window.scrollTo({ top: 0 }); }
+document.getElementById('prev').onclick = () => go(state.idx - 1);
+document.getElementById('next').onclick = () => go(state.idx + 1);
+document.addEventListener('keydown', (e) => {
+  const ae = document.activeElement; const typing = ae.tagName === 'TEXTAREA' || (ae.tagName === 'INPUT' && ae.type === 'text');
+  if (e.key === 'Escape' && typing) { document.activeElement.blur(); return; }
+  if (typing && !e.altKey) return;                       // plain arrows edit text; Option/Alt + arrows navigate from anywhere
+  if (e.key === 'ArrowRight') { e.preventDefault(); go(state.idx + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(state.idx - 1); }
+});
+function renderDots() {
+  const box = document.getElementById('dots'); box.innerHTML = '';
+  state.samples.forEach((s, i) => {
+    const d = document.createElement('span');
+    const vo = verdictOpt(s);
+    d.className = 'dot' + (vo ? ' c-' + (vo.color || 'blue') : isFlagged(s) ? ' flagged' : isReviewed(s) ? ' done' : '') + (s.dot_class ? ' ' + s.dot_class : '') + (i === state.idx ? ' current' : '');
+    d.title = s.id; d.onclick = () => go(i); box.appendChild(d);
+  });
+}
+
+/* ---------- rendering ---------- */
+function summaryOf(content) {
+  let v = content; if (typeof v === 'string') { try { v = JSON.parse(v); } catch { return esc(String(v).slice(0, 90)); } }
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    if (v.ok === false || v.error) return `<span class="err">${esc(v.error || 'error')}</span> ${esc(String(v.reason || v.message || '').slice(0, 80))}`;
+    if (v.ok === true) { const keys = Object.keys(v).filter(k => k !== 'ok'); return `<span class="ok">ok</span> · ${esc(keys.join(', '))}`; }
+    return esc(Object.keys(v).slice(0, 6).join(', '));
+  }
+  return esc(JSON.stringify(v).slice(0, 90));
+}
+function renderMessages(msgs) {
+  const out = []; let i = 0;
+  while (i < msgs.length) {
+    const m = msgs[i];
+    if (m.role === 'tool_call') {
+      const res = msgs[i + 1] && msgs[i + 1].role === 'tool_result' ? msgs[i + 1] : null;
+      out.push(`<div class="tool" title="click to show or hide the result"><div class="thead"><span class="tag">TOOL</span><span>${esc(m.name)}</span><span class="sum">result · ${res ? summaryOf(res.content) : '(none recorded)'}</span></div><pre class="args">${esc(pretty(m.arguments))}</pre>` +
+        (res ? `<pre class="result">${esc(pretty(res.content))}</pre>` : '') + `</div>`);
+      i += res ? 2 : 1; continue;
+    }
+    if (m.role === 'tool_result') { out.push(`<div class="tool open"><div class="thead"><span class="tag">RESULT</span><span>${esc(m.name)}</span></div><pre class="result">${esc(pretty(m.content))}</pre></div>`); i++; continue; }
+    const role = ['user', 'assistant', 'error'].includes(m.role) ? m.role : 'observation';
+    const label = m.label || (role === 'observation' ? (m.role || 'observation') : role);
+    const text = m.text ?? m.content ?? '';
+    const body = role === 'assistant' ? mdLite(typeof text === 'string' ? text : pretty(text)) : esc(typeof text === 'string' ? text : pretty(text));
+    out.push(`<div class="msg ${role}"><span class="role">${esc(label)}</span>${body}</div>`); i++;
+  }
+  return out.join('');
+}
+/* project hook: context may be one card or a list; collapsible: true makes a card foldable, collapsed: true starts it folded */
+function renderContext(s) {
+  const cs = Array.isArray(s.context) ? s.context : [s.context];
+  return cs.filter(Boolean).map(c => {
+    const fields = c.fields && typeof c.fields === 'object' ? Object.entries(c.fields) : [];
+    const inner = `<div class="body">
+    ${c.headline ? `<div class="headline">${esc(c.headline)}</div>` : ''}
+    ${c.body ? `<div class="ctx-body">${esc(c.body)}</div>` : ''}
+    ${fields.length ? `<div class="kv">${fields.map(([k, v]) => `<span class="k">${esc(k)}</span><span class="v">${esc(typeof v === 'string' ? v : JSON.stringify(v))}</span>`).join('')}</div>` : ''}
+  </div>`;
+    return c.collapsible || c.collapsed
+      ? `<details class="card"${c.collapsed ? '' : ' open'}><summary><h2>${esc(c.title || 'Context')} <span class="tgl">▸</span></h2></summary>${inner}</details>`
+      : `<div class="card"><h2>${esc(c.title || 'Context')}</h2>${inner}</div>`;
+  }).join('');
+}
+/* project hook: config.summary = {title, columns, rows, current_row, note} renders a table under the top bar */
+function renderSummary(sm) {
+  const el = document.getElementById('summary'); if (!el || !sm || !Array.isArray(sm.rows)) return;
+  el.hidden = false;
+  el.innerHTML = `<summary>${esc(sm.title || 'Summary')}</summary><table><thead><tr>${(sm.columns || []).map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead>
+    <tbody>${sm.rows.map((r, i) => `<tr class="${i === sm.current_row ? 'cur' : ''}">${r.map(v => `<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>${sm.note ? `<div class="snote">${esc(sm.note)}</div>` : ''}`;
+}
+function visible(f, rec) { if (!f.show_when) return true; const v = rec.fields[f.show_when.key]; const def = state.config.fields.find(x => x.key === f.show_when.key); const eff = v === null || v === undefined ? (def && def.type === 'flag' ? def.default !== false : null) : v; return eff === f.show_when.equals; }
+function renderField(f, rec) {
+  const v = rec.fields[f.key]; const id = 'f-' + f.key;
+  const lbl = `<label class="lbl" for="${id}">${esc(f.label || f.key)}${f.hint ? ` <span class="hint" style="margin:0">(${esc(f.hint)})</span>` : ''}</label>`;
+  if (f.type === 'flag') { const def = f.default !== false; const on = v === null || v === undefined ? def : v;
+    return `<div class="field row" data-key="${esc(f.key)}"><button class="flag-toggle ${on ? 'on' : 'off'}" data-flag="${esc(f.key)}">${on ? '✓ ' : '✗ '}${esc(on ? (f.label_on || f.label) : (f.label_off || 'not ' + f.label))}</button>${f.hint ? `<span class="hint" style="margin:0">${esc(f.hint)}</span>` : ''}</div>`; }
+  if (f.type === 'yesno') return `<div class="field">${lbl}<span class="seg" data-seg="${esc(f.key)}"><button class="yes ${v === true ? 'on' : ''}" data-v="true">yes</button><button class="no ${v === false ? 'on' : ''}" data-v="false">no</button></span></div>`;
+  // passfail stores a boolean "is a failure": pass = false, fail = true. Click the active one again to clear.
+  if (f.type === 'passfail') return `<div class="field">${lbl}<span class="seg" data-seg="${esc(f.key)}"><button class="yes ${v === false ? 'on' : ''}" data-v="false">pass</button><button class="no ${v === true ? 'on' : ''}" data-v="true">fail</button></span></div>`;
+  // verdict: one segmented control whose options each set several underlying fields; click the active one again to clear
+  if (f.type === 'verdict') return `<div class="field">${lbl}<span class="seg" data-verdict="${esc(f.key)}">${(f.options || []).map(o => `<button class="c-${esc(o.color || 'blue')} ${v === o.value ? 'on' : ''}" data-v="${esc(o.value)}">${esc(o.label || o.value)}</button>`).join('')}</span></div>`;
+  if (f.type === 'select') return `<div class="field">${lbl}<span class="seg" data-select="${esc(f.key)}">${(f.options || []).map(o => `<button class="pick ${v === o ? 'on' : ''}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</span></div>`;
+  if (f.type === 'checklist') { const set = new Set(Array.isArray(v) ? v : []);
+    return `<div class="field">${lbl}<div class="checks" data-checks="${esc(f.key)}">${(f.options || []).map(o => `<label><input type="checkbox" value="${esc(o)}" ${set.has(o) ? 'checked' : ''}> ${esc(o)}</label>`).join('')}</div></div>`; }
+  if (f.type === 'text') return `<div class="field">${lbl}<input type="text" id="${id}" data-text="${esc(f.key)}" value="${esc(v || '')}" placeholder="${esc(f.placeholder || '')}"></div>`;
+  return `<div class="field">${lbl}<textarea id="${id}" data-text="${esc(f.key)}" rows="${f.rows || 5}" placeholder="${esc(f.placeholder || '')}">${esc(v || '')}</textarea></div>`;
+}
+function renderReview(s) {
+  const rec = recFor(s);
+  return `<div class="card"><h2>${esc(state.config.review_title || 'Your review')}</h2><div class="body">
+    ${state.config.fields.map(f => visible(f, rec) ? renderField(f, rec) : '').join('')}
+    <div class="hint">Autosaves. <kbd>←</kbd> <kbd>→</kbd> move between items; while typing use <kbd>⌥</kbd>/<kbd>Alt</kbd> + arrows, or <kbd>Esc</kbd> to leave the box. Select text in the conversation to add an inline note.</div>
+  </div></div>`;
+}
+function renderInline(s) {
+  const notes = inlineFor(s); if (!notes.length) return '';
+  return `<h3>Inline notes · ${notes.length}</h3>` + notes.map(n => `<div class="note" data-aid="${esc(n.id)}">
+    <div class="quote" title="jump to the quoted text"><span class="q">“${esc(n.quote)}”</span><button class="del" title="delete this note">×</button></div>
+    <textarea rows="2" placeholder="what you notice about this passage">${esc(n.note || '')}</textarea></div>`).join('');
+}
+function highlightQuotes(s) {
+  const conv = document.querySelector('.conv'); if (!conv) return;
+  for (const n of inlineFor(s)) {
+    if (!n.quote) continue;
+    const walker = document.createTreeWalker(conv, NodeFilter.SHOW_TEXT); let t;
+    while ((t = walker.nextNode())) {
+      const k = t.nodeValue.indexOf(n.quote);
+      if (k < 0 || t.parentElement.closest('mark.hl')) continue;
+      const r = document.createRange(); r.setStart(t, k); r.setEnd(t, k + n.quote.length);
+      const mark = document.createElement('mark'); mark.className = 'hl'; mark.dataset.aid = n.id; mark.title = n.note || 'inline note';
+      r.surroundContents(mark); break;
+    }
+  }
+}
+const chipClass = (c) => typeof c === 'object' && c ? `chip c-${esc(c.color || '')}` : 'chip';
+const chipText = (c) => typeof c === 'object' && c ? c.text : c;
+function render() {
+  const head = document.getElementById('item-head'), main = document.getElementById('main');
+  document.getElementById('counter').textContent = state.samples.length ? `${state.idx + 1} / ${state.samples.length}` : '0 / 0';
+  document.getElementById('prev').disabled = state.idx <= 0; document.getElementById('next').disabled = state.idx >= state.samples.length - 1;
+  renderDots(); setStatus(); hideFab();
+  if (!state.samples.length) { head.innerHTML = ''; main.innerHTML = `<div class="empty">No samples yet. Write your adapter's output to the samples file named on the command line, then reload.</div>`; return; }
+  const s = state.samples[state.idx];
+  head.innerHTML = `<span class="sid">${esc(s.id)}</span>
+    ${(s.chips || []).map(c => `<span class="${chipClass(c)}">${esc(chipText(c))}</span>`).join('')}
+    ${(s.meta || []).map(m => `<span class="meta">${esc(m)}</span>`).join('')}
+    ${s.link ? `<a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.link_label || 'open source ↗')}</a>` : ''}
+    <span class="tools-ctl"><button id="expand-all" title="show every tool result">expand all</button><button id="collapse-all" title="hide every tool result">collapse all</button></span>`;
+  main.innerHTML = `<div class="conv">${renderMessages(s.messages || [])}</div><div class="side">${renderContext(s)}${renderReview(s)}${renderInline(s)}</div>`;
+  highlightQuotes(s);
+  main.querySelectorAll('.tool').forEach(tc => tc.addEventListener('click', () => { const sel = window.getSelection(); if (sel && !sel.isCollapsed && tc.contains(sel.anchorNode)) return; tc.classList.toggle('open'); }));
+  document.getElementById('expand-all').onclick = () => main.querySelectorAll('.tool').forEach(tc => tc.classList.add('open'));
+  document.getElementById('collapse-all').onclick = () => main.querySelectorAll('.tool').forEach(tc => tc.classList.remove('open'));
+  const rec = recFor(s); const touch = () => { rec.ts = new Date().toISOString(); scheduleSave(); };
+  main.querySelectorAll('[data-text]').forEach(el => el.addEventListener('input', (e) => { rec.fields[el.dataset.text] = e.target.value; touch(); }));
+  main.querySelectorAll('[data-flag]').forEach(b => b.onclick = () => { const f = state.config.fields.find(x => x.key === b.dataset.flag); const def = f.default !== false; const cur = rec.fields[f.key] === null || rec.fields[f.key] === undefined ? def : rec.fields[f.key]; rec.fields[f.key] = cur === def ? !def : null; touch(); render(); const first = document.querySelector('[data-text]:not([id^="f-note"])'); if (rec.fields[f.key] !== null && first) first.focus(); });
+  main.querySelectorAll('[data-seg]').forEach(seg => seg.querySelectorAll('button').forEach(b => b.onclick = () => { const k = seg.dataset.seg, v = b.dataset.v === 'true'; rec.fields[k] = rec.fields[k] === v ? null : v; seg.querySelectorAll('button').forEach(x => x.classList.toggle('on', rec.fields[k] !== null && (x.dataset.v === 'true') === rec.fields[k])); touch(); }));
+  main.querySelectorAll('[data-verdict]').forEach(seg => seg.querySelectorAll('button').forEach(b => b.onclick = () => {
+    const f = state.config.fields.find(x => x.key === seg.dataset.verdict); const cur = rec.fields[f.key];
+    const clear = cur === b.dataset.v; const opt = (f.options || []).find(o => o.value === b.dataset.v) || {};
+    for (const o of f.options || []) for (const k of Object.keys(o.sets || {})) rec.fields[k] = null;   // reset every field any option controls
+    rec.fields[f.key] = clear ? null : b.dataset.v;
+    if (!clear) Object.assign(rec.fields, opt.sets || {});
+    touch(); render();
+    if (!clear) { const first = document.querySelector('[data-text]:not([id="f-note"])'); if (first) first.focus(); }
+  }));
+  main.querySelectorAll('[data-select]').forEach(seg => seg.querySelectorAll('button').forEach(b => b.onclick = () => { const k = seg.dataset.select; rec.fields[k] = rec.fields[k] === b.dataset.v ? null : b.dataset.v; seg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === rec.fields[k])); touch(); }));
+  main.querySelectorAll('[data-checks]').forEach(box => box.querySelectorAll('input').forEach(cb => cb.onchange = () => { rec.fields[box.dataset.checks] = [...box.querySelectorAll('input:checked')].map(x => x.value); touch(); }));
+  main.querySelectorAll('.note').forEach(card => {
+    const n = state.annotations.find(x => x.id === card.dataset.aid); if (!n) return;
+    card.querySelector('textarea').addEventListener('input', (e) => { n.note = e.target.value; n.ts = new Date().toISOString(); const mk = main.querySelector(`mark.hl[data-aid="${CSS.escape(n.id)}"]`); if (mk) mk.title = n.note; scheduleSave(); });
+    card.querySelector('.del').onclick = (e) => { e.stopPropagation(); state.annotations = state.annotations.filter(x => x.id !== n.id); scheduleSave(); render(); };
+    card.querySelector('.quote').onclick = () => { const mk = main.querySelector(`mark.hl[data-aid="${CSS.escape(n.id)}"]`); if (!mk) return; main.querySelectorAll('mark.hl.focus').forEach(x => x.classList.remove('focus')); mk.classList.add('focus'); mk.scrollIntoView({ block: 'center', behavior: 'smooth' }); };
+  });
+}
+
+/* ---------- inline annotation ---------- */
+const fab = document.getElementById('fab');
+function hideFab() { fab.style.display = 'none'; state.pendingSel = null; }
+document.addEventListener('mouseup', () => setTimeout(() => {
+  const sel = window.getSelection(); const conv = document.querySelector('.conv');
+  if (!sel || sel.isCollapsed || !conv || !conv.contains(sel.anchorNode) || !conv.contains(sel.focusNode)) return hideFab();
+  const quote = sel.toString().trim(); if (quote.length < 2) return hideFab();
+  const range = sel.getRangeAt(0); const rect = range.getBoundingClientRect();
+  state.pendingSel = { quote };
+  fab.style.display = 'block'; fab.style.left = `${Math.min(rect.right + window.scrollX + 6, window.innerWidth - 130)}px`; fab.style.top = `${rect.bottom + window.scrollY + 6}px`;
+}, 0));
+fab.addEventListener('mousedown', (e) => e.preventDefault());
+fab.onclick = () => {
+  const p = state.pendingSel; if (!p) return hideFab();
+  const s = state.samples[state.idx];
+  state.annotations.push({ id: `inline-${s.id}-${Date.now().toString(36)}`, kind: 'inline', item_id: s.id, quote: p.quote, note: '', ts: new Date().toISOString() });
+  window.getSelection().removeAllRanges(); hideFab(); scheduleSave(); render();
+  const cards = document.querySelectorAll('.note textarea'); const last = cards[cards.length - 1]; if (last) { last.focus(); last.scrollIntoView({ block: 'nearest' }); }
+};
+window.addEventListener('hashchange', () => { const h = parseInt(location.hash.replace('#', ''), 10); if (Number.isFinite(h) && h - 1 !== state.idx) go(h - 1); });
+load();
+</script>
+</body>
+</html>

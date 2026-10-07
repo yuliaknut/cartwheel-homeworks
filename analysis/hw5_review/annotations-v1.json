@@ -1,0 +1,41 @@
+[
+ {
+  "id": "item-support-0216",
+  "kind": "item",
+  "item_id": "support-0216",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "This needed to be processed under issue_refund with pending for review, not via general escalation. Meaning agent failed more than one failure modes, including unnecessary_escalation. (second disagreement)"
+  },
+  "ts": "2026-09-30T06:31:21.367Z"
+ },
+ {
+  "id": "item-support-0049",
+  "kind": "item",
+  "item_id": "support-0049",
+  "fields": {
+   "resolution": "label_wrong"
+  },
+  "ts": "2026-09-30T06:27:12.546Z"
+ },
+ {
+  "id": "item-support-0195",
+  "kind": "item",
+  "item_id": "support-0195",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "Data quality issues do warrant human investigation - necessary escalation."
+  },
+  "ts": "2026-09-30T06:29:19.140Z"
+ },
+ {
+  "id": "item-support-0259",
+  "kind": "item",
+  "item_id": "support-0259",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "This user is a merchant, not a shopper, they are not returning their order past its return window, they are dealing with an out of ordinary problem a Cartwheel representative needs to investigate and potentially mediate. "
+  },
+  "ts": "2026-09-30T06:36:56.422Z"
+ }
+]

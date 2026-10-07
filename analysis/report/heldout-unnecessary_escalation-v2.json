@@ -1,0 +1,66 @@
+{
+ "judge_id": "unnecessary_escalation-v2",
+ "model": "gpt-4o-mini",
+ "split": "heldout",
+ "batch": "b8-escalation-heldout",
+ "class_counts": {
+  "pass": 23,
+  "fail": 7,
+  "judged_pass": 14,
+  "judged_fail": 7
+ },
+ "judge": {
+  "n": 21,
+  "tp": 13,
+  "fn": 1,
+  "tn": 6,
+  "fp": 1,
+  "tpr": 0.9285714285714286,
+  "tpr_interval": [
+   0.6853,
+   0.9873
+  ],
+  "tnr": 0.8571428571428571,
+  "tnr_interval": [
+   0.4869,
+   0.9743
+  ],
+  "disagreements": [
+   "85477a9a198aa0e68508140e5c16f7f9",
+   "d37ad530b37047704f1a3cedf639181b"
+  ]
+ },
+ "system": {
+  "n": 30,
+  "tp": 22,
+  "fn": 1,
+  "tn": 6,
+  "fp": 1,
+  "tpr": 0.9565217391304348,
+  "tpr_interval": [
+   0.7901,
+   0.9923
+  ],
+  "tnr": 0.8571428571428571,
+  "tnr_interval": [
+   0.4869,
+   0.9743
+  ],
+  "disagreements": [
+   "85477a9a198aa0e68508140e5c16f7f9",
+   "d37ad530b37047704f1a3cedf639181b"
+  ]
+ },
+ "gated_pass_ids": [
+  "1219551e29a5a83ab66f7c7f4e8eb8f9",
+  "2f34871dd26cb7ab70f0605442fdab55",
+  "31dacbbda217d02e4a3f7866cb5296a5",
+  "4968b57782d87547f8cd72156f12e005",
+  "626d718d1fd60e7bcd77d95551769cd1",
+  "6873f8ca6b3ddd79f298aa2879f9a91a",
+  "a76ded83c3099e75c51795829451f0f6",
+  "aacdb34417bb4793d69283acab1d16b2",
+  "e7a702767be816b22dd97604c934c28d"
+ ],
+ "note": "Blind held-out set: 30 scenarios generated after HW5 from fresh users and orders, labeled by the student before any judge saw them, judged once by the frozen judge. First attempt: one of the 21 judge outputs in a batch was malformed (not Pass/Fail); that batch was re-sampled once with DocETL's cache bypassed, without inspecting any verdict, as on the HW5 test run. All 21 final outputs are valid."
+}

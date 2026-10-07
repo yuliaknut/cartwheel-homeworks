@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 from typing import Any
 
 from agents import Agent, ModelSettings, RunContextWrapper, function_tool
@@ -29,6 +30,7 @@ from agent.config import load_facts
 from agent.helpcenter import get_index
 from agent.killswitch import kill_switch
 from observability.instrument import configure_model_tracing, record_tool_result
+from observability.raindrop_workshop import track_tool_event
 from seed.eligibility import refund_needs_approval
 
 # ---------------------------------------------------------------------------
@@ -74,7 +76,8 @@ or credential changes, and anything outside Cartwheel.
 ## Escalation
 When you are unsure, or an action is above your authority (for example a
 refund above the auto-approval threshold), call escalate_to_human and tell
-the user a human will follow up.
+the user a human will follow up. Account changes of any kind go to a human:
+call escalate_to_human rather than refusing them.
 
 ## Tone
 Plain and warm. No legalese.
@@ -199,6 +202,10 @@ def get_order_logic(ctx: AuthContext, order_id: int) -> dict[str, Any]:
         store = db.get_store(conn, order.store_id)
         payload = order.to_public_dict()
         payload["store_name"] = store.name if store else None
+        # Student-added (HW2 follow-up): name the item so the model does not
+        # need a separate get_product call to describe the order.
+        titles = {p.id: p.title for p in db.list_products(conn, order.store_id)}
+        payload["product_title"] = titles.get(order.product_id)
         return {"ok": True, "order": payload}
 
 
@@ -329,11 +336,19 @@ def escalate_to_human_logic(
 def _call(
     wrapper: RunContextWrapper[AuthContext], fn: Any, /, *args: Any
 ) -> dict[str, Any]:
+    started = time.perf_counter()
     try:
         result = fn(wrapper.context, *args)
     except NotImplementedError as exc:
         result = {"ok": False, "error": "not_implemented", "reason": str(exc)}
     record_tool_result(wrapper.context, result)
+    # Additive: mirrors the call to Raindrop Workshop when it is running.
+    track_tool_event(
+        getattr(fn, "__name__", "tool").removesuffix("_logic"),
+        tool_input=list(args),
+        tool_output=result,
+        duration_ms=(time.perf_counter() - started) * 1000,
+    )
     return result
 
 
@@ -383,6 +398,12 @@ def get_policy(wrapper: RunContextWrapper[AuthContext], policy_id: str) -> dict[
 
 
 @function_tool
+def get_product(wrapper: RunContextWrapper[AuthContext], product_id: int) -> dict[str, Any]:
+    """Look up one product by id: description, price, category, and store. Order records already include product_title, so call this only when you need those extra details."""
+    return _call(wrapper, hw_tools.get_product, product_id)
+
+
+@function_tool
 def search_products(
     wrapper: RunContextWrapper[AuthContext],
     query: str,
@@ -392,6 +413,7 @@ def search_products(
 ) -> dict[str, Any]:
     """Search the product catalog, optionally within one store or under a price."""
     ctx = wrapper.context
+    started = time.perf_counter()
     try:
         result = hw_tools.search_products(
             ctx, query, store=store, max_price_usd=max_price_usd, limit=limit
@@ -399,6 +421,12 @@ def search_products(
     except NotImplementedError as exc:
         result = {"ok": False, "error": "not_implemented", "reason": str(exc)}
     record_tool_result(ctx, result)
+    track_tool_event(
+        "search_products",
+        tool_input={"query": query, "store": store, "max_price_usd": max_price_usd, "limit": limit},
+        tool_output=result,
+        duration_ms=(time.perf_counter() - started) * 1000,
+    )
     return result
 
 
@@ -432,6 +460,7 @@ _COMMON_TOOLS = [
     search_help_center,
     get_policy,
     search_products,
+    get_product,  # student-added (HW1): names the item behind an order's product_id
     get_order,
     issue_refund,
     cancel_order,

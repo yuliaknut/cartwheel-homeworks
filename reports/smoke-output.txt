@@ -1,0 +1,64 @@
+    ┌─scenario_id──┬─traces─┐
+ 1. │ support-0003 │      4 │
+ 2. │ support-0177 │      3 │
+ 3. │ support-0190 │      3 │
+ 4. │ support-0160 │      3 │
+ 5. │ support-0239 │      3 │
+ 6. │ support-0238 │      3 │
+ 7. │ pilot-0006   │      2 │
+ 8. │ support-0148 │      2 │
+ 9. │ support-0163 │      2 │
+10. │ support-0183 │      2 │
+11. │ support-0146 │      2 │
+12. │ support-0165 │      2 │
+13. │ support-0184 │      2 │
+14. │ support-0170 │      2 │
+15. │ support-0191 │      2 │
+16. │ support-0236 │      2 │
+17. │ support-0162 │      2 │
+18. │ support-0153 │      2 │
+19. │ support-0015 │      2 │
+20. │ support-0149 │      2 │
+21. │ pilot-0015   │      2 │
+22. │ support-0154 │      2 │
+23. │ support-0179 │      2 │
+24. │ support-0182 │      2 │
+25. │ support-0202 │      2 │
+26. │ support-0228 │      2 │
+27. │ support-0249 │      2 │
+28. │ pilot-0034   │      2 │
+29. │ support-0242 │      2 │
+30. │ support-0100 │      2 │
+31. │ support-0195 │      2 │
+32. │ support-0237 │      2 │
+33. │ support-0174 │      2 │
+34. │ support-0232 │      2 │
+35. │ pilot-0003   │      2 │
+36. │ support-0167 │      2 │
+37. │ support-0186 │      2 │
+38. │ support-0185 │      2 │
+39. │ support-0175 │      2 │
+40. │ support-0164 │      2 │
+41. │ support-0155 │      2 │
+42. │ support-0006 │      2 │
+43. │ support-0231 │      2 │
+44. │ pilot-0010   │      2 │
+45. │ support-0147 │      2 │
+46. │ support-0044 │      2 │
+47. │ support-0221 │      2 │
+48. │ pilot-0021   │      2 │
+49. │ support-0156 │      2 │
+50. │ support-0223 │      2 │
+    └─scenario_id──┴─traces─┘
+   ┌─role─────┬─traces─┐
+1. │ shopper  │    233 │
+2. │ support  │     81 │
+3. │ merchant │     81 │
+   └──────────┴────────┘
+   ┌─name──────────────────────┬─errors─┐
+1. │ openai.response           │     48 │
+2. │ cartwheel.session_message │     48 │
+   └───────────────────────────┴────────┘
+   ┌─escalations─┐
+1. │          79 │
+   └─────────────┘

@@ -51,6 +51,7 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 STATE_DIR = HERE / "state"
 UI_DIR = HERE / "ui"
+UI_INDEX = "index.html"  # overridden by --ui
 
 # API path -> the state file that backs it. GET reads the file, POST overwrites
 # it. Keeping this a plain table makes the whole contract inspectable and keeps
@@ -149,7 +150,7 @@ class ReviewHandler(BaseHTTPRequestHandler):
         path = self.path.split("?", 1)[0]
 
         if path in ("/", "/index.html"):
-            self._send_file(UI_DIR / "index.html", "text/html; charset=utf-8")
+            self._send_file(UI_DIR / UI_INDEX, "text/html; charset=utf-8")
             return
 
         # Any other static asset the UI references (kept single-file by
@@ -322,6 +323,10 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=8020)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument(
+        "--ui", default="index.html",
+        help="file under analysis/ui/ to serve at / (default: the reference index.html)",
+    )
+    parser.add_argument(
         "--replay",
         metavar="PATH",
         help="canned annotations file to replay on a timer (e.g. "
@@ -334,6 +339,8 @@ def main() -> None:
         help="seconds between replayed annotations (default 4)",
     )
     args = parser.parse_args()
+    global UI_INDEX
+    UI_INDEX = args.ui
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
 

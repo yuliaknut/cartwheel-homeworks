@@ -1,1 +1,961 @@
-{"modes": []}
+{
+  "modes": [
+    {
+      "name": "unnecessary_escalation",
+      "status": "final",
+      "definition": "The agent creates a human support ticket that achieves nothing. Present when escalate_to_human is called and no escalation requirement in SPEC.md section 5 applies, and the help center and the order record together contain what the answer needs. Also present when the ticket is redundant: a second ticket for a case that already has one, or a ticket opened alongside a refund that issue_refund has already queued for human approval under ESC-1. In both cases the case is already in front of a human and the extra ticket adds no remedy.",
+      "boundary": "Absent when the escalation is required: any escalation requirement in SPEC.md section 5 applies \u2014 currently an account change, a dispute whose 60-day window is still open, a case genuinely unresolvable from the help center and the order record, or genuine uncertainty about whether policy permits an action. Also absent when the agent does not escalate at all. A trace that faced the same situation and answered without escalating is a close negative. Judged per ticket, not per trace: a trace whose first escalation was required and whose second was redundant is present. A queued refund is already an escalation: ESC-1 is satisfied when issue_refund returns queued_for_approval, and the agent's job is to explain that result, so a ticket opened to get the refund reviewed is present. When the user asked for the refund and the refund review decides the whole case, a ticket beside it is secondary and present. The exception is a ticket that asks a human for something the refund review does not cover, such as investigating a dispute. A package marked delivered that the user never received is such a dispute, so its ticket is absent even beside a queued refund; the refund is the misstep there, and it belongs to another mode. Judged on whether the situation required the ticket, not on the reason the agent gives for it. A required ticket filed under a misstated reason, for example a refund-exception review on an order whose own record is inconsistent, is absent; the misstatement is a response failure, not this one. An order still in transit inside its expected delivery window has not gone missing yet; a ticket for it is present.",
+      "spec_ref": "ESC-5",
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why.",
+      "created_from": [
+        "inline-support-0078-mud9rmzo",
+        "inline-support-0129-mudgp3x7",
+        "inline-support-0207-mudh50vc",
+        "inline-support-0127-mudmvdvh",
+        "inline-support-0127-mudn3mdl",
+        "inline-support-0215-mudobvgt",
+        "inline-support-0245-mueoisjx",
+        "inline-support-0162-muerrwcs",
+        "inline-support-0241-muest77w",
+        "inline-support-0242-muesvoi4",
+        "inline-support-0164-muesy8ql",
+        "inline-support-0163-muet44ep",
+        "inline-support-0052-mueu754h",
+        "inline-support-0052-mueu8mvo",
+        "inline-support-0126-mufrgccj",
+        "inline-support-0046-mufryk91",
+        "inline-support-0056-mufsa3an",
+        "inline-support-0051-mufsjk2i",
+        "inline-support-0031-mufvtghe",
+        "inline-support-0028-mufwwgla",
+        "inline-support-0100-mudhrgzn",
+        "inline-support-0211-mug69e78",
+        "inline-support-0042-muhrno0i",
+        "inline-support-0122-muhrqu90",
+        "inline-support-0159-muhrslx4",
+        "inline-support-0125-muhrzmjk"
+      ],
+      "drafted_at": "2026-09-23T23:55:01.759731+00:00",
+      "drafted_after": "b2-store-override",
+      "revisions": [
+        {
+          "ts": "2026-09-24T20:11:19.717221+00:00",
+          "change": "Removed 'a refund above the $100 threshold (ESC-1)' from the absent list. ESC-1 says the tool queues the refund and the agent explains the result; it never calls for escalate_to_human. The old wording would have marked support-0046, 0162 and 0241 absent, contradicting the open codes. That behaviour is now its own failure mode.",
+          "evidence": [
+            "support-0046",
+            "support-0162",
+            "support-0241"
+          ]
+        },
+        {
+          "ts": "2026-09-24T22:54:59.050294+00:00",
+          "change": "Reference SPEC.md section 5 rather than enumerating ESC-1..4, so a new clause forces a deliberate revision instead of silently widening. Replaced 'i.e.' with 'and': failing the escalation test and having the information available are separate conditions (ESC-2 escalates regardless of availability)."
+        },
+        {
+          "ts": "2026-09-24T23:15:42.821048+00:00",
+          "change": "Widened to cover duplicated escalations, and judged per ticket rather than per trace. Found while testing support-0100 as a close negative: its escalation was required under ESC-2, but it opened a second ticket for a case that already had one. It moves from close negative to positive."
+        },
+        {
+          "ts": "2026-09-24T23:40:03.452597+00:00",
+          "change": "Widened again to cover a ticket opened alongside a refund that issue_refund had already queued under ESC-1. Found while testing support-0211 as a close negative for threshold_misapplied: its threshold handling was correct, but it queued the refund and then opened ticket 206 for the same case."
+        },
+        {
+          "ts": "2026-09-26T02:38:46.262229+00:00",
+          "change": "Four positives added from a search of the 150 unreviewed traces, to reach Homework 5's minimum of 30 present labels. support-0042, 0122 and 0159 each opened a ticket after issue_refund had already returned queued_for_approval, across shopper, merchant and support roles; support-0125 escalated an ineligible order delivered 57 days earlier. All four were reviewed before acceptance and join the review set as b5-escalation-hw5."
+        },
+        {
+          "ts": "2026-09-28T22:19:25.521287+00:00",
+          "change": "Homework 5 boundary review. Added: a required ticket with a misstated reason is absent (support-0177, 0182, 0256); a delivered-but-not-received package is a dispute whose ticket is absent even beside a queued refund (support-0256), while a ticket that only duplicates a refund review the user asked for is present (support-0206, flipped from an assumed absent); an order still in transit is not yet missing (support-0056). Merged the two duplicate queued-refund sentences. support-0067 (ticket opened on the agent's own date error) flipped to present under the existing wording.",
+          "evidence": [
+            "support-0177",
+            "support-0182",
+            "support-0206",
+            "support-0256",
+            "support-0056",
+            "support-0067"
+          ]
+        },
+        {
+          "ts": "2026-09-29T20:58:52.890007+00:00",
+          "change": "Removed the trace citations and their scenario descriptions from the boundary so the judge prompt can be drafted from it without carrying identifiable traces into the prompt. Rules unchanged; the evidence stays in the previous revision entry."
+        }
+      ],
+      "positive_traces": [
+        "support-0028",
+        "support-0031",
+        "support-0042",
+        "support-0046",
+        "support-0051",
+        "support-0052",
+        "support-0056",
+        "support-0078",
+        "support-0100",
+        "support-0122",
+        "support-0125",
+        "support-0126",
+        "support-0127",
+        "support-0129",
+        "support-0159",
+        "support-0162",
+        "support-0163",
+        "support-0164",
+        "support-0207",
+        "support-0211",
+        "support-0215",
+        "support-0241",
+        "support-0242",
+        "support-0245"
+      ],
+      "evaluator": "LLM judge",
+      "reviewer_notes": [
+        {
+          "id": "mn-mug2g9c2",
+          "quote": "ESC-1 through ESC-4",
+          "start": 135,
+          "end": 155,
+          "note": "Is it a good idea to future proof this for the possibility of our spec getting more ESC-# examples? Genuinely wondering",
+          "ts": "2026-09-24T21:54:55.245Z",
+          "resolved": true,
+          "resolved_at": "2026-09-24T23:00:44.367122+00:00",
+          "response": "Definition now points at SPEC.md section 5 instead of enumerating ESC-1..4."
+        },
+        {
+          "id": "mn-mug2gzkg",
+          "quote": "i.e",
+          "start": 165,
+          "end": 168,
+          "note": "I think this is more of an and/or situation rather than i.e.",
+          "ts": "2026-09-24T21:51:52.968Z",
+          "resolved": true,
+          "resolved_at": "2026-09-24T23:00:44.367122+00:00",
+          "response": "Replaced 'i.e.' with 'and'; the two conditions are separate."
+        }
+      ],
+      "close_negatives": [
+        {
+          "scenario_id": "support-0182",
+          "status": "accepted",
+          "why": "Escalated order 8001, the reversed-chronology defect. The data-quality manifest expects escalation rather than asserting a timeline.",
+          "decided_ts": "2026-09-24T23:26:06.488188+00:00"
+        },
+        {
+          "scenario_id": "support-0190",
+          "status": "accepted",
+          "why": "Escalated order 8003, the store mismatch. The manifest expects the inconsistent record to be escalated.",
+          "decided_ts": "2026-09-24T23:26:06.488188+00:00"
+        },
+        {
+          "scenario_id": "support-0181",
+          "status": "accepted",
+          "why": "Escalated order 8001, whose shipment date is after its delivery date. The data-quality manifest expects exactly that: identify the inconsistent chronology and escalate rather than assert a timeline.",
+          "decided_ts": "2026-09-24T23:26:06.488188+00:00"
+        }
+      ],
+      "manual_assignments": [
+        {
+          "annotation_id": "inline-support-0100-mudhrgzn",
+          "trace": "support-0100",
+          "why": "Reviewer-assigned: ticket #176 opened while #175 was already open for the same case. The first escalation was required under ESC-2; the duplicate was not."
+        }
+      ],
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00"
+    },
+    {
+      "name": "internal_detail_exposed",
+      "status": "final",
+      "definition": "The user-facing reply exposes an internal representation: a policy identifier (cw-* or store-*-policy) instead of the policy's public title, or a raw data field name or tool-result key such as refund_eligible.",
+      "boundary": "Absent when the reply cites the policy by its public title (\"Cartwheel refund policy\") and states record facts in plain language (\"this order is not eligible for a refund\"). An internal identifier appearing only inside a tool result, never in the reply, is absent.",
+      "spec_ref": "RESP-1",
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why.",
+      "notes": "Settled after batch 2. From batch 3 onward recorded with the \u201c+ policy id\u201d shortcut rather than a typed note, so those annotations carry source:\"shortcut\". internal_field_exposed was merged in after batch 4: one requirement covers both, and a mode at four traces could not stand alone.",
+      "created_from": [
+        "inline-support-0015-mud8xox6",
+        "inline-support-0233-mud93tgz",
+        "inline-support-0130-mud9917e",
+        "inline-support-0171-mud9l6ui",
+        "inline-support-0078-mud9qn6w",
+        "inline-support-0129-mudgjd2y",
+        "inline-support-0207-mudh9zoa",
+        "inline-support-0065-mudmksh8",
+        "inline-support-0066-mudmloqi",
+        "inline-support-0067-mudmnfrx",
+        "inline-support-0068-mudmqnrf",
+        "inline-support-0069-mudmqwfp",
+        "inline-support-0087-mudmrpjf",
+        "inline-support-0127-mudmtox5",
+        "inline-support-0127-mudmzs5p",
+        "inline-support-0134-mudnowqz",
+        "inline-support-0146-mudnqpfs",
+        "inline-support-0209-mudnuohg",
+        "inline-support-0209-mudnw4qb",
+        "inline-support-0210-mudny7s8",
+        "inline-support-0212-mudo3200",
+        "inline-support-0213-mudo6dc3",
+        "inline-support-0214-mudo8ee2",
+        "inline-support-0216-mue8a1n8",
+        "inline-support-0217-mue8bua4",
+        "inline-support-0218-muelyku5",
+        "inline-support-0219-muem5mco",
+        "inline-support-0220-muem79ty",
+        "inline-support-0244-mueo9z0q",
+        "inline-support-0245-mueoltki",
+        "inline-support-0246-mueosprb",
+        "inline-support-0162-muertxgg",
+        "inline-support-0162-muervprh",
+        "inline-support-0241-muesaaxq",
+        "inline-support-0242-muesvaw4",
+        "inline-support-0164-muet32wx",
+        "inline-support-0163-muet5dmn",
+        "inline-support-0163-muet79dn",
+        "inline-support-0033-muet7gza",
+        "inline-support-0038-muetfqs7",
+        "inline-support-0238-muetm5tu",
+        "inline-support-0054-muettzdz",
+        "inline-support-0053-muetysr2",
+        "inline-support-0052-mueu6z0o",
+        "inline-support-0050-mueuq8hp",
+        "inline-support-0158-mueuuz8a",
+        "inline-support-0041-mufqqpo9",
+        "inline-support-0047-mufqt8n2",
+        "inline-support-0079-mufqu46w",
+        "inline-support-0190-mufqzak4",
+        "inline-support-0190-mufr0g2p",
+        "inline-support-0005-mufra2ft",
+        "inline-support-0126-mufrg3w5",
+        "inline-support-0036-mufrm76k",
+        "inline-support-0046-mufrudin",
+        "inline-support-0056-mufseepy",
+        "inline-support-0051-mufslbdb",
+        "inline-support-0250-mufswpkr",
+        "inline-support-0182-muft8cje",
+        "inline-support-0135-mufvw12r",
+        "inline-support-0081-mufwthg8"
+      ],
+      "drafted_at": "2026-09-24T00:17:32.945853+00:00",
+      "drafted_after": "b2-store-override",
+      "evaluator": "code check",
+      "positive_traces": [
+        "support-0005",
+        "support-0015",
+        "support-0033",
+        "support-0036",
+        "support-0038",
+        "support-0041",
+        "support-0046",
+        "support-0047",
+        "support-0050",
+        "support-0051",
+        "support-0052",
+        "support-0053",
+        "support-0054",
+        "support-0056",
+        "support-0065",
+        "support-0066",
+        "support-0067",
+        "support-0068",
+        "support-0069",
+        "support-0078",
+        "support-0079",
+        "support-0081",
+        "support-0087",
+        "support-0126",
+        "support-0127",
+        "support-0129",
+        "support-0130",
+        "support-0134",
+        "support-0135",
+        "support-0146",
+        "support-0158",
+        "support-0162",
+        "support-0163",
+        "support-0164",
+        "support-0171",
+        "support-0182",
+        "support-0190",
+        "support-0207",
+        "support-0209",
+        "support-0210",
+        "support-0212",
+        "support-0213",
+        "support-0214",
+        "support-0216",
+        "support-0217",
+        "support-0218",
+        "support-0219",
+        "support-0220",
+        "support-0233",
+        "support-0238",
+        "support-0241",
+        "support-0242",
+        "support-0244",
+        "support-0245",
+        "support-0246",
+        "support-0250"
+      ],
+      "revisions": [
+        {
+          "ts": "2026-09-24T20:27:59.313729+00:00",
+          "change": "Renamed from internal_policy_id_cited after internal_field_exposed was merged in. The old name named only one of the two surfaces; the scope is any internal representation reaching the reply."
+        }
+      ],
+      "reviewer_notes": [],
+      "close_negatives": [
+        {
+          "scenario_id": "support-0206",
+          "status": "accepted",
+          "why": "States the $100 auto-approval rule in plain English and explains the queued result, without naming cw-refunds.",
+          "decided_ts": "2026-09-24T23:34:57.417722+00:00"
+        },
+        {
+          "scenario_id": "support-0234",
+          "status": "accepted",
+          "why": "Uses \"refund-eligible\" as ordinary prose rather than the refund_eligible field. Tests the line between the concept and the schema name.",
+          "decided_ts": "2026-09-24T23:34:57.417722+00:00"
+        },
+        {
+          "scenario_id": "support-0119",
+          "status": "accepted",
+          "why": "Presents record data as a labelled list (Refund ID, Amount, Status) using human labels, not schema keys. Looks like a raw dump but leaks nothing.",
+          "decided_ts": "2026-09-24T23:34:57.417722+00:00"
+        }
+      ],
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00"
+    },
+    {
+      "name": "threshold_misapplied",
+      "status": "final",
+      "drafted_at": "2026-09-24T20:22:37.036336+00:00",
+      "drafted_after": "b4-uniform",
+      "definition": "The agent applies the $100 automatic-refund threshold to an order that never reaches the eligibility check, either as a reason to open a ticket or as an unsolicited remark. The threshold governs issue_refund's queueing for orders that pass eligibility; it has no bearing on an ineligible one.",
+      "boundary": "Absent when the order is refund-eligible and the reply explains that the refund was queued for human review, which is correct handling under ESC-1. Absent when the threshold is not mentioned. Nearest neighbour: unnecessary_escalation, which covers tickets opened for other unsupported reasons.",
+      "spec_ref": "ESC-1, ESC-5",
+      "evaluator": "code check",
+      "created_from": [
+        "inline-support-0129-mudgp3x7",
+        "inline-support-0129-mudgt8t5",
+        "inline-support-0127-mudmvdvh",
+        "inline-support-0128-mudnionc",
+        "inline-support-0210-mudnzg5z",
+        "inline-support-0215-mudoah92",
+        "inline-support-0162-muerrwcs",
+        "inline-support-0241-muest77w",
+        "inline-support-0053-muetwxuw",
+        "inline-support-0050-mueurvad",
+        "inline-support-0005-mufrabr7",
+        "inline-support-0126-mufrfhmw",
+        "inline-support-0126-mufrgccj",
+        "inline-support-0046-mufryk91",
+        "inline-support-0182-muft8ji0"
+      ],
+      "positive_traces": [
+        "support-0005",
+        "support-0046",
+        "support-0050",
+        "support-0051",
+        "support-0052",
+        "support-0053",
+        "support-0054",
+        "support-0056",
+        "support-0126",
+        "support-0127",
+        "support-0128",
+        "support-0129",
+        "support-0162",
+        "support-0163",
+        "support-0164",
+        "support-0182",
+        "support-0190",
+        "support-0210",
+        "support-0215",
+        "support-0241",
+        "support-0242",
+        "support-0245"
+      ],
+      "reviewer_notes": [
+        {
+          "id": "mn-mug3urnp",
+          "quote": "Absent when the order is refund-eligible and the reply explains that the refund was queued for human review, which is correct handling under ESC-1. Absent when the threshold is not mentioned.",
+          "start": 307,
+          "end": 498,
+          "note": "I think this could be a code check with regex and status checks. Something to think about.",
+          "ts": "2026-09-24T22:31:15.891Z",
+          "resolved": true,
+          "resolved_at": "2026-09-24T23:00:44.367122+00:00",
+          "response": "Agreed, evaluator changed to code check: threshold language in the reply plus orders.refund_eligible."
+        }
+      ],
+      "evaluator_note": "Deterministic: match the $100 threshold language in the reply, then check orders.refund_eligible for the order in question.",
+      "close_negatives": [],
+      "close_negatives_note": "None recorded. The handout asks for three \"when the reviewed data permits them\"; this criterion is deterministic \u2014 threshold language in the reply plus orders.refund_eligible \u2014 so no trace sits near the line. Every absent trace is clearly absent, differing only in a database field, and the evaluator is a code check that reads that field directly.",
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00",
+      "revisions": [
+        {
+          "ts": "2026-09-25T23:30:49.696202+00:00",
+          "change": "Nine positives added after review: traces where the reply invokes the $100 threshold on an order that was not refund-eligible, found by applying the criterion mechanically. Open coding had missed them because the stopping rule recorded a different first failure on each."
+        }
+      ],
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why."
+    },
+    {
+      "name": "store_override_missed",
+      "status": "final",
+      "drafted_at": "2026-09-24T20:22:37.036336+00:00",
+      "drafted_after": "b4-uniform",
+      "definition": "The agent applies or cites the platform return or refund policy on an order from a store whose own policy overrides it. Present when the reply states a window, a deadline, or an eligibility reason drawn from the platform default while a store override governs the order.",
+      "boundary": "Absent when the store has no override, because the platform policy is then the governing one \u2014 true even if the agent never verified it (support-0130). Absent when the reply reaches a verdict without citing or applying a window at all, which is appropriate when the user asked for a yes or no (support-0247). Absent when the reply states the store's own window. A wrong window is the trigger; failing to check is not, because a check leaves no trace in the reply when the platform default happens to govern.",
+      "evaluator": "code check",
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why.",
+      "notes": "Process framing chosen deliberately: support-0130 skipped the check and was right by luck, and is present.",
+      "created_from": [
+        "inline-support-0129-mudgr5dd",
+        "inline-support-0127-mudn3mdl",
+        "inline-support-0128-mudnmxg2",
+        "inline-support-0209-mudntauc",
+        "inline-support-0210-mudnyfcc",
+        "inline-support-0212-mudo46u9",
+        "inline-support-0213-mudo6jyq",
+        "inline-support-0215-mudoddm0",
+        "inline-support-0245-mueoi6nt"
+      ],
+      "positive_traces": [
+        "support-0127",
+        "support-0128",
+        "support-0129",
+        "support-0209",
+        "support-0210",
+        "support-0212",
+        "support-0213",
+        "support-0215",
+        "support-0245"
+      ],
+      "close_negatives": [
+        {
+          "scenario_id": "support-0247",
+          "status": "accepted",
+          "why": "Northwind Books overrides to 45 days and the order arrived 47 days ago. The reply is \"No \u2014 order 5663 is not refund-eligible\": correct verdict, no window quoted, no policy attributed, and the user asked for a yes or no. Present under the old process wording, absent under the new one. The trace that distinguishes the two framings.",
+          "decided_ts": "2026-09-25T16:25:57.999721+00:00"
+        },
+        {
+          "scenario_id": "support-0130",
+          "status": "accepted",
+          "why": "Paper Lantern Press has no override, so the 30-day platform window the agent cited is the governing one. It never established that, and is right by luck \u2014 but nothing it told the user was wrong. The trace that fixes whether the trigger is being unfounded or being wrong.",
+          "decided_ts": "2026-09-25T16:25:57.999721+00:00"
+        }
+      ],
+      "close_negatives_note": "One genuine close negative in the reviewed set. Under the assertion criterion a negative must reach a verdict without quoting a window or attributing one to a policy, and support-0247 is the only reviewed trace that does. The four earlier candidates were rejected when checking was settled as binary.",
+      "revisions": [
+        {
+          "ts": "2026-09-25T15:27:46.340321+00:00",
+          "change": "Reworded around checking rather than retrieving, and made checking explicitly binary. Prompted by four rejected close negatives: support-0087 (page seen as a search snippet), and support-0038, 0039 and 0079 (platform-default stores with no page to retrieve, where unrelated store pages appeared as search noise)."
+        },
+        {
+          "ts": "2026-09-25T16:12:08.418701+00:00",
+          "change": "Rewritten from 'did not retrieve the store's policy page' to 'asserted a window without a search naming the store'. Three framings were considered: process (over-fires, and would require a check on every policy request), outcome (under-fires, and contradicts the coding of support-0130), and unfounded assertion, which was chosen. Grounded in a retrieval test over all 20 stores: the 6 with overrides score 10.2 to 15.2 at rank 1, the 14 without return the identical platform triple at 2.07 or below, so absence is conclusive. All 10 positives were re-derived under the new wording and all 10 survive."
+        },
+        {
+          "ts": "2026-09-25T16:23:52.843924+00:00",
+          "change": "Renamed from store_override_not_checked and re-framed from unfounded assertion to wrong governing policy. Under the unfounded reading support-0130 was present; the reviewer judged it a close negative, since Paper Lantern Press has no override and the cited 30-day window is correct. Nine of the ten positives cited the platform default on stores that do override, and they stand; support-0130 moves to close negative."
+        }
+      ],
+      "evaluator_note": "Deterministic: compare the window or policy the reply states against the governing policy for the order's store, from stores.return_window_days_override.",
+      "corpus_caveat": "The absence signal is conclusive for this 12-document corpus. At the ~600-document scale the repository notes describe, a store page could fall below three platform documents, and the rule would need re-testing.",
+      "known_limit": "Cannot distinguish an agent that checks from one that always assumes the platform default: on the 218 of 250 traces whose stores have no override, both produce identical replies. The mode fires only where an override exists, capping it near 32 traces store-wide. HW5's judge inherits this limit.",
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00",
+      "spec_ref": "RESP-6"
+    },
+    {
+      "name": "date_interval_error",
+      "status": "final",
+      "drafted_at": "2026-09-24T20:22:37.036336+00:00",
+      "drafted_after": "b4-uniform",
+      "definition": "The reply states a date, an elapsed interval, or a conflict between the user's account and the order record that is wrong given the world date of 2026-07-01.",
+      "boundary": "Absent when the arithmetic is right, including when the agent correctly identifies a genuine mismatch. Present whether or not the reply prints a number: asserting an order is outside a window it is inside counts, even when only the delivery date and the rule are shown. Nearest neighbour: store_override_not_checked, where the window was never established at all.",
+      "spec_ref": "RESP-3",
+      "evaluator": "LLM judge",
+      "created_from": [
+        "inline-support-0019-mud860nv",
+        "inline-support-0207-mudh7e1l",
+        "inline-support-0128-mudnkeb7",
+        "inline-support-0209-mudnv31e",
+        "inline-support-0209-mudnwqw1",
+        "inline-support-0210-mudo1f62",
+        "inline-support-0218-muelzw5p",
+        "inline-support-0245-mueogqz6",
+        "inline-support-0245-mueoisjx",
+        "inline-support-0182-mufszn6i",
+        "inline-support-0127-mudn3mdl"
+      ],
+      "positive_traces": [
+        "support-0019",
+        "support-0127",
+        "support-0128",
+        "support-0182",
+        "support-0207",
+        "support-0209",
+        "support-0210",
+        "support-0218",
+        "support-0245"
+      ],
+      "manual_assignments": [
+        {
+          "annotation_id": "inline-support-0127-mudn3mdl",
+          "trace": "support-0127",
+          "why": "Reviewer-assigned: the note says 'output nonsense' without naming dates, so text matching missed it. The reply claims 26 days is outside a 30-day window."
+        }
+      ],
+      "close_negatives": [
+        {
+          "scenario_id": "support-0241",
+          "status": "accepted",
+          "why": "Delivered exactly 30 days ago. The reply treats day 30 as still inside the window, which is correct because the window is inclusive. A reviewer reading \"within 30 days\" could easily call day 30 outside.",
+          "decided_ts": "2026-09-25T16:28:52.608620+00:00"
+        },
+        {
+          "scenario_id": "support-0242",
+          "status": "accepted",
+          "why": "Delivered 31 days ago and correctly ruled outside. The other side of the same line: together with 0241 these two fix exactly where the boundary falls.",
+          "decided_ts": "2026-09-25T16:28:52.608620+00:00"
+        },
+        {
+          "scenario_id": "support-0246",
+          "status": "accepted",
+          "why": "Delivered 41 days ago against Northwind Books' 45-day override, correctly ruled inside. Tests arithmetic against a non-default window, where 41 days looks past the platform 30 and is not.",
+          "decided_ts": "2026-09-25T16:28:52.608620+00:00"
+        }
+      ],
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00"
+    },
+    {
+      "name": "irrelevant_policy_detail",
+      "status": "final",
+      "drafted_at": "2026-09-24T20:22:37.036336+00:00",
+      "drafted_after": "b4-uniform",
+      "definition": "The reply includes a policy rule that does not bear on the user's situation.",
+      "boundary": "Absent when the policy stated is the one governing the outcome. Overlaps threshold_misapplied by design: a reply that quotes the $100 rule at an ineligible order is both, and multi-membership records it as both.",
+      "evaluator": "LLM judge",
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why.",
+      "created_from": [
+        "inline-support-0129-mudgt8t5",
+        "inline-support-0128-mudnionc",
+        "inline-support-0210-mudnzg5z",
+        "inline-support-0215-mudoah92",
+        "inline-support-0238-muetoffr",
+        "inline-support-0054-muetu3qr",
+        "inline-support-0053-muetwxuw",
+        "inline-support-0050-mueuqmwv",
+        "inline-support-0050-mueurvad",
+        "inline-support-0005-mufrabr7",
+        "inline-support-0126-mufrfhmw",
+        "inline-support-0056-mufsf6e7",
+        "inline-support-0182-muft8ji0",
+        "inline-support-0125-muhs1xcl"
+      ],
+      "positive_traces": [
+        "support-0005",
+        "support-0050",
+        "support-0053",
+        "support-0054",
+        "support-0056",
+        "support-0125",
+        "support-0126",
+        "support-0128",
+        "support-0129",
+        "support-0182",
+        "support-0210",
+        "support-0215",
+        "support-0238"
+      ],
+      "reviewer_notes": [
+        {
+          "id": "mn-mug4c7iz",
+          "quote": "Excludes the $100 threshold specifically,",
+          "start": 155,
+          "end": 196,
+          "note": "Should it exclude it? It doesn't have to with multi-membership now set up",
+          "ts": "2026-09-24T22:44:36.238Z",
+          "resolved": true,
+          "resolved_at": "2026-09-24T23:00:44.367122+00:00",
+          "response": "Agreed, exclusion removed. Nine traces already carried both modes."
+        }
+      ],
+      "revisions": [
+        {
+          "ts": "2026-09-24T22:54:59.050294+00:00",
+          "change": "Removed the exclusion of the $100 threshold. It made the two modes artificially disjoint and contradicted the data, where nine traces already carried both."
+        }
+      ],
+      "close_negatives": [
+        {
+          "scenario_id": "support-0218",
+          "status": "accepted",
+          "why": "The longest policy recital in the reviewed set on a refund request, 12 policy mentions across 1866 characters. Reads like padding, but every item bears on the outcome: the 45-day Northwind override is the governing window and the order record supports the verdict. The hardest call in the mode.",
+          "decided_ts": "2026-09-25T16:41:04.363980+00:00"
+        },
+        {
+          "scenario_id": "support-0135",
+          "status": "accepted",
+          "why": "A merchant asked what a buyer dispute means for their store. 20 policy mentions, the densest reply in the set, and all of it answers the question asked. Anchors the warranted end of the boundary.",
+          "decided_ts": "2026-09-25T16:41:04.363980+00:00"
+        },
+        {
+          "scenario_id": "support-0244",
+          "status": "accepted",
+          "why": "Refund with 9 policy mentions including Juniper's 14-day override. Dense but governing. Tests whether volume alone makes a detail irrelevant.",
+          "decided_ts": "2026-09-25T16:41:04.363980+00:00"
+        }
+      ],
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00",
+      "spec_ref": "RESP-1"
+    },
+    {
+      "name": "dispute_window_not_applied",
+      "status": "final",
+      "drafted_at": "2026-09-24T20:22:37.036336+00:00",
+      "drafted_after": "b4-uniform",
+      "definition": "Before escalating a money-back request the agent does not establish whether the 60-day dispute window is open. Present when it escalates on an order delivered more than 60 days ago, where neither the return nor the dispute window leaves a human anything to grant.",
+      "boundary": "A weak-reason escalation is unnecessary_escalation either way; the dispute window decides whether it is also this. Absent when the order was delivered 60 days ago or less, because the dispute window was still open and a human had something left to grant \u2014 a bad escalation, not a futile one (support-0242 at 31 days, support-0129 at 35). Absent when the escalation was routing a corrupted record rather than seeking a remedy, since a human can fix a broken record whatever the window says (support-0190, order 8003, store_mismatch). Absent when the agent does not escalate, or states the dispute position correctly. Not present merely for failing to volunteer the dispute route to a user who never raised one.",
+      "spec_ref": "ESC-5",
+      "evaluator": "code check",
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why.",
+      "notes": "Recognised during batch 3, from a single note on support-0051, so its origin count understates occurrence. Two independent instances then appeared in the batch 4 uniform draw (0028, 0031), which is what confirms it is not an artifact of the depth search.",
+      "created_from": [
+        "inline-support-0051-mufsjk2i",
+        "inline-support-0031-mufvtghe",
+        "inline-support-0028-mufwwgla",
+        "inline-support-0052-mueu754h",
+        "inline-support-0052-mueu8mvo",
+        "inline-support-0162-muerrwcs",
+        "inline-support-0163-muet44ep",
+        "inline-support-0164-muesy8ql",
+        "inline-support-0053-muetwxuw",
+        "inline-support-0054-muettzdz"
+      ],
+      "positive_traces": [
+        "support-0028",
+        "support-0031",
+        "support-0051",
+        "support-0052",
+        "support-0053",
+        "support-0054",
+        "support-0162",
+        "support-0163",
+        "support-0164"
+      ],
+      "manual_assignments": [
+        {
+          "annotation_id": "inline-support-0052-mueu754h",
+          "trace": "support-0052",
+          "why": "Reviewer-assigned: delivered 108 days before the world date, so both the 30-day return and 60-day dispute windows were closed and the escalation could not yield a remedy. The note describes the escalation without naming the window."
+        },
+        {
+          "annotation_id": "inline-support-0162-muerrwcs",
+          "trace": "support-0162",
+          "why": "Reviewer-assigned: delivered 86 days before the world date, so both the 30-day return and 60-day dispute windows were closed and the escalation could not yield a remedy. The note describes the escalation without naming the window."
+        },
+        {
+          "annotation_id": "inline-support-0163-muet44ep",
+          "trace": "support-0163",
+          "why": "Reviewer-assigned: delivered 109 days before the world date, so both the 30-day return and 60-day dispute windows were closed and the escalation could not yield a remedy. The note describes the escalation without naming the window."
+        },
+        {
+          "annotation_id": "inline-support-0164-muesy8ql",
+          "trace": "support-0164",
+          "why": "Reviewer-assigned: delivered 99 days before the world date, so both the 30-day return and 60-day dispute windows were closed and the escalation could not yield a remedy. The note describes the escalation without naming the window."
+        },
+        {
+          "annotation_id": "inline-support-0053-muetwxuw",
+          "trace": "support-0053",
+          "why": "Reviewer-assigned: escalated for an 'exception' on an order delivered 165 days ago, both windows closed. The open codes on this trace are about irrelevant policy, so text matching missed it."
+        },
+        {
+          "annotation_id": "inline-support-0054-muettzdz",
+          "trace": "support-0054",
+          "why": "Reviewer-assigned: escalated for an 'exception' on an order delivered 179 days ago, both windows closed. The open codes on this trace are about irrelevant policy, so text matching missed it."
+        }
+      ],
+      "reviewer_notes": [
+        {
+          "id": "mn-mug4fwxy",
+          "quote": "Absent when the agent states the dispute position correctly, when it does not escalate, or when the order is recent enough that a remedy remains. Not present merely for failing to volunteer the dispute route to a user who has not raised one.",
+          "start": 278,
+          "end": 519,
+          "note": "I think this could be a code check based on tools called and timeframe calculation. I think we can reasonably assume that the agent handled the explanation if we can see it didn't escalate needlessly. And if it fails at that, we can surface that in future reviews and readdress",
+          "ts": "2026-09-24T22:49:42.943Z",
+          "resolved": true,
+          "resolved_at": "2026-09-24T23:00:44.367122+00:00",
+          "response": "Agreed, evaluator changed to code check: escalate_to_human plus delivered_at older than 60 days."
+        }
+      ],
+      "evaluator_note": "Deterministic on three terms: escalate_to_human called, delivered_at more than 60 days before the world date, and the order absent from data_quality_cases. The third term clears support-0190 and touches none of the nine positives.",
+      "close_negatives": [
+        {
+          "scenario_id": "support-0242",
+          "status": "accepted",
+          "why": "Escalated on an order delivered 31 days ago: one day past the return window, and the 60-day dispute window wide open. Looks exactly like the positives, but a human still had a remedy to grant.",
+          "decided_ts": "2026-09-25T16:57:48.589725+00:00"
+        },
+        {
+          "scenario_id": "support-0129",
+          "status": "accepted",
+          "why": "Escalated at 35 days, also inside the dispute window. A second point in the 31-to-60 band, so the negative is not a single borderline case.",
+          "decided_ts": "2026-09-25T16:57:48.589725+00:00"
+        },
+        {
+          "scenario_id": "support-0190",
+          "status": "accepted",
+          "why": "Escalated at 84 days, so both windows are shut and the criterion is met on its face. But the escalation was about order 8003's corrupted store reference, which a human can fix regardless of any refund window. Tests whether the mode assumes the only purpose of escalating is to obtain a remedy.",
+          "decided_ts": "2026-09-25T16:57:48.589725+00:00"
+        }
+      ],
+      "known_limit": "The defective-record exemption is only deterministic because Cartwheel enumerates its defects in data_quality_cases. In production there is no such table and 'was this escalation about a broken record?' becomes a judgment, at which point the mode needs a judge or a heuristic over the escalation summary. HW5 should not inherit a false sense of tractability here.",
+      "revisions": [
+        {
+          "ts": "2026-09-25T16:57:48.589725+00:00",
+          "change": "Added the defective-record exemption as a third criterion term, found by testing support-0190 as a close negative: it is 84 days old and escalates, so it met the two-term criterion, but the escalation was routing order 8003's corrupted store reference rather than chasing a remedy. Also recorded the relationship to unnecessary_escalation: this mode is the strictly more severe one, adding 'and it could not have helped'."
+        }
+      ],
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00"
+    },
+    {
+      "name": "tone_inappropriate",
+      "status": "deferred",
+      "drafted_at": "2026-09-24T20:22:37.036336+00:00",
+      "drafted_after": "b4-uniform",
+      "definition": "The reply comments on the quality of the user's request, directs rather than suggests, or otherwise addresses the user in a way the situation does not warrant.",
+      "boundary": "Absent when the reply is direct and neutral. Judged on the reply's manner, never on its correctness.",
+      "spec_ref": "RESP-5",
+      "evaluator": "prompt fix",
+      "created_from": [
+        "inline-support-0243-mud7cypa",
+        "inline-support-0167-mud7zy7b",
+        "inline-support-0246-mueomxv4",
+        "inline-support-0158-mueuvmp7"
+      ],
+      "positive_traces": [
+        "support-0158",
+        "support-0167",
+        "support-0243",
+        "support-0246"
+      ],
+      "reviewer_notes": [
+        {
+          "id": "mn-mug4kdx8",
+          "quote": "The reply comments on the quality of the user's request, directs rather than suggests, or otherwise addresses the user in a way the situation does not warrant.",
+          "start": 0,
+          "end": 159,
+          "note": "This could go as a failure mode, we can fix it very quickly by tweaking the system prompt and not have to bother with rigorous evaluation on something that is subjective and rarely caught. Just make sure the findings are not lost and appropriate action is taken.",
+          "ts": "2026-09-24T22:52:02.940Z",
+          "resolved": true,
+          "resolved_at": "2026-09-24T23:00:44.367122+00:00",
+          "response": "Deferred from the submitted taxonomy; evaluator is 'prompt fix' and the action is recorded."
+        }
+      ],
+      "action": "Fix by system-prompt revision rather than evaluation. Subjective, rarely caught, and not worth a judge. Finding preserved here with its four traces so the action is not lost.",
+      "revisions": [
+        {
+          "ts": "2026-09-24T22:54:59.050294+00:00",
+          "change": "Deferred from the submitted taxonomy by reviewer decision; kept with its traces so the prompt fix is tracked."
+        }
+      ],
+      "evaluator_note": "Not evaluated. Addressed by a system-prompt revision; see action.",
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why."
+    },
+    {
+      "name": "data_quality_surfaced",
+      "status": "final",
+      "drafted_at": "2026-09-24T20:22:37.036336+00:00",
+      "drafted_after": "b4-uniform",
+      "definition": "The agent volunteers a corrupted catalogue value the user had not raised. Present when a reply introduces a defective value from shared data \u2014 a negative price, a blank or duplicated product title \u2014 that the user did not already know about, with or without a disclaimer, because the affected item should be omitted instead.",
+      "boundary": "Absent when the user has already found the bad data and is asking about it: answering honestly and escalating is the correct response, not a disclosure failure (support-0192, where the shopper says the price 'looks way too low to be real'). Absent when the corrupted datum belongs to the user, since a defect in their own order is explained and escalated under the revised RESP-3 (support-0181, 0182, 0190). Absent when the agent omits the affected item. Two things decide it: who owns the record, and who raised it first.",
+      "spec_ref": "RESP-3",
+      "evaluator": "LLM judge",
+      "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why.",
+      "created_from": [
+        "inline-support-0191-mud9mzep",
+        "inline-support-0199-mudgactq",
+        "inline-support-0182-muft2wxv",
+        "inline-support-0192-mufvqbm2"
+      ],
+      "positive_traces": [
+        "support-0191",
+        "support-0199"
+      ],
+      "manual_assignments": [
+        {
+          "annotation_id": "inline-support-0192-mufvqbm2",
+          "trace": "support-0192",
+          "why": "Reviewer-assigned: the reply states the Rustic Pitcher price as -$5.00, a catalogue defect reaching the user. The open code on the trace was about wanting a defect-reporting channel, so text matching missed it."
+        }
+      ],
+      "close_negatives": [
+        {
+          "scenario_id": "support-0192",
+          "status": "accepted",
+          "why": "The shopper had already seen the Rustic Pitcher price and asked whether it was real. Confirming it is an error and routing it onward is the correct answer, not a surfacing failure. Looks like a positive because the reply states '-$5.00' outright.",
+          "decided_ts": "2026-09-25T18:40:00.891844+00:00"
+        },
+        {
+          "scenario_id": "support-0182",
+          "status": "accepted",
+          "why": "Same defective order, escalated correctly. Moved out of the positives: it was flagged for misdescribing the mismatch, which is date_interval_error, not for surfacing it.",
+          "decided_ts": "2026-09-25T18:40:00.891844+00:00"
+        },
+        {
+          "scenario_id": "support-0190",
+          "status": "accepted",
+          "why": "Order 8003, store mismatch. Routed to a human without exposing the corrupted store reference to the user. The quieter correct handling of an owned defect.",
+          "decided_ts": "2026-09-25T18:40:00.891844+00:00"
+        }
+      ],
+      "revisions": [
+        {
+          "ts": "2026-09-25T17:02:58.193299+00:00",
+          "change": "Re-derived on the ownership split introduced by the RESP-3 revision. support-0192 added as a positive, a catalogue defect the reply states as -$5.00. support-0182 moved to close negative: it is an order defect the agent escalated correctly, flagged only for misdescribing the mismatch. The criterion is now catalogue-only."
+        },
+        {
+          "ts": "2026-09-25T17:14:10.600730+00:00",
+          "change": "Narrowed from 'a corrupted catalogue value reaches the user' to 'the agent volunteers one the user had not raised'. Found while verifying support-0192 as a proposed positive: the shopper had already spotted the price and asked about it, so an honest answer is correct. Two independent tests now apply \u2014 record ownership, and who raised the defect first."
+        },
+        {
+          "ts": "2026-09-25T18:40:00.891844+00:00",
+          "change": "Searched the unreviewed store for a third positive and found none. support-0196 and 0200 had users who raised the defect themselves; support-0198 discloses to support staff, who are the escalation target; support-0203 is a merchant asking about their own store; support-0201 and 0202 handled or concealed it. Submitted with two positives and the population analysis recorded."
+        }
+      ],
+      "positive_shortfall": "Two confirmed positives rather than the three Part D asks for, and the search established there is no third in the 250-trace store. Of 15 catalogue-defect scenarios: 6 users had already spotted the defect and raised it, which is absent; 4 are merchants or support staff asking about data they own or are the escalation target for, also absent; 3 were handled correctly or concealed the defect instead of surfacing it. That leaves support-0191 and support-0199, both shoppers browsing, both told about a corrupted listing they never asked about. The shortfall is a property of the scenario set, not of the search: narrowing the mode by record ownership and by who raised the defect first is what reduced the population, and both narrowings were deliberate.",
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00"
+    },
+    {
+      "name": "internal_field_exposed",
+      "status": "merged",
+      "definition": "The user-facing reply contains a raw data field name or tool-result key, such as refund_eligible or delivered_at.",
+      "boundary": "Absent when the reply states the same fact in plain language (\"this order is not eligible for a refund\"). Distinct from internal_policy_id_cited: a fix that renders policy titles would not remove a field name.",
+      "spec_ref": null,
+      "spec_note": "No requirement covers exposing internal representations. See analysis/report/spec_revisions.md.",
+      "notes": "Merged after batch 4: one requirement covers both surfaces, and four traces could not support a mode of its own. Kept for the record; not submitted.",
+      "created_from": [
+        "inline-support-0127-mudmzs5p",
+        "inline-support-0209-mudnw4qb"
+      ],
+      "drafted_at": "2026-09-24T00:17:50.787405+00:00",
+      "drafted_after": "b2-store-override",
+      "merged_into": "internal_detail_exposed",
+      "reviewer_notes": [
+        {
+          "id": "mn-mug4ora1",
+          "quote": "The user-facing reply contains a raw data field name or tool-result key, such as refund_eligible or delivered_at.",
+          "start": 0,
+          "end": 120,
+          "note": "Didn't we merge this into internal detail exposed? ",
+          "ts": "2026-09-24T22:54:05.770Z",
+          "resolved": true,
+          "resolved_at": "2026-09-24T23:00:44.367122+00:00",
+          "response": "Yes, merged into internal_detail_exposed. It still renders because the view shows held records; its chip reads 'merged'."
+        }
+      ]
+    }
+  ],
+  "grouping": {
+    "multi_membership": true,
+    "regrouped_at": "2026-09-24T22:26:13.602699+00:00",
+    "note": "A note may support more than one failure mode, and a trace may carry several. created_from and positive_traces are therefore overlapping sets, not a partition. Part E assigns one present/absent judgment per trace and mode pair."
+  },
+  "close_negative_test": "A close negative is useful only if a reasonable reviewer, applying the written definition, could get it wrong. It must sit where the definition is silent or ambiguous, not merely where the surface vocabulary matches. A trace the definition clearly decides is a plain negative and teaches nothing. Practical consequence: accepting a close negative should change the boundary text. If the boundary needs no edit afterwards, the trace was not close. Where a definition is tight enough that nothing is arguable, zero close negatives with the reason recorded is the honest answer, which the handout permits with 'when the reviewed data permits them'.",
+  "agentdebug_comparison": {
+    "source": "AgentErrorTaxonomy, Zhu et al., arXiv:2509.25370, 29 September 2025",
+    "reviewed_at": "2026-09-25T19:10:49.948540+00:00",
+    "modes_added": "none \u2014 no addition was supported by our own traces and annotations",
+    "mapping": {
+      "store_override_missed": "Memory / Retrieval Failure",
+      "threshold_misapplied": "Planning / Constraint Ignorance",
+      "dispute_window_not_applied": "Memory / Retrieval Failure plus Planning / Constraint Ignorance",
+      "unnecessary_escalation": "Reflection / Progress Misassessment",
+      "date_interval_error": "Reflection / Outcome Misinterpretation",
+      "internal_detail_exposed": "no analogue",
+      "irrelevant_policy_detail": "no analogue",
+      "data_quality_surfaced": "no analogue"
+    },
+    "structural_difference": "Their 17 modes describe the agent's internal loop; nothing covers what reaches a person. Their benchmarks are ALFWorld, GAIA and WebShop, task environments with no customer. Four of our eight modes, including our largest at 56 traces, have no counterpart.",
+    "omission_identified": "Memory. Three of their modes and most of Reflection concern multi-turn state, and we have 32 multi-turn conversations but only one open code touching it: support-0238, 'Did not address the order number confusion from previous turn', which is their Over-simplification or Retrieval Failure. One trace cannot support a mode, so none was added, but the gap may reflect under-sampling of multi-turn failures rather than their absence.",
+    "second_candidate": "Planning / Inefficient Planning, for which we have two instances, support-0033 and support-0207, both 'too many tool calls'. Below the three-trace minimum.",
+    "convergence": "Their critical error, 'the earliest step whose correction directly prevents the final failure', is functionally identical to the handout's first-failure stopping rule."
+  },
+  "searches": [
+    {
+      "mode": "internal_detail_exposed",
+      "recorded_in": "analysis/state/suggestions.json",
+      "at": "2026-09-25T19:54:17.632704+00:00",
+      "signal": "deterministic filter: cw-* / store-*-policy / schema field names appearing in the final reply text only",
+      "scope": "the 101 reviewed traces, excluding existing positives and close negatives",
+      "returned": 8,
+      "accepted": 7,
+      "rejected": 1,
+      "rejected_detail": "support-0039 cw-refunds. The reply's other token, cw-returns, was accepted on the same trace, so the rejection is a judgement about one occurrence rather than about the trace.",
+      "revisions_during": "The first pass matched tokens anywhere in the trace and highlighted the first hit in the conversation, which was usually a tool result the customer never sees; those hits were dismissed correctly. The filter was then narrowed to the reply text only, and user-facing identifiers (Ticket ID, Refund ID, Product ID) were removed on the reviewer's ruling that an identifier the user may follow up on is not internal. That cut 7 candidates before review.",
+      "note": "Accepting wrote annotations carrying the agent's wording under the reviewer's name, marked source: accepted_suggestion. This is the limitation documented in analysis/report/interface_comparison.md."
+    },
+    {
+      "mode": "dispute_window_not_applied",
+      "recorded_in": "patterns.json manual_assignments",
+      "at": "2026-09-25T19:54:17.632704+00:00",
+      "signal": "deterministic filter: escalate_to_human called and delivered_at more than 60 days before the world date",
+      "scope": "the reviewed traces already flagged for unnecessary_escalation, then all reviewed traces that escalate",
+      "returned": 6,
+      "accepted": 6,
+      "rejected": 0,
+      "note": "Run before suggestions.json existed, so the decisions are recorded as manual_assignments on the mode rather than as suggestions. Took the mode from 3 positives to 9. A third criterion term, excluding orders listed in data_quality_cases, was added afterwards when support-0190 was tested as a close negative."
+    },
+    {
+      "mode": "data_quality_surfaced",
+      "recorded_in": "patterns.json positive_shortfall",
+      "at": "2026-09-25T19:54:17.632704+00:00",
+      "signal": "deterministic filter: defective product titles and prices appearing in the reply, with the user's opening message checked for whether they had already raised the defect",
+      "scope": "all 250 traces in the store, including the 149 unreviewed",
+      "returned": 10,
+      "accepted": 0,
+      "rejected": 10,
+      "note": "A full-store negative result. Of 15 catalogue-defect scenarios, 6 users had already raised the defect, 4 were merchants or support staff asking about data they own, and 3 handled or concealed it. No third positive exists, which is why the mode ships with two and a recorded shortfall."
+    },
+    {
+      "mode": "unnecessary_escalation",
+      "recorded_in": "patterns.json positive_traces",
+      "at": "2026-09-26T02:38:46.262229+00:00",
+      "signal": "escalate_to_human called where no SPEC.md section 5 requirement applies: not an account change, not an open dispute, not a defective record, and either the refund was already queued or the order was ineligible",
+      "scope": "the 150 unreviewed traces",
+      "returned": 16,
+      "accepted": 4,
+      "rejected": 0,
+      "note": "Run to reach Homework 5's 30-present minimum. Four of the sixteen were taken, chosen to spread across roles; the rest were left rather than inflate the review set."
+    }
+  ],
+  "quick_fixes": [
+    {
+      "id": "scope-product-usage-advice",
+      "recorded_at": "2026-09-25T23:48:33.826831+00:00",
+      "priority": "immediate",
+      "effort": "prompt change",
+      "title": "Out-of-scope advice about using a purchased product",
+      "requirement": "SCOPE-2 (and RESP-4 for how to decline)",
+      "evidence": [
+        "support-0102"
+      ],
+      "what_happened": "A shopper asked what else they could do with coffee beans bought on Cartwheel. The agent answered with 2,227 characters of recipes, headings and quantities. The scenario's own criterion is that the agent declines in one or two sentences and points to what it can help with.",
+      "why_it_slipped": "Three of the four out-of-scope traces in the store decline correctly \u2014 tax advice, a laptop recommendation, and a request for other customers' identities. Those are plainly outside Cartwheel. This one concerns a product the user actually bought here, which reads as in scope and is not: SCOPE-2 excludes general questions, and how to cook with a product is general advice.",
+      "fix": "State in the system prompt that a question about using, maintaining or repurposing a product is out of scope even when the product was bought on Cartwheel. The agent handles the order, the return, the refund and the policy; it does not advise on the item itself.",
+      "not_a_failure_mode": "One instance in 100 reviewed traces, and three of four comparable traces are handled correctly."
+    }
+  ],
+  "spec_revisions_applied": {
+    "at": "2026-09-26T01:56:58.696415+00:00",
+    "changes": [
+      "SCOPE-2 now excludes advice about using a product bought on Cartwheel (support-0102).",
+      "ESC-1 says a queued refund is already with a human, so no ticket is opened alongside it (support-0211, 0046).",
+      "ESC-5 added: only ESC-1 to ESC-4 escalate; no duplicate tickets; no escalation once both windows have closed.",
+      "RESP-1 now requires the public title in user-facing text and excludes raw field names, while allowing identifiers the user can act on (support-0083 and 28 others; the Product ID question from Part C).",
+      "RESP-3 rewritten around record ownership and who raised the defect (support-0191, 0199, 0192).",
+      "RESP-5 now covers commenting on the request and directing rather than suggesting (support-0246, 0158).",
+      "RESP-6 added: establish the governing window by searching with the store's name (support-0127 and 8 others).",
+      "RESP-7 added: do not offer a capability the platform lacks, such as ticket urgency (support-0100)."
+    ],
+    "ordering_note": "The handout asks that a missing or ambiguous requirement be recorded before a failure label is assigned. The recording happened on time, in analysis/report/spec_revisions.md during Parts B and D. The edit to SPEC.md came after labelling. No label changes as a result: each mode's definition was already written against the intended requirement, which was verified by re-deriving the positives after the edit."
+  }
+}

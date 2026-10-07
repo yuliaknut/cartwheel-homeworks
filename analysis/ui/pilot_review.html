@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cartwheel trace review</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23539bf5'/%3E%3C/svg%3E">
+<!--
+  Homework 3: one-trace-at-a-time review (pilot and final run).
+  Reads  GET /api/samples      (written by analysis/load_pilot.py)
+         GET /api/annotations
+  Writes POST /api/annotations (autosaved; one trace_note per trace plus any number of inline notes)
+  Serve with:  uv run python -m analysis.review_app.server --state analysis/state/hw3 --ui analysis/ui/pilot_review.html --port 8021
+  (its state moved to analysis/state/hw3/ when Homework 4 took over analysis/state/annotations.json)
+  Conventions: one explicit verdict per trace. pass/fail store scenario_valid=true and confirmed_failure=false/true;
+  invalid stores scenario_valid=false. Both null means not decided, and the exporter never infers a value.
+-->
+<style>
+  /* GitHub dark dimmed */
+  :root {
+    --bg: #22272e; --panel: #2d333b; --panel-2: #373e47; --line: #444c56;
+    --fg: #adbac7; --fg-muted: #768390; --fg-strong: #cdd9e5;
+    --blue: #539bf5; --green: #57ab5a; --red: #e5534b; --yellow: #c69026; --purple: #986ee2; --orange: #cc6b2c;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 var(--sans); }
+  a { color: var(--blue); text-decoration: none; } a:hover { text-decoration: underline; }
+  button { font: inherit; color: var(--fg-strong); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+  button:hover { background: #444c56; } button:disabled { opacity: .4; cursor: default; }
+  code, pre { font-family: var(--mono); font-size: 14px; }
+
+  /* top bar */
+  .topbar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 14px; padding: 10px 20px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .topbar h1 { font-size: 17px; font-weight: 600; color: var(--fg-strong); margin: 0 18px 0 0; }
+  .nav { display: flex; align-items: center; gap: 8px; }
+  .nav .counter { font-family: var(--mono); font-size: 15px; color: var(--fg-strong); min-width: 64px; text-align: center; }
+  .dots { display: flex; gap: 3px; flex-wrap: wrap; margin-left: auto; max-width: 46vw; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); cursor: pointer; border: 1px solid transparent; }
+  .dot.done { background: var(--blue); } .dot.pass { background: var(--green); } .dot.fail { background: var(--red); } .dot.invalid { background: var(--orange); } .dot.current { border-color: var(--fg-strong); transform: scale(1.35); }
+  .status { font-size: 13.5px; color: var(--fg-muted); min-width: 110px; text-align: right; }
+
+  /* trace header */
+  .trace-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--bg); }
+  .trace-head .sid { font-family: var(--mono); font-size: 17px; color: var(--fg-strong); font-weight: 600; }
+  .chip { display: inline-block; font-size: 12.5px; padding: 1px 8px; border-radius: 10px; border: 1px solid var(--line); color: var(--fg); background: var(--panel); }
+  .chip.coverage { border-color: var(--blue); color: var(--blue); } .chip.challenge { border-color: var(--orange); color: var(--orange); }
+  .chip.dq { border-color: var(--red); color: var(--red); }
+  .meta { color: var(--fg-muted); font-size: 14px; } .meta b { color: var(--fg); font-weight: 500; }
+
+  /* body layout */
+  .main { display: flex; gap: 20px; padding: 18px 20px 60px; align-items: flex-start; }
+  .conv { flex: 1; min-width: 0; max-width: 880px; position: relative; }
+  .side { width: 390px; flex: none; position: sticky; top: 62px; display: flex; flex-direction: column; gap: 14px; max-height: calc(100vh - 76px); overflow-y: auto; }
+
+  /* message blocks */
+  .msg { border: 1px solid var(--line); border-left-width: 4px; border-radius: 6px; background: var(--panel); padding: 8px 12px; margin-bottom: 10px; white-space: pre-wrap; word-break: break-word; }
+  .msg .role { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 4px; }
+  .msg ul { margin: 2px 0 2px 18px; padding: 0; white-space: normal; } .msg li { margin: 1px 0; }
+  .msg b { color: var(--fg-strong); } .msg code { background: var(--bg); padding: 1px 4px; border-radius: 3px; }
+  .msg table { border-collapse: collapse; margin: 6px 0; white-space: normal; font-size: 14px; }
+  .msg th, .msg td { border: 1px solid var(--line); padding: 3px 8px; text-align: left; vertical-align: top; }
+  .msg th { background: var(--panel-2); color: var(--fg-strong); }
+  .msg.user { border-left-color: var(--blue); } .msg.user .role { color: var(--blue); }
+  .msg.assistant { border-left-color: var(--green); } .msg.assistant .role { color: var(--green); }
+  .msg.observation { border-left-color: var(--fg-muted); color: var(--fg-muted); } .msg.observation .role { color: var(--fg-muted); }
+
+  /* tool cards: the whole card toggles its result; arguments stay visible */
+  .tool { border: 1px solid var(--line); border-left: 4px solid var(--purple); border-radius: 6px; background: var(--panel); margin-bottom: 10px; overflow: hidden; cursor: pointer; }
+  .tool:hover { border-color: #566271; border-left-color: var(--purple); }
+  .tool .thead { display: flex; align-items: center; gap: 8px; padding: 7px 12px; background: var(--panel-2); font-family: var(--mono); font-size: 14px; color: var(--fg-strong); user-select: none; }
+  .tool .thead .tag { color: var(--purple); font-weight: 700; font-family: var(--sans); font-size: 12.5px; letter-spacing: .04em; }
+  .tool .thead .sum { margin-left: auto; color: var(--fg-muted); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%; }
+  .tool .thead .sum .ok { color: var(--green); } .tool .thead .sum .err { color: var(--red); }
+  .tool .thead::after { content: "▸"; color: var(--fg-muted); font-family: var(--sans); margin-left: 6px; }
+  .tool.open .thead::after { content: "▾"; }
+  .tool pre { margin: 0; padding: 8px 12px; overflow-x: auto; color: var(--fg); cursor: text; }
+  .tool pre.result { display: none; border-top: 1px solid var(--line); }
+  .tool.open pre.result { display: block; }
+  .tools-ctl { margin-left: auto; display: flex; gap: 6px; } .tools-ctl button { padding: 3px 10px; font-size: 13.5px; }
+  .empty { padding: 60px 20px; text-align: center; color: var(--fg-muted); }
+  .empty code { background: var(--panel); padding: 2px 6px; border-radius: 4px; }
+
+  /* inline annotation: highlight in the conversation, floating add button */
+  mark.hl { background: rgba(198,144,38,.28); color: inherit; border-bottom: 2px solid var(--yellow); border-radius: 2px; padding: 0 1px; }
+  mark.hl.focus { background: rgba(198,144,38,.5); }
+  .fab { position: absolute; z-index: 4; background: var(--yellow); color: #1c2128; border: 0; border-radius: 6px; padding: 3px 10px; font-size: 13.5px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,.4); display: none; }
+  .fab:hover { background: #d9a13a; }
+
+  /* side cards */
+  .card { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); flex: none; }
+  .card h2 { margin: 0; padding: 9px 12px; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-muted); border-bottom: 1px solid var(--line); background: var(--panel-2); border-radius: 6px 6px 0 0; display: flex; align-items: center; gap: 8px; }
+  .card .body { padding: 10px 12px; }
+  .kv { display: grid; grid-template-columns: 104px 1fr; gap: 5px 8px; font-size: 14px; }
+  .kv .k { color: var(--fg-muted); } .kv .v { color: var(--fg-strong); word-break: break-word; }
+  .kv .v code { background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  .outcome { font-family: var(--mono); font-size: 15px; color: var(--yellow); font-weight: 600; margin-bottom: 6px; word-break: break-word; }
+  .criterion { color: var(--fg-strong); margin-bottom: 6px; }
+  textarea, input[type=text] { width: 100%; background: var(--bg); color: var(--fg-strong); border: 1px solid var(--line); border-radius: 6px; padding: 8px; font: inherit; resize: vertical; }
+  textarea:focus, input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(83,155,245,.25); }
+  .field { margin-bottom: 10px; } .field label.lbl { display: block; font-size: 13.5px; color: var(--fg-muted); margin-bottom: 4px; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg button { border: 0; border-radius: 0; background: var(--bg); color: var(--fg-muted); padding: 4px 12px; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on.yes { background: #1f4a25; color: #6bd07a; } .seg button.on.no { background: #4d1f1c; color: #ff8a80; } .seg button.on.warn { background: #4a3413; color: #f0a24a; }
+  .saved { font-size: 13.5px; color: var(--fg-muted); } .saved.dirty { color: var(--yellow); } .saved.ok { color: var(--green); }
+  .hint { font-size: 13px; color: var(--fg-muted); margin-top: 6px; }
+  kbd { font-family: var(--mono); font-size: 12.5px; background: var(--bg); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--fg); }
+
+  /* inline annotation cards */
+  .note { border: 1px solid var(--line); border-left: 4px solid var(--yellow); border-radius: 6px; background: var(--panel); flex: none; }
+  .note .quote { padding: 8px 12px 6px; font-size: 13.5px; color: var(--fg-muted); font-style: italic; border-bottom: 1px dashed var(--line); cursor: pointer; display: flex; gap: 8px; align-items: flex-start; }
+  .note .quote:hover { color: var(--fg); }
+  .note .quote .q { flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .note .del { flex: none; background: transparent; border: 0; color: var(--fg-muted); padding: 0 2px; font-size: 16px; line-height: 1; }
+  .note .del:hover { color: var(--red); background: transparent; }
+  .note textarea { border: 0; border-radius: 0 0 6px 6px; background: var(--panel); min-height: 58px; padding: 8px 12px; }
+  .note textarea:focus { box-shadow: none; background: var(--bg); }
+  .side h3 { margin: 4px 0 -6px; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-muted); }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Cartwheel trace review</h1>
+  <div class="nav">
+    <button id="prev" title="previous (←)">◀</button>
+    <span class="counter" id="counter">– / –</span>
+    <button id="next" title="next (→)">▶</button>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div class="status" id="status">loading…</div>
+</div>
+<div class="trace-head" id="trace-head"></div>
+<div class="main" id="main"></div>
+<button class="fab" id="fab" title="annotate the selected text">＋ annotate</button>
+
+<script>
+const state = { samples: [], annotations: [], idx: 0, saveTimer: null, dirty: false, pendingSel: null };
+const api = {
+  async get(p) { const r = await fetch(p); return r.json(); },
+  async post(p, body) { const r = await fetch(p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return r.json(); },
+};
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pretty = (v) => { if (typeof v === 'string') { try { v = JSON.parse(v); } catch { return v; } } return JSON.stringify(v, null, 2); };
+function asList(a) { if (Array.isArray(a)) return a; if (a && Array.isArray(a.annotations)) return a.annotations; return []; }
+/* Minimal, escape-first markdown for agent replies: **bold**, `code`, "- " bullets, pipe tables. */
+function mdLite(text) {
+  const lines = esc(text).split('\n'); const out = []; let inList = false; let table = null;
+  const flushTable = () => { if (!table) return; out.push('<table>' + table.map((r, i) => `<tr>${r.map(c => i === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join('')}</tr>`).join('') + '</table>'); table = null; };
+  for (const raw of lines) {
+    if (/^\s*\|.*\|\s*$/.test(raw)) {
+      const cells = raw.trim().slice(1, -1).split('|').map(c => c.trim().replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'));
+      if (cells.every(c => /^:?-{2,}:?$/.test(c))) continue;
+      (table = table || []).push(cells); continue;
+    }
+    flushTable();
+    const line = raw.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>');
+    const li = line.match(/^\s*[-*]\s+(.*)$/);
+    if (li) { if (!inList) { out.push('<ul>'); inList = true; } out.push(`<li>${li[1]}</li>`); continue; }
+    if (inList) { out.push('</ul>'); inList = false; }
+    out.push(line);
+  }
+  if (inList) out.push('</ul>');
+  flushTable();
+  return out.join('\n').replace(/\n(<\/?ul>|<li>|<table>)/g, '$1').replace(/(<\/li>|<ul>|<\/ul>|<\/table>)\n/g, '$1');
+}
+
+/* ---------- data ---------- */
+async function load() {
+  const [samples, annotations] = await Promise.all([api.get('/api/samples'), api.get('/api/annotations')]);
+  state.samples = Array.isArray(samples) ? samples : [];
+  state.annotations = asList(annotations);
+  try { const backup = JSON.parse(localStorage.getItem('cartwheel_pilot_annotations') || 'null');
+        if (Array.isArray(backup) && backup.length > state.annotations.length) state.annotations = backup; } catch {}
+  const hash = parseInt(location.hash.replace('#', ''), 10);
+  state.idx = Number.isFinite(hash) && hash >= 1 && hash <= state.samples.length ? hash - 1 : 0;
+  render();
+}
+const sidOf = (s) => (s.meta && s.meta.scenario_id) || s.trace_id;
+function noteFor(s) {
+  const sid = sidOf(s);
+  let a = state.annotations.find(x => x.kind === 'trace_note' && (x.scenario_id === sid || x.trace_id === s.trace_id));
+  if (!a) { a = { id: 'note-' + sid, kind: 'trace_note', trace_id: s.trace_id, scenario_id: sid, note: '', scenario_valid: null, confirmed_failure: null, scenario_change: '', quote: null, start: null, end: null, ts: null }; state.annotations.push(a); }
+  return a;
+}
+const inlineFor = (s) => state.annotations.filter(x => x.kind === 'inline' && x.scenario_id === sidOf(s));
+const traceNote = (s) => state.annotations.find(x => x.kind === 'trace_note' && x.scenario_id === sidOf(s));
+/* One explicit verdict per trace. pass and fail both assert the scenario is valid; invalid means the expectation itself is wrong; null = not decided. */
+const verdictOf = (a) => !a ? null : a.scenario_valid === false ? 'invalid' : a.confirmed_failure === true ? 'fail' : a.confirmed_failure === false ? 'pass' : null;
+const hasNotes = (s) => { const a = traceNote(s); return !!((a && a.note && a.note.trim()) || inlineFor(s).length); };
+function scheduleSave() {
+  state.dirty = true; setStatus();
+  clearTimeout(state.saveTimer);
+  state.saveTimer = setTimeout(save, 500);
+}
+async function save() {
+  try { localStorage.setItem('cartwheel_pilot_annotations', JSON.stringify(state.annotations)); } catch {}
+  try {
+    const r = await api.post('/api/annotations', state.annotations);
+    state.dirty = !r || !r.ok; setStatus(r && r.error ? r.error : null);
+  } catch (e) { state.dirty = true; setStatus('save failed: ' + e.message); }
+  renderDots();
+}
+function setStatus(err) {
+  const el = document.getElementById('status');
+  const decided = state.samples.filter(s => verdictOf(traceNote(s))).length;
+  const notesOnly = state.samples.filter(s => !verdictOf(traceNote(s)) && hasNotes(s)).length;
+  el.innerHTML = err ? `<span class="saved dirty">${esc(err)}</span>` : `${decided} of ${state.samples.length} decided${notesOnly ? ` · ${notesOnly} note only` : ''} · <span class="saved ${state.dirty ? 'dirty' : 'ok'}">${state.dirty ? 'saving…' : 'saved ✓'}</span>`;
+}
+
+/* ---------- navigation ---------- */
+function go(i) {
+  if (!state.samples.length) return;
+  state.idx = Math.max(0, Math.min(state.samples.length - 1, i));
+  location.hash = String(state.idx + 1);
+  render(); window.scrollTo({ top: 0 });
+}
+document.getElementById('prev').onclick = () => go(state.idx - 1);
+document.getElementById('next').onclick = () => go(state.idx + 1);
+document.addEventListener('keydown', (e) => {
+  const typing = ['TEXTAREA', 'INPUT'].includes(document.activeElement.tagName);
+  if (e.key === 'Escape' && typing) { document.activeElement.blur(); return; }
+  if (typing && !e.altKey) return;                       // plain arrows edit the text; Option/Alt + arrows navigate anywhere
+  if (e.key === 'ArrowRight') { e.preventDefault(); go(state.idx + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(state.idx - 1); }
+});
+function renderDots() {
+  const box = document.getElementById('dots'); box.innerHTML = '';
+  state.samples.forEach((s, i) => {
+    const d = document.createElement('span');
+    const v = verdictOf(traceNote(s));
+    d.className = 'dot' + (v ? ' ' + v : hasNotes(s) ? ' done' : '') + (i === state.idx ? ' current' : '');
+    d.title = sidOf(s); d.onclick = () => go(i); box.appendChild(d);
+  });
+}
+
+/* ---------- rendering ---------- */
+function summaryOf(content) {
+  let v = content; if (typeof v === 'string') { try { v = JSON.parse(v); } catch { return esc(String(v).slice(0, 90)); } }
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    if (v.ok === false) return `<span class="err">ok: false · ${esc(v.error || '')}</span> ${esc(String(v.reason || '').slice(0, 80))}`;
+    if (v.ok === true) { const keys = Object.keys(v).filter(k => k !== 'ok'); return `<span class="ok">ok: true</span> · ${esc(keys.join(', '))}`; }
+    return esc(Object.keys(v).slice(0, 6).join(', '));
+  }
+  return esc(JSON.stringify(v).slice(0, 90));
+}
+function renderMessages(msgs) {
+  const out = []; let i = 0;
+  while (i < msgs.length) {
+    const m = msgs[i];
+    if (m.role === 'tool_call') {
+      const res = msgs[i + 1] && msgs[i + 1].role === 'tool_result' ? msgs[i + 1] : null;
+      out.push(`<div class="tool" title="click to show or hide the result"><div class="thead"><span class="tag">TOOL</span><span>${esc(m.name)}</span><span class="sum">result · ${res ? summaryOf(res.content) : '(none recorded)'}</span></div><pre class="args">${esc(pretty(m.arguments))}</pre>` +
+        (res ? `<pre class="result">${esc(pretty(res.content))}</pre>` : '') + `</div>`);
+      i += res ? 2 : 1; continue;
+    }
+    if (m.role === 'tool_result') { out.push(`<div class="tool open"><div class="thead"><span class="tag">RESULT</span><span>${esc(m.name)}</span></div><pre class="result">${esc(pretty(m.content))}</pre></div>`); i++; continue; }
+    const role = m.role === 'user' ? 'user' : m.role === 'assistant' ? 'assistant' : 'observation';
+    const label = role === 'observation' ? (m.label || 'observation') : role;
+    const body = role === 'assistant' ? mdLite(m.text ?? m.content ?? '') : esc(m.text ?? m.content ?? '');
+    out.push(`<div class="msg ${role}"><span class="role">${esc(label)}</span>${body}</div>`); i++;
+  }
+  return out.join('');
+}
+function renderExpected(s) {
+  const e = s.expected; if (!e) return `<div class="body meta">No scenario file entry for this trace.</div>`;
+  const t = s.scenario || {};
+  const src = e.source || {};
+  return `<div class="body">
+    ${e.evaluation === 'objective' ? `<div class="outcome">${esc(e.outcome)}</div><div class="criterion">${esc(e.reason || '')}</div>` : `<div class="outcome">human judgment</div><div class="criterion">${esc(e.criterion || '')}</div>`}
+    <div class="kv">
+      <span class="k">source</span><span class="v"><code>${esc(src.type)}</code> ${esc(src.reference)}</span>
+      <span class="k">intent</span><span class="v">${esc(t.intent)}</span>
+      <span class="k">record</span><span class="v">${esc(t.record_state)}${t.order_id ? ` · order ${esc(t.order_id)}` : ''}${t.product_id ? ` · product ${esc(t.product_id)}` : ''}</span>
+      <span class="k">policy</span><span class="v">${esc(t.applicable_policy)}</span>
+      <span class="k">difficulty</span><span class="v">${esc(t.difficulty)}</span>
+      <span class="k">style</span><span class="v">${esc(t.user_style)}</span>
+      <span class="k">turns</span><span class="v">${esc(t.turn_count)} · tools: ${esc(t.tools_needed)}</span>
+    </div></div>`;
+}
+function renderReview(s) {
+  const a = noteFor(s); const v = verdictOf(a);
+  const btn = (val, cls, label) => `<button class="${cls} ${v === val ? 'on' : ''}" data-v="${val}">${label}</button>`;
+  return `<div class="body">
+    <div class="field"><label class="lbl">Verdict <span class="hint">(pass or fail also records the scenario as valid; pick invalid when the expectation itself is wrong)</span></label>
+      <span class="seg" id="verdict">${btn('pass', 'yes', 'pass')}${btn('fail', 'no', 'fail')}${btn('invalid', 'warn', 'invalid scenario')}</span></div>
+    <div class="field" id="change-field" ${v === 'invalid' ? '' : 'hidden'}><label class="lbl" for="change">What should change in the scenario</label>
+      <input type="text" id="change" value="${esc(a.scenario_change || '')}" placeholder="e.g. the expectation assumes a refund the request never made"></div>
+    <div class="field"><label class="lbl" for="note">Annotation · what you notice, and the evidence (database value, policy, tool result, or requirement)</label>
+      <textarea id="note" rows="6" placeholder="What did the agent do, and does it conflict with the expected outcome? Name the evidence.">${esc(a.note)}</textarea></div>
+    <div class="hint">Autosaves. Click the active verdict again to clear it. <kbd>←</kbd> <kbd>→</kbd> move between traces; while typing use <kbd>⌥</kbd>/<kbd>Alt</kbd> + arrows, or <kbd>Esc</kbd> to leave the box. Select text in the conversation to add an inline note.</div>
+  </div>`;
+}
+function renderInline(s) {
+  const notes = inlineFor(s);
+  if (!notes.length) return '';
+  return `<h3>Inline notes · ${notes.length}</h3>` + notes.map(n => `<div class="note" data-aid="${esc(n.id)}">
+    <div class="quote" title="jump to the quoted text"><span class="q">“${esc(n.quote)}”</span><button class="del" title="delete this note">×</button></div>
+    <textarea rows="2" placeholder="what you notice about this passage">${esc(n.note || '')}</textarea></div>`).join('');
+}
+/* Wrap the first exact occurrence of each inline quote inside a single text node of the conversation. */
+function highlightQuotes(s) {
+  const conv = document.querySelector('.conv'); if (!conv) return;
+  for (const n of inlineFor(s)) {
+    if (!n.quote) continue;
+    const walker = document.createTreeWalker(conv, NodeFilter.SHOW_TEXT);
+    let t; while ((t = walker.nextNode())) {
+      const k = t.nodeValue.indexOf(n.quote);
+      if (k < 0 || t.parentElement.closest('mark.hl')) continue;
+      const r = document.createRange(); r.setStart(t, k); r.setEnd(t, k + n.quote.length);
+      const mark = document.createElement('mark'); mark.className = 'hl'; mark.dataset.aid = n.id; mark.title = n.note || 'inline note';
+      r.surroundContents(mark); break;
+    }
+  }
+}
+function render() {
+  const head = document.getElementById('trace-head'), main = document.getElementById('main');
+  document.getElementById('counter').textContent = state.samples.length ? `${state.idx + 1} / ${state.samples.length}` : '0 / 0';
+  document.getElementById('prev').disabled = state.idx <= 0; document.getElementById('next').disabled = state.idx >= state.samples.length - 1;
+  renderDots(); setStatus(); hideFab();
+  if (!state.samples.length) {
+    head.innerHTML = ''; main.innerHTML = `<div class="empty">No samples yet. Run the scenarios, then<br><code>uv run python -m analysis.load_pilot scenarios/support_scenarios.jsonl</code><br>and reload.</div>`; return;
+  }
+  const s = state.samples[state.idx]; const m = s.meta || {}; const t = s.scenario || {};
+  head.innerHTML = `<span class="sid">${esc(sidOf(s))}</span>
+    ${s.scenario_group ? `<span class="chip ${esc(s.scenario_group)}">${esc(s.scenario_group)}</span>` : ''}
+    ${s.data_quality_case_id ? `<span class="chip dq">${esc(s.data_quality_case_id)}</span>` : ''}
+    <span class="meta"><b>${esc(m.role || t.role || '?')}</b> · user ${esc(t.user_id ?? (s.metadata && s.metadata['cartwheel.user_id']) ?? '?')}${m.store ? ` · store ${esc(m.store)}` : ''}</span>
+    <span class="meta">prompt <code>${esc(m.prompt_version || '?')}</code></span>
+    <span class="meta">${esc((s.models || []).join(', ') || 'model ?')}</span>
+    ${s.permalink ? `<a href="${esc(s.permalink)}" target="_blank" rel="noopener">open in Langfuse ↗</a>` : `<span class="meta">trace <code>${esc(s.trace_id)}</code></span>`}
+    <span class="tools-ctl"><button id="expand-all" title="show every tool result">expand all</button><button id="collapse-all" title="hide every tool result">collapse all</button></span>`;
+  main.innerHTML = `<div class="conv">${renderMessages(s.trace || [])}</div>
+    <div class="side"><div class="card"><h2>Expected outcome (scenario file)</h2>${renderExpected(s)}</div>
+    <div class="card"><h2>Your review</h2>${renderReview(s)}</div>${renderInline(s)}</div>`;
+  highlightQuotes(s);
+  // Tool cards: a click anywhere on the card toggles its result, unless the click is part of selecting text.
+  main.querySelectorAll('.tool').forEach(tc => tc.addEventListener('click', (e) => {
+    const sel = window.getSelection(); if (sel && !sel.isCollapsed && tc.contains(sel.anchorNode)) return;
+    tc.classList.toggle('open');
+  }));
+  document.getElementById('expand-all').onclick = () => main.querySelectorAll('.tool').forEach(tc => tc.classList.add('open'));
+  document.getElementById('collapse-all').onclick = () => main.querySelectorAll('.tool').forEach(tc => tc.classList.remove('open'));
+  const a = noteFor(s);
+  document.getElementById('note').addEventListener('input', (e) => { a.note = e.target.value; a.ts = new Date().toISOString(); scheduleSave(); });
+  document.getElementById('change').addEventListener('input', (e) => { a.scenario_change = e.target.value; a.ts = new Date().toISOString(); scheduleSave(); });
+  const seg = document.getElementById('verdict');
+  const applyVerdictUI = () => { const cur = verdictOf(a); seg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === cur)); document.getElementById('change-field').hidden = cur !== 'invalid'; renderDots(); };
+  seg.querySelectorAll('button').forEach(b => b.onclick = () => {
+    const v = b.dataset.v, cur = verdictOf(a);
+    if (cur === v) { a.scenario_valid = null; a.confirmed_failure = null; }                  // click the active one again to clear
+    else if (v === 'invalid') { a.scenario_valid = false; a.confirmed_failure = false; }
+    else { a.scenario_valid = true; a.confirmed_failure = v === 'fail'; }
+    a.ts = new Date().toISOString(); applyVerdictUI(); scheduleSave();
+    if (v === 'invalid' && cur !== 'invalid') document.getElementById('change').focus();
+  });
+  // Inline note cards: edit, delete, jump to the highlight.
+  main.querySelectorAll('.note').forEach(card => {
+    const n = state.annotations.find(x => x.id === card.dataset.aid); if (!n) return;
+    card.querySelector('textarea').addEventListener('input', (e) => { n.note = e.target.value; n.ts = new Date().toISOString(); const mk = main.querySelector(`mark.hl[data-aid="${CSS.escape(n.id)}"]`); if (mk) mk.title = n.note; scheduleSave(); });
+    card.querySelector('.del').onclick = (e) => { e.stopPropagation(); state.annotations = state.annotations.filter(x => x.id !== n.id); scheduleSave(); render(); };
+    card.querySelector('.quote').onclick = () => { const mk = main.querySelector(`mark.hl[data-aid="${CSS.escape(n.id)}"]`); if (!mk) return; main.querySelectorAll('mark.hl.focus').forEach(x => x.classList.remove('focus')); mk.classList.add('focus'); mk.scrollIntoView({ block: 'center', behavior: 'smooth' }); };
+  });
+}
+
+/* ---------- inline annotation: select text in the conversation, click the floating button ---------- */
+const fab = document.getElementById('fab');
+function hideFab() { fab.style.display = 'none'; state.pendingSel = null; }
+document.addEventListener('mouseup', () => setTimeout(() => {
+  const sel = window.getSelection(); const conv = document.querySelector('.conv');
+  if (!sel || sel.isCollapsed || !conv || !conv.contains(sel.anchorNode) || !conv.contains(sel.focusNode)) return hideFab();
+  const quote = sel.toString().replace(/\s+/g, ' ').trim(); if (quote.length < 2) return hideFab();
+  const range = sel.getRangeAt(0);
+  const pre = document.createRange(); pre.selectNodeContents(conv); pre.setEnd(range.startContainer, range.startOffset);
+  const start = pre.toString().length;
+  const rect = range.getBoundingClientRect();
+  state.pendingSel = { quote: sel.toString().trim(), start, end: start + sel.toString().length };
+  fab.style.display = 'block'; fab.style.left = `${Math.min(rect.right + window.scrollX + 6, window.innerWidth - 130)}px`; fab.style.top = `${rect.bottom + window.scrollY + 6}px`;
+}, 0));
+fab.addEventListener('mousedown', (e) => e.preventDefault());   // keep the selection alive while clicking
+fab.onclick = () => {
+  const p = state.pendingSel; if (!p) return hideFab();
+  const s = state.samples[state.idx]; const sid = sidOf(s);
+  state.annotations.push({ id: `inline-${sid}-${Date.now().toString(36)}`, kind: 'inline', trace_id: s.trace_id, scenario_id: sid, note: '', scenario_valid: null, confirmed_failure: null, scenario_change: '', quote: p.quote, start: p.start, end: p.end, ts: new Date().toISOString() });
+  window.getSelection().removeAllRanges(); hideFab(); scheduleSave(); render();
+  const cards = document.querySelectorAll('.note textarea'); const last = cards[cards.length - 1]; if (last) { last.focus(); last.scrollIntoView({ block: 'nearest' }); }
+};
+window.addEventListener('hashchange', () => { const h = parseInt(location.hash.replace('#', ''), 10); if (Number.isFinite(h) && h - 1 !== state.idx) go(h - 1); });
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+[
+ {
+  "id": "item-support-0045",
+  "kind": "item",
+  "item_id": "support-0045",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "This escalation is a duplicate to the refund review agent correctly initiated for this order."
+  },
+  "ts": "2026-09-30T05:41:50.873Z"
+ },
+ {
+  "id": "item-support-0053",
+  "kind": "item",
+  "item_id": "support-0053",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "This case is past the 60 day dispute window. Neither agent nor human support can do anything about that order at this point. The agent's job in this case was to explain that to the user."
+  },
+  "ts": "2026-09-30T05:46:55.696Z"
+ },
+ {
+  "id": "item-support-0054",
+  "kind": "item",
+  "item_id": "support-0054",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "This case is past the 60 day dispute window. Neither agent nor human support can do anything about that order at this point. The agent's job in this case was to explain that to the user."
+  },
+  "ts": "2026-09-30T05:47:43.204Z"
+ },
+ {
+  "id": "item-support-0057",
+  "kind": "item",
+  "item_id": "support-0057",
+  "fields": {
+   "reason": "The order shipped today, it is expected to not have been delivered yet. There's nothing this escalation could achieve. Agent needed to check if the order is still within the expected shipping window and only escalate if it was taking longer than the corresponding policy afforded.",
+   "resolution": "judge_wrong"
+  },
+  "ts": "2026-09-30T05:52:27.362Z"
+ },
+ {
+  "id": "item-support-0131",
+  "kind": "item",
+  "item_id": "support-0131",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "This escalation is needlessly handing the task of telling the user that according to Cartwheel policy their request cannot be fulfilled to the human. Agent needed to explain to the user that they will need to wait for the order to get delivered before this return can be processed."
+  },
+  "ts": "2026-09-30T05:57:13.546Z"
+ },
+ {
+  "id": "item-support-0207",
+  "kind": "item",
+  "item_id": "support-0207",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "No escalation needed for an ineligible refund request outside of return window without stated intent to dispute due to considerable order circumstances."
+  },
+  "ts": "2026-09-30T06:00:00.166Z"
+ },
+ {
+  "id": "item-support-0210",
+  "kind": "item",
+  "item_id": "support-0210",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "The user is not actually disputing the delivery date, the timeline is clear and the order is definitively outside of its return window. Agent needed to explain the situation to the user rather than making them wait for the same explanation delivered by a human up to 24h later."
+  },
+  "ts": "2026-09-30T06:04:46.454Z"
+ },
+ {
+  "id": "item-support-0216",
+  "kind": "item",
+  "item_id": "support-0216",
+  "fields": {
+   "resolution": "judge_wrong",
+   "reason": "This needed to be processed under issue_refund with pending for review, not via general escalation. Meaning agent failed more than one failure modes, including unnecessary_escalation."
+  },
+  "ts": "2026-09-30T06:09:16.980Z"
+ },
+ {
+  "id": "item-support-0228",
+  "kind": "item",
+  "item_id": "support-0228",
+  "fields": {
+   "reason": "This escalation is a duplicate to the refund review agent correctly initiated for this order.",
+   "resolution": "judge_wrong"
+  },
+  "ts": "2026-09-30T06:09:56.828Z"
+ }
+]
