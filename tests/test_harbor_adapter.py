@@ -326,3 +326,41 @@ def test_capability_analysis_uses_5_10_and_15_observed_runs(
         "10",
         "15",
     }
+
+
+def test_summary_reads_per_trial_results_as_harbor_writes_them(tmp_path: Path) -> None:
+    """Harbor keeps trial_results out of the job file; each trial has its own."""
+    cases_path = tmp_path / "cases.jsonl"
+    case = {
+        "id": "e-401",
+        "mode": "response_quality",
+        "input": {"role": "shopper", "user_id": 1, "message": "hello"},
+        "initial_state": {"world": "reseed", "fixture": None},
+        "expected": {"checks": [{"check": "reply_asks_question"}]},
+    }
+    _write_cases(cases_path, [case])
+
+    job = tmp_path / "job"
+    job.mkdir()
+    (job / "result.json").write_text(json.dumps({"id": "job", "n_total_trials": 5, "stats": {}}))
+    for i, reward in enumerate([0, 1, 0, 0, 0]):
+        trial_dir = job / f"e-401__t{i}"
+        trial_dir.mkdir()
+        (trial_dir / "result.json").write_text(
+            json.dumps(
+                {
+                    "task_name": "cartwheel/evals__e-401",
+                    "trial_name": f"e-401__t{i}",
+                    "finished_at": f"2026-10-07T01:0{4 - i}:00Z",
+                    "verifier_result": {"rewards": {"reward": reward}},
+                    "exception_info": None,
+                }
+            )
+        )
+
+    markdown, _ = summarize_job(
+        job, cases_path=cases_path, expected_attempts=5, classify=True
+    )
+
+    assert '| `e-401` | 1 | 5 | `kind: "capability"`, `baseline_pass_rate: 0.2` |' in markdown
+    assert "Infrastructure problems" not in markdown

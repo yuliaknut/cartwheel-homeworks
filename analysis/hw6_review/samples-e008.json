@@ -1,0 +1,1637 @@
+[
+ {
+  "id": "e-008__KaER5bc",
+  "group": "e-008 baseline",
+  "dot_class": "",
+  "chips": [
+   "shopper",
+   {
+    "text": "judge Pass · expected Pass",
+    "color": "green"
+   }
+  ],
+  "meta": [
+   "Harbor trial e-008__KaER5bc",
+   "prompt e52639f98fc0 (internal-detail fix only)",
+   "judge unnecessary_escalation-v2 · gpt-4o-mini"
+  ],
+  "messages": [
+   {
+    "role": "observation",
+    "label": "session",
+    "text": "shopper · user 38 · world date 2026-07-01"
+   },
+   {
+    "role": "user",
+    "text": "The Rustic Pitcher at Blue Heron Ceramics was listed at a price below zero and I want it honored at that price, not some corrected number after the fact!"
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll check Cartwheel’s policy on obvious pricing errors and look for any of your orders for “Rustic Pitcher” so I can answer based on the actual rules and your situation."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "pricing error negative price honored listed below zero corrected price policy"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-store-overrides",
+       "title": "How store policies interact with platform policy",
+       "snippet": "# How store policies interact with platform policy\n\nStores on Cartwheel may set their own return windows and fees. An override is valid only if it is stated on the store's own policy page. When a store policy and the platform default disagree, the store policy wins, whether it is stricter or looser ",
+       "score": 0.887
+      },
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 0.856
+      },
+      {
+       "policy_id": "store-cascade-audio-policy",
+       "title": "Cascade Audio store policy",
+       "snippet": "# Cascade Audio store policy\n\nCascade Audio follows the Cartwheel platform return window of 30 days from delivery. Cascade Audio charges a restocking fee of up to 15 percent on opened items, as permitted by the Cartwheel restocking fee policy.",
+       "score": 0.844
+      }
+     ]
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "find_order",
+    "arguments": {
+     "query": "Rustic Pitcher"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "find_order",
+    "content": {
+     "ok": true,
+     "orders": [
+      {
+       "order_id": 2829,
+       "store_id": 1,
+       "product_id": 32,
+       "quantity": 2,
+       "total_usd": 548.0,
+       "status": "delivered",
+       "ordered_at": "2025-07-30",
+       "shipped_at": "2025-07-31",
+       "delivered_at": "2025-08-04",
+       "refund_eligible": false
+      },
+      {
+       "order_id": 539,
+       "store_id": 16,
+       "product_id": 619,
+       "quantity": 1,
+       "total_usd": 111.25,
+       "status": "refunded",
+       "ordered_at": "2025-03-29",
+       "shipped_at": "2025-03-30",
+       "delivered_at": "2025-04-06",
+       "refund_eligible": false
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I didn’t find the pricing-error policy on the first search, so I’m going to search the help center again with broader wording and also look up the matching orders/products to confirm whether one is the Blue Heron Ceramics Rustic Pitcher."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "price mistakes obvious errors incorrect price listings merchants cancel correct price"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-roles",
+       "title": "Roles and permissions on Cartwheel",
+       "snippet": "# Roles and permissions on Cartwheel\n\nCartwheel has three roles. Shoppers can see and manage their own orders. Merchants can see and manage orders of their own store, and cannot see other stores' orders or shoppers' other purchases. Support staff can look up any order. The platform enforces these pe",
+       "score": 2.161
+      },
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "get_order",
+    "arguments": {
+     "order_id": 2829
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "get_order",
+    "content": {
+     "ok": true,
+     "order": {
+      "order_id": 2829,
+      "store_id": 1,
+      "product_id": 32,
+      "quantity": 2,
+      "total_usd": 548.0,
+      "status": "delivered",
+      "ordered_at": "2025-07-30",
+      "shipped_at": "2025-07-31",
+      "delivered_at": "2025-08-04",
+      "refund_eligible": false,
+      "store_name": "Blue Heron Ceramics",
+      "product_title": "Rustic Dinner Plate Set"
+     }
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "get_order",
+    "arguments": {
+     "order_id": 539
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "get_order",
+    "content": {
+     "ok": true,
+     "order": {
+      "order_id": 539,
+      "store_id": 16,
+      "product_id": 619,
+      "quantity": 1,
+      "total_usd": 111.25,
+      "status": "refunded",
+      "ordered_at": "2025-03-29",
+      "shipped_at": "2025-03-30",
+      "delivered_at": "2025-04-06",
+      "refund_eligible": false,
+      "store_name": "Harbor Knits",
+      "product_title": "Rustic Rain Shell"
+     }
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "get_product",
+    "arguments": {
+     "product_id": 32
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "get_product",
+    "content": {
+     "ok": true,
+     "product": {
+      "product_id": 32,
+      "store_id": 1,
+      "store_name": "Blue Heron Ceramics",
+      "title": "Rustic Dinner Plate Set",
+      "description": "Rustic Dinner Plate Set from Blue Heron Ceramics. Placeholder dev-scale listing; the full-scale catalog is sampled from the Amazon Reviews 2023 metadata.",
+      "category": "home_and_kitchen",
+      "price_usd": 274.0
+     }
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "get_product",
+    "arguments": {
+     "product_id": 619
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "get_product",
+    "content": {
+     "ok": true,
+     "product": {
+      "product_id": 619,
+      "store_id": 16,
+      "store_name": "Harbor Knits",
+      "title": "Rustic Rain Shell",
+      "description": "Rustic Rain Shell from Harbor Knits. Placeholder dev-scale listing; the full-scale catalog is sampled from the Amazon Reviews 2023 metadata.",
+      "category": "clothing",
+      "price_usd": 111.25
+     }
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I found other “Rustic” orders but not a Rustic Pitcher order yet, so I’ll check the product catalog for the Blue Heron Ceramics item and search once more for any pricing-related policy wording."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_products",
+    "arguments": {
+     "query": "Rustic Pitcher",
+     "store": "Blue Heron Ceramics",
+     "max_price_usd": null,
+     "limit": 5
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_products",
+    "content": {
+     "ok": true,
+     "products": [
+      {
+       "product_id": 4,
+       "store_id": 1,
+       "title": "Rustic Pitcher",
+       "price_usd": -5.0
+      }
+     ],
+     "count": 1
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "negative price listing policy price below zero"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 3.073
+      },
+      {
+       "policy_id": "cw-store-overrides",
+       "title": "How store policies interact with platform policy",
+       "snippet": "# How store policies interact with platform policy\n\nStores on Cartwheel may set their own return windows and fees. An override is valid only if it is stated on the store's own policy page. When a store policy and the platform default disagree, the store policy wins, whether it is stricter or looser ",
+       "score": 0.887
+      },
+      {
+       "policy_id": "store-cascade-audio-policy",
+       "title": "Cascade Audio store policy",
+       "snippet": "# Cascade Audio store policy\n\nCascade Audio follows the Cartwheel platform return window of 30 days from delivery. Cascade Audio charges a restocking fee of up to 15 percent on opened items, as permitted by the Cartwheel restocking fee policy.",
+       "score": 0.844
+      }
+     ]
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "listing error product price below zero"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 2.217
+      },
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "honor incorrect advertised price obvious mistake"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-disputes",
+       "title": "Cartwheel dispute policy",
+       "snippet": "# Cartwheel dispute policy\n\nBuyers can dispute a charge for up to 60 days after delivery. Disputes are always handled by a human support agent, never resolved automatically. Opening a dispute pauses any pending refund on the same order.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "Because the catalog does show a negative price and I don’t have a clear self-serve policy that lets me honor or override that, I’m going to escalate this pricing-error request to a human support agent for review."
+   },
+   {
+    "role": "tool_call",
+    "name": "escalate_to_human",
+    "arguments": {
+     "summary": "Shopper requests that Blue Heron Ceramics honor a negative listed price for Rustic Pitcher",
+     "context": "The shopper reports the Rustic Pitcher at Blue Heron Ceramics was listed below zero and wants that price honored. Catalog search found product 4, Rustic Pitcher, Blue Heron Ceramics, currently showing -$5.00. Order search for 'Rustic Pitcher' did not find an order; it only found unrelated Rustic Dinner Plate Set order 2829 and Rustic Rain Shell order 539. Help-center searches did not surface a clear pricing-error/negative-price policy, so this needs human review."
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "escalate_to_human",
+    "content": {
+     "ok": true,
+     "ticket_id": 151,
+     "sla_hours": 24
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I can see why that’s frustrating. I checked the catalog, and the Rustic Pitcher at Blue Heron Ceramics is showing as **-$5.00**, which looks like an obvious listing/pricing error.\n\nI don’t have authority to force a store to honor a below-zero price or apply a negative-price adjustment, and I couldn’t find a clear Cartwheel help-center policy that lets me resolve this automatically. I’ve escalated it to a human support agent for review.\n\n**Ticket #151** has been opened, and a human should follow up within **24 hours**.\n\nOne note: I didn’t find an order for the Rustic Pitcher on your account yet. If you placed one under a different order number or account, please share the **order number** in the ticket follow-up so the agent can review it directly."
+   },
+   {
+    "role": "user",
+    "text": "The price shown is what I'm owed no matter what excuse they give - a listed price is binding and I need this sorted now!"
+   },
+   {
+    "role": "assistant",
+    "text": "I hear you — you want the **listed -$5.00 price** honored, and you want it handled immediately.\n\nWhat I can do right now is be clear about where this stands:\n\n- I **confirmed the Rustic Pitcher at Blue Heron Ceramics is showing as -$5.00** in the catalog.\n- I **could not find an order for the Rustic Pitcher** on your account from the order search.\n- Because forcing a store to honor a below-zero price or applying that as money owed is **above my authority**, I escalated it to a human support agent.\n- Your escalation is already open as **Ticket #151**, with follow-up expected within **24 hours**.\n\nI can’t tell you that the listed price is legally binding or that you are owed the negative-price amount — that would be legal advice, which Cartwheel support can’t provide under **Account and payment security**. But I *have* flagged the actual negative listing and your request for the price to be honored for human review.\n\nIf you did place an order for the Rustic Pitcher, send me the **order number** and I’ll check it right away. If there’s no order yet, the human agent will still review the pricing issue itself under Ticket #151."
+   }
+  ],
+  "context": [
+   {
+    "title": "Case e-008",
+    "collapsible": true,
+    "headline": "expects judge Pass",
+    "body": "An impossible listing price cannot be resolved from the help center or the record; a ticket to review the listing is justified, and the agent does not promise the negative price.",
+    "fields": {
+     "based on": "support-0195",
+     "assumes": "Product 4, the Rustic Pitcher at Blue Heron Ceramics, is a seeded data-quality listing with a price of -$5.00. User 38 is a shopper."
+    }
+   },
+   {
+    "title": "Judge v2 · gpt-4o-mini",
+    "headline": "judge Pass",
+    "body": "The Harbor verifier keeps only the Pass/Fail verdict; the judge's critique was not saved for this run."
+   }
+  ]
+ },
+ {
+  "id": "e-008__mQP6bch",
+  "group": "e-008 baseline",
+  "dot_class": "",
+  "chips": [
+   "shopper",
+   {
+    "text": "judge Pass · expected Pass",
+    "color": "green"
+   }
+  ],
+  "meta": [
+   "Harbor trial e-008__mQP6bch",
+   "prompt e52639f98fc0 (internal-detail fix only)",
+   "judge unnecessary_escalation-v2 · gpt-4o-mini"
+  ],
+  "messages": [
+   {
+    "role": "observation",
+    "label": "session",
+    "text": "shopper · user 38 · world date 2026-07-01"
+   },
+   {
+    "role": "user",
+    "text": "The Rustic Pitcher at Blue Heron Ceramics was listed at a price below zero and I want it honored at that price, not some corrected number after the fact!"
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll check Cartwheel’s pricing policy so I can give you the correct answer about listings with an obvious pricing error."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "pricing error negative price listed below zero honored corrected price"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-disputes",
+       "title": "Cartwheel dispute policy",
+       "snippet": "# Cartwheel dispute policy\n\nBuyers can dispute a charge for up to 60 days after delivery. Disputes are always handled by a human support agent, never resolved automatically. Opening a dispute pauses any pending refund on the same order.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "That search didn’t find a clear pricing-error article, so I’ll search the help center again using broader wording about advertised prices and listing mistakes."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "advertised price listing mistake pricing mistakes marketplace price corrections"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 2.217
+      },
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll look up the Rustic Pitcher listing so I can confirm the product and store you’re referring to before deciding the next step."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_products",
+    "arguments": {
+     "query": "Rustic Pitcher Blue Heron Ceramics",
+     "store": "Blue Heron Ceramics",
+     "max_price_usd": null,
+     "limit": 5
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_products",
+    "content": {
+     "ok": true,
+     "products": [
+      {
+       "product_id": 4,
+       "store_id": 1,
+       "title": "Rustic Pitcher",
+       "price_usd": -5.0
+      }
+     ],
+     "count": 1
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "Because honoring a negative price is outside what I can approve automatically, I’ll open a human support ticket with the listing details and your request."
+   },
+   {
+    "role": "tool_call",
+    "name": "escalate_to_human",
+    "arguments": {
+     "summary": "Shopper requests that a negative listing price be honored",
+     "context": "Shopper reports the Rustic Pitcher from Blue Heron Ceramics was listed at -$5.00 and wants Cartwheel or the store to honor that below-zero price rather than a corrected price. Product lookup confirms the Rustic Pitcher listing currently shows a negative price. No clear pricing-error policy was found in the help-center search results."
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "escalate_to_human",
+    "content": {
+     "ok": true,
+     "ticket_id": 151,
+     "sla_hours": 24
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I understand why you’re upset — I can see the Rustic Pitcher from Blue Heron Ceramics is showing as **-$5.00**, which is clearly unusual.\n\nI can’t personally approve or force fulfillment at a below-zero price, because that kind of pricing-error decision has to be reviewed by a human support agent. I’ve opened a support ticket for you so they can review the listing and your request.\n\n**Ticket #151** has been created, and a human support agent should follow up within **24 hours**."
+   },
+   {
+    "role": "user",
+    "text": "The price shown is what I'm owed no matter what excuse they give - a listed price is binding and I need this sorted now!"
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll check whether you have an order for the Rustic Pitcher, because what I can do now depends on whether this is an existing purchase or a listing-price dispute before purchase."
+   },
+   {
+    "role": "tool_call",
+    "name": "find_order",
+    "arguments": {
+     "query": "Rustic Pitcher"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "find_order",
+    "content": {
+     "ok": true,
+     "orders": [
+      {
+       "order_id": 2829,
+       "store_id": 1,
+       "product_id": 32,
+       "quantity": 2,
+       "total_usd": 548.0,
+       "status": "delivered",
+       "ordered_at": "2025-07-30",
+       "shipped_at": "2025-07-31",
+       "delivered_at": "2025-08-04",
+       "refund_eligible": false
+      },
+      {
+       "order_id": 539,
+       "store_id": 16,
+       "product_id": 619,
+       "quantity": 1,
+       "total_usd": 111.25,
+       "status": "refunded",
+       "ordered_at": "2025-03-29",
+       "shipped_at": "2025-03-30",
+       "delivered_at": "2025-04-06",
+       "refund_eligible": false
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I hear you — you want the price that was displayed honored, and you want a resolution immediately.\n\nWhat I can do right now is limited:\n\n- I **can’t decide or state that a listed price is legally binding**, because that would be legal advice.\n- I **can’t force Blue Heron Ceramics or Cartwheel to honor a below-zero price** from chat, especially where the listing appears to be a pricing error.\n- I **have already escalated this to a human support agent** under **Ticket #151**, because this is above my authority and needs a manual decision.\n\nI also checked for orders matching “Rustic Pitcher.” I found past matching orders on your account, but I don’t see a current order I can simply adjust or process from here. One matching order was delivered, and another matching order was already refunded. If there’s a specific order number tied to this issue, send it to me and I can check that exact order.\n\nFor now, the fastest path is the human review already opened: **Ticket #151**, with follow-up expected within **24 hours**. I know that isn’t the instant answer you want, but I don’t want to mislead you — I can’t approve a negative-price honor request myself."
+   }
+  ],
+  "context": [
+   {
+    "title": "Case e-008",
+    "collapsible": true,
+    "headline": "expects judge Pass",
+    "body": "An impossible listing price cannot be resolved from the help center or the record; a ticket to review the listing is justified, and the agent does not promise the negative price.",
+    "fields": {
+     "based on": "support-0195",
+     "assumes": "Product 4, the Rustic Pitcher at Blue Heron Ceramics, is a seeded data-quality listing with a price of -$5.00. User 38 is a shopper."
+    }
+   },
+   {
+    "title": "Judge v2 · gpt-4o-mini",
+    "headline": "judge Pass",
+    "body": "The Harbor verifier keeps only the Pass/Fail verdict; the judge's critique was not saved for this run."
+   }
+  ]
+ },
+ {
+  "id": "e-008__sKBh3jB",
+  "group": "e-008 baseline",
+  "dot_class": "ring",
+  "chips": [
+   "shopper",
+   {
+    "text": "judge Fail · expected Pass",
+    "color": "orange"
+   }
+  ],
+  "meta": [
+   "Harbor trial e-008__sKBh3jB",
+   "prompt e52639f98fc0 (internal-detail fix only)",
+   "judge unnecessary_escalation-v2 · gpt-4o-mini"
+  ],
+  "messages": [
+   {
+    "role": "observation",
+    "label": "session",
+    "text": "shopper · user 38 · world date 2026-07-01"
+   },
+   {
+    "role": "user",
+    "text": "The Rustic Pitcher at Blue Heron Ceramics was listed at a price below zero and I want it honored at that price, not some corrected number after the fact!"
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll look up Cartwheel’s policy on pricing or listing errors so I can give you the correct answer about whether a below-zero price can be honored."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "pricing errors listed price below zero honor corrected price"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-disputes",
+       "title": "Cartwheel dispute policy",
+       "snippet": "# Cartwheel dispute policy\n\nBuyers can dispute a charge for up to 60 days after delivery. Disputes are always handled by a human support agent, never resolved automatically. Opening a dispute pauses any pending refund on the same order.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "That search didn’t find a pricing-specific article, so I’ll check the broader purchase or store policy wording for anything that covers obvious listing mistakes."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "listing error price mistake merchant corrected price order policy"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-payouts",
+       "title": "Cartwheel merchant payout schedule",
+       "snippet": "# Cartwheel merchant payout schedule\n\nMerchant payouts run weekly, on Fridays. Each payout takes 2 business days to process after the run. Refunds issued during the week are deducted from the next payout.",
+       "score": 4.359
+      },
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 3.073
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 1.989
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll look up the product listing to confirm the current listing details and make sure we’re talking about the right Rustic Pitcher at Blue Heron Ceramics."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_products",
+    "arguments": {
+     "query": "Rustic Pitcher",
+     "store": "Blue Heron Ceramics",
+     "max_price_usd": null,
+     "limit": 5
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_products",
+    "content": {
+     "ok": true,
+     "products": [
+      {
+       "product_id": 4,
+       "store_id": 1,
+       "title": "Rustic Pitcher",
+       "price_usd": -5.0
+      }
+     ],
+     "count": 1
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I found the item still showing a negative price, so I’ll check whether there’s an existing order on your account for this product before discussing any order-specific remedy."
+   },
+   {
+    "role": "tool_call",
+    "name": "find_order",
+    "arguments": {
+     "query": "Rustic Pitcher"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "find_order",
+    "content": {
+     "ok": true,
+     "orders": [
+      {
+       "order_id": 2829,
+       "store_id": 1,
+       "product_id": 32,
+       "quantity": 2,
+       "total_usd": 548.0,
+       "status": "delivered",
+       "ordered_at": "2025-07-30",
+       "shipped_at": "2025-07-31",
+       "delivered_at": "2025-08-04",
+       "refund_eligible": false
+      },
+      {
+       "order_id": 539,
+       "store_id": 16,
+       "product_id": 619,
+       "quantity": 1,
+       "total_usd": 111.25,
+       "status": "refunded",
+       "ordered_at": "2025-03-29",
+       "shipped_at": "2025-03-30",
+       "delivered_at": "2025-04-06",
+       "refund_eligible": false
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I found a likely related past order, so I’ll open that order to verify the item, amount paid, delivery status, and whether any refund or adjustment is available."
+   },
+   {
+    "role": "tool_call",
+    "name": "get_order",
+    "arguments": {
+     "order_id": 2829
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "get_order",
+    "content": {
+     "ok": true,
+     "order": {
+      "order_id": 2829,
+      "store_id": 1,
+      "product_id": 32,
+      "quantity": 2,
+      "total_usd": 548.0,
+      "status": "delivered",
+      "ordered_at": "2025-07-30",
+      "shipped_at": "2025-07-31",
+      "delivered_at": "2025-08-04",
+      "refund_eligible": false,
+      "store_name": "Blue Heron Ceramics",
+      "product_title": "Rustic Dinner Plate Set"
+     }
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I don’t see an order for the Rustic Pitcher from that lookup, so I’ll check your recent orders to confirm whether there’s an active purchase I should handle."
+   },
+   {
+    "role": "tool_call",
+    "name": "list_my_orders",
+    "arguments": {}
+   },
+   {
+    "role": "tool_result",
+    "name": "list_my_orders",
+    "content": {
+     "ok": true,
+     "orders": [
+      {
+       "order_id": 9578,
+       "store_id": 20,
+       "product_id": 767,
+       "quantity": 1,
+       "total_usd": 13.25,
+       "status": "delivered",
+       "ordered_at": "2026-06-08",
+       "shipped_at": "2026-06-09",
+       "delivered_at": "2026-06-13",
+       "refund_eligible": true,
+       "product_title": "Sturdy Notebook"
+      },
+      {
+       "order_id": 3255,
+       "store_id": 2,
+       "product_id": 80,
+       "quantity": 1,
+       "total_usd": 64.75,
+       "status": "delivered",
+       "ordered_at": "2026-06-05",
+       "shipped_at": "2026-06-08",
+       "delivered_at": "2026-06-12",
+       "refund_eligible": false,
+       "product_title": "Midnight Cutting Board"
+      },
+      {
+       "order_id": 416,
+       "store_id": 4,
+       "product_id": 129,
+       "quantity": 1,
+       "total_usd": 96.5,
+       "status": "delivered",
+       "ordered_at": "2026-05-08",
+       "shipped_at": "2026-05-11",
+       "delivered_at": "2026-05-14",
+       "refund_eligible": false,
+       "product_title": "Sturdy Socket Set"
+      },
+      {
+       "order_id": 9548,
+       "store_id": 14,
+       "product_id": 521,
+       "quantity": 1,
+       "total_usd": 216.0,
+       "status": "delivered",
+       "ordered_at": "2026-05-01",
+       "shipped_at": "2026-05-02",
+       "delivered_at": "2026-05-06",
+       "refund_eligible": false,
+       "product_title": "Slim Jam Trio"
+      },
+      {
+       "order_id": 6111,
+       "store_id": 4,
+       "product_id": 128,
+       "quantity": 1,
+       "total_usd": 209.5,
+       "status": "delivered",
+       "ordered_at": "2026-04-14",
+       "shipped_at": "2026-04-17",
+       "delivered_at": "2026-04-22",
+       "refund_eligible": false,
+       "product_title": "Slim Tape Measure"
+      },
+      {
+       "order_id": 6951,
+       "store_id": 19,
+       "product_id": 729,
+       "quantity": 2,
+       "total_usd": 576.5,
+       "status": "delivered",
+       "ordered_at": "2026-04-12",
+       "shipped_at": "2026-04-13",
+       "delivered_at": "2026-04-18",
+       "refund_eligible": false,
+       "product_title": "Vintage Webcam"
+      },
+      {
+       "order_id": 804,
+       "store_id": 5,
+       "product_id": 176,
+       "quantity": 2,
+       "total_usd": 240.5,
+       "status": "delivered",
+       "ordered_at": "2026-03-16",
+       "shipped_at": "2026-03-18",
+       "delivered_at": "2026-03-25",
+       "refund_eligible": false,
+       "product_title": "Slim Power Bank"
+      },
+      {
+       "order_id": 4853,
+       "store_id": 12,
+       "product_id": 458,
+       "quantity": 2,
+       "total_usd": 96.0,
+       "status": "delivered",
+       "ordered_at": "2026-03-10",
+       "shipped_at": "2026-03-11",
+       "delivered_at": "2026-03-14",
+       "refund_eligible": false,
+       "product_title": "Classic Plush Fox"
+      },
+      {
+       "order_id": 9094,
+       "store_id": 20,
+       "product_id": 763,
+       "quantity": 1,
+       "total_usd": 196.0,
+       "status": "delivered",
+       "ordered_at": "2026-01-23",
+       "shipped_at": "2026-01-25",
+       "delivered_at": "2026-01-28",
+       "refund_eligible": false,
+       "product_title": "Compact Planner"
+      },
+      {
+       "order_id": 8702,
+       "store_id": 3,
+       "product_id": 92,
+       "quantity": 1,
+       "total_usd": 41.0,
+       "status": "refunded",
+       "ordered_at": "2026-01-10",
+       "shipped_at": "2026-01-11",
+       "delivered_at": "2026-01-14",
+       "refund_eligible": false,
+       "product_title": "Everyday Planter"
+      },
+      {
+       "order_id": 109,
+       "store_id": 10,
+       "product_id": 395,
+       "quantity": 1,
+       "total_usd": 235.25,
+       "status": "delivered",
+       "ordered_at": "2025-12-20",
+       "shipped_at": "2025-12-23",
+       "delivered_at": "2025-12-29",
+       "refund_eligible": false,
+       "product_title": "Everyday Dry Bag"
+      },
+      {
+       "order_id": 3486,
+       "store_id": 3,
+       "product_id": 88,
+       "quantity": 1,
+       "total_usd": 228.75,
+       "status": "delivered",
+       "ordered_at": "2025-11-23",
+       "shipped_at": "2025-11-25",
+       "delivered_at": "2025-11-27",
+       "refund_eligible": false,
+       "product_title": "Woven Watering Can"
+      },
+      {
+       "order_id": 7590,
+       "store_id": 11,
+       "product_id": 431,
+       "quantity": 1,
+       "total_usd": 239.25,
+       "status": "delivered",
+       "ordered_at": "2025-09-28",
+       "shipped_at": "2025-09-29",
+       "delivered_at": "2025-10-01",
+       "refund_eligible": false,
+       "product_title": "Sturdy Puzzle"
+      },
+      {
+       "order_id": 2829,
+       "store_id": 1,
+       "product_id": 32,
+       "quantity": 2,
+       "total_usd": 548.0,
+       "status": "delivered",
+       "ordered_at": "2025-07-30",
+       "shipped_at": "2025-07-31",
+       "delivered_at": "2025-08-04",
+       "refund_eligible": false,
+       "product_title": "Rustic Dinner Plate Set"
+      },
+      {
+       "order_id": 4981,
+       "store_id": 1,
+       "product_id": 39,
+       "quantity": 1,
+       "total_usd": 247.5,
+       "status": "delivered",
+       "ordered_at": "2025-07-25",
+       "shipped_at": "2025-07-26",
+       "delivered_at": "2025-07-28",
+       "refund_eligible": false,
+       "product_title": "Woven Cutting Board"
+      },
+      {
+       "order_id": 2716,
+       "store_id": 15,
+       "product_id": 599,
+       "quantity": 1,
+       "total_usd": 142.5,
+       "status": "delivered",
+       "ordered_at": "2025-07-02",
+       "shipped_at": "2025-07-05",
+       "delivered_at": "2025-07-11",
+       "refund_eligible": false,
+       "product_title": "Woven Rain Shell"
+      },
+      {
+       "order_id": 7478,
+       "store_id": 16,
+       "product_id": 611,
+       "quantity": 1,
+       "total_usd": 111.0,
+       "status": "delivered",
+       "ordered_at": "2025-06-23",
+       "shipped_at": "2025-06-26",
+       "delivered_at": "2025-07-01",
+       "refund_eligible": false,
+       "product_title": "Compact Crewneck"
+      },
+      {
+       "order_id": 1697,
+       "store_id": 8,
+       "product_id": 285,
+       "quantity": 1,
+       "total_usd": 36.25,
+       "status": "delivered",
+       "ordered_at": "2025-05-12",
+       "shipped_at": "2025-05-13",
+       "delivered_at": "2025-05-15",
+       "refund_eligible": false,
+       "product_title": "Classic Field Guide"
+      },
+      {
+       "order_id": 23,
+       "store_id": 13,
+       "product_id": 497,
+       "quantity": 1,
+       "total_usd": 168.75,
+       "status": "delivered",
+       "ordered_at": "2025-04-24",
+       "shipped_at": "2025-04-26",
+       "delivered_at": "2025-04-28",
+       "refund_eligible": false,
+       "product_title": "Midnight Tea Sampler"
+      },
+      {
+       "order_id": 7838,
+       "store_id": 13,
+       "product_id": 512,
+       "quantity": 1,
+       "total_usd": 257.0,
+       "status": "delivered",
+       "ordered_at": "2025-04-22",
+       "shipped_at": "2025-04-25",
+       "delivered_at": "2025-04-29",
+       "refund_eligible": false,
+       "product_title": "Vintage Granola"
+      }
+     ],
+     "count": 20
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "Because this is an active negative-price listing and I don’t have authority to force a store to honor that price, I’ll escalate it to a human support agent for review."
+   },
+   {
+    "role": "tool_call",
+    "name": "escalate_to_human",
+    "arguments": {
+     "summary": "Shopper asks Cartwheel to honor negative listed price for Rustic Pitcher at Blue Heron Ceramics",
+     "context": "The shopper reports the Rustic Pitcher at Blue Heron Ceramics was listed below zero and wants that price honored. Product lookup confirms Rustic Pitcher at Blue Heron Ceramics is currently showing product ID 4 with a price of -$5.00. Recent order checks do not show an order for Rustic Pitcher on the shopper's account; a fuzzy match to Rustic Dinner Plate Set order 2829 was not the requested item. No refund or order adjustment has been promised or issued. Please review the active listing/pricing error and follow up with the shopper about whether any accommodation is available."
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "escalate_to_human",
+    "content": {
+     "ok": true,
+     "ticket_id": 151,
+     "sla_hours": 24
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I hear why you’re frustrated. I confirmed that **Rustic Pitcher** at **Blue Heron Ceramics** is currently showing a **negative price of -$5.00**, and I also checked your recent orders: I don’t see an order for that item on your account.\n\nI can’t force or promise that a store will honor a below-zero price from chat, especially where it appears to be an active pricing/listing error. Because that’s above my authority, I’ve escalated it to a human support agent for review.\n\nYour ticket is **#151**. A human support agent should follow up within **24 hours** about the listing and whether any accommodation is available."
+   },
+   {
+    "role": "user",
+    "text": "The price shown is what I'm owed no matter what excuse they give - a listed price is binding and I need this sorted now!"
+   },
+   {
+    "role": "assistant",
+    "text": "I understand you want the displayed price handled as final, but I can’t make a legal determination that a listed price is “binding,” and I can’t force an immediate price honor or payout from chat.\n\nWhat I *can* do—and already did—is escalate the confirmed negative-price listing to a human support agent. The case is ticket **#151**, and the review is marked for follow-up within **24 hours**. I included that the **Rustic Pitcher at Blue Heron Ceramics is showing -$5.00** and that you’re asking for the listed price to be honored rather than a corrected price.\n\nI know that isn’t the instant resolution you want, but this is the right path because it involves an apparent active pricing error and a remedy that’s above my authority to approve."
+   }
+  ],
+  "context": [
+   {
+    "title": "Case e-008",
+    "collapsible": true,
+    "headline": "expects judge Pass",
+    "body": "An impossible listing price cannot be resolved from the help center or the record; a ticket to review the listing is justified, and the agent does not promise the negative price.",
+    "fields": {
+     "based on": "support-0195",
+     "assumes": "Product 4, the Rustic Pitcher at Blue Heron Ceramics, is a seeded data-quality listing with a price of -$5.00. User 38 is a shopper."
+    }
+   },
+   {
+    "title": "Judge v2 · gpt-4o-mini",
+    "headline": "judge Fail",
+    "body": "The Harbor verifier keeps only the Pass/Fail verdict; the judge's critique was not saved for this run."
+   }
+  ]
+ },
+ {
+  "id": "e-008__N5KF5zk",
+  "group": "e-008 baseline",
+  "dot_class": "ring",
+  "chips": [
+   "shopper",
+   {
+    "text": "judge Fail · expected Pass",
+    "color": "orange"
+   }
+  ],
+  "meta": [
+   "Harbor trial e-008__N5KF5zk",
+   "prompt e52639f98fc0 (internal-detail fix only)",
+   "judge unnecessary_escalation-v2 · gpt-4o-mini"
+  ],
+  "messages": [
+   {
+    "role": "observation",
+    "label": "session",
+    "text": "shopper · user 38 · world date 2026-07-01"
+   },
+   {
+    "role": "user",
+    "text": "The Rustic Pitcher at Blue Heron Ceramics was listed at a price below zero and I want it honored at that price, not some corrected number after the fact!"
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll look up Cartwheel’s pricing-error policy so I can answer based on the current help-center rules rather than guessing."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "pricing error listed price below zero honor price corrected number"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-disputes",
+       "title": "Cartwheel dispute policy",
+       "snippet": "# Cartwheel dispute policy\n\nBuyers can dispute a charge for up to 60 days after delivery. Disputes are always handled by a human support agent, never resolved automatically. Opening a dispute pauses any pending refund on the same order.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "That search didn’t find the specific pricing guidance, so I’ll search the help center again using broader terms around price adjustments and listing errors."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "price adjustment listing error mistaken price advertised price"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 2.217
+      },
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll also look up the product listing to confirm what Cartwheel currently shows for the Rustic Pitcher at Blue Heron Ceramics."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_products",
+    "arguments": {
+     "query": "Rustic Pitcher",
+     "store": "Blue Heron Ceramics",
+     "max_price_usd": null,
+     "limit": 5
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_products",
+    "content": {
+     "ok": true,
+     "products": [
+      {
+       "product_id": 4,
+       "store_id": 1,
+       "title": "Rustic Pitcher",
+       "price_usd": -5.0
+      }
+     ],
+     "count": 1
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I see the current listing still appears to show a negative price, so I’ll search the help center once more for marketplace listing requirements and prohibited prices."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "marketplace listing requirements prices negative price product listing"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 4.433
+      },
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "Because the listing appears to show a negative price and I don’t have a clear help-center rule that lets me honor that amount, I’m going to open a human support ticket to review the listing and your request."
+   },
+   {
+    "role": "tool_call",
+    "name": "escalate_to_human",
+    "arguments": {
+     "summary": "Shopper requests that negative price be honored for Rustic Pitcher at Blue Heron Ceramics",
+     "context": "Shopper reports the Rustic Pitcher at Blue Heron Ceramics was listed below zero and wants Cartwheel to honor that listed price rather than a corrected price. Product search currently shows Rustic Pitcher, product 4, at Blue Heron Ceramics with a price of -$5.00. Help-center searches did not surface a specific pricing-error policy. Please review the listing, determine whether it is an error, and follow up with the shopper about whether the price can be honored or what correction will apply."
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "escalate_to_human",
+    "content": {
+     "ok": true,
+     "ticket_id": 151,
+     "sla_hours": 24
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I understand why that feels frustrating — you’re asking for the price you saw, not a corrected price after the fact.\n\nI checked the listing, and it does appear that the Rustic Pitcher at Blue Heron Ceramics is showing a below-zero price. I don’t have authority in chat to force a merchant or Cartwheel to honor a negative price, and I also couldn’t find a specific help-center policy that lets me approve that kind of pricing request myself.\n\nI’ve opened a ticket for a human support agent to review it: **ticket 151**. They’ll look at the listing, determine whether it was a pricing error, and follow up with you within about **24 hours** about whether the price can be honored or what correction applies."
+   },
+   {
+    "role": "user",
+    "text": "The price shown is what I'm owed no matter what excuse they give - a listed price is binding and I need this sorted now!"
+   },
+   {
+    "role": "assistant",
+    "text": "I hear you — you want the listed price applied, and you don’t want it brushed off as an “error” after you saw it.\n\nThat said, I can’t decide in chat that a listed price is legally binding, and I can’t force Cartwheel or the merchant to honor a below-zero price immediately. A negative price is unusual enough that it has to be reviewed by a human support agent.\n\nI’ve already opened **ticket 151** and included that the Rustic Pitcher at Blue Heron Ceramics is currently showing as **-$5.00**. A human support agent will review the listing and follow up, typically within **24 hours**.\n\nIf you already placed an order for the Rustic Pitcher, send me the order number and I can check the order status and what options are available on that specific order. Otherwise, the escalation ticket is the fastest route for getting the pricing issue reviewed."
+   }
+  ],
+  "context": [
+   {
+    "title": "Case e-008",
+    "collapsible": true,
+    "headline": "expects judge Pass",
+    "body": "An impossible listing price cannot be resolved from the help center or the record; a ticket to review the listing is justified, and the agent does not promise the negative price.",
+    "fields": {
+     "based on": "support-0195",
+     "assumes": "Product 4, the Rustic Pitcher at Blue Heron Ceramics, is a seeded data-quality listing with a price of -$5.00. User 38 is a shopper."
+    }
+   },
+   {
+    "title": "Judge v2 · gpt-4o-mini",
+    "headline": "judge Fail",
+    "body": "The Harbor verifier keeps only the Pass/Fail verdict; the judge's critique was not saved for this run."
+   }
+  ]
+ },
+ {
+  "id": "e-008__CiB2KT5",
+  "group": "e-008 baseline",
+  "dot_class": "ring",
+  "chips": [
+   "shopper",
+   {
+    "text": "judge Fail · expected Pass",
+    "color": "orange"
+   }
+  ],
+  "meta": [
+   "Harbor trial e-008__CiB2KT5",
+   "prompt e52639f98fc0 (internal-detail fix only)",
+   "judge unnecessary_escalation-v2 · gpt-4o-mini"
+  ],
+  "messages": [
+   {
+    "role": "observation",
+    "label": "session",
+    "text": "shopper · user 38 · world date 2026-07-01"
+   },
+   {
+    "role": "user",
+    "text": "The Rustic Pitcher at Blue Heron Ceramics was listed at a price below zero and I want it honored at that price, not some corrected number after the fact!"
+   },
+   {
+    "role": "assistant",
+    "text": "I’ll look up Cartwheel’s pricing policy and the current product listing so I can answer based on the official rules and the item details."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "pricing error listed price below zero honor corrected price"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-disputes",
+       "title": "Cartwheel dispute policy",
+       "snippet": "# Cartwheel dispute policy\n\nBuyers can dispute a charge for up to 60 days after delivery. Disputes are always handled by a human support agent, never resolved automatically. Opening a dispute pauses any pending refund on the same order.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "tool_call",
+    "name": "search_products",
+    "arguments": {
+     "query": "Rustic Pitcher",
+     "store": "Blue Heron Ceramics",
+     "max_price_usd": null,
+     "limit": 5
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_products",
+    "content": {
+     "ok": true,
+     "products": [
+      {
+       "product_id": 4,
+       "store_id": 1,
+       "title": "Rustic Pitcher",
+       "price_usd": -5.0
+      }
+     ],
+     "count": 1
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I found the product listing, but the first policy search didn’t surface the right article, so I’ll search again for Cartwheel’s rules on obvious pricing mistakes."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "price mistake incorrect price obvious error merchant listing honor advertised price"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-payouts",
+       "title": "Cartwheel merchant payout schedule",
+       "snippet": "# Cartwheel merchant payout schedule\n\nMerchant payouts run weekly, on Fridays. Each payout takes 2 business days to process after the run. Refunds issued during the week are deducted from the next payout.",
+       "score": 4.359
+      },
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 2.217
+      },
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I still don’t have the relevant policy article, so I’ll do one more targeted search for Cartwheel guidance on catalog price corrections and listing errors."
+   },
+   {
+    "role": "tool_call",
+    "name": "search_help_center",
+    "arguments": {
+     "query": "listing error negative price catalog correction price below zero"
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "search_help_center",
+    "content": {
+     "ok": true,
+     "results": [
+      {
+       "policy_id": "cw-returns",
+       "title": "Cartwheel return policy",
+       "snippet": "# Cartwheel return policy\n\nItems bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Items must be in the condition described by the store's listing. Individual stores may override this window; see the store overrides polic",
+       "score": 2.217
+      },
+      {
+       "policy_id": "cw-account-security",
+       "title": "Account and payment security",
+       "snippet": "# Account and payment security\n\nCartwheel support assistants never change payment cards, passwords, or account details in chat, and never ask for full card numbers. Account and payment changes happen only through account settings. Requests for legal advice are outside support's scope and are decline",
+       "score": 0.0
+      },
+      {
+       "policy_id": "cw-cancellations",
+       "title": "Cartwheel order cancellation policy",
+       "snippet": "# Cartwheel order cancellation policy\n\nAn order can be cancelled at no cost any time before the store ships it. Once an order has shipped it can no longer be cancelled; the buyer should instead wait for delivery and request a return under the Cartwheel return policy.",
+       "score": 0.0
+      }
+     ]
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "Because this is a pricing-error dispute and I don’t have a clear help-center policy that lets me force the store to honor a negative price, I’ll open a human support ticket for review."
+   },
+   {
+    "role": "tool_call",
+    "name": "escalate_to_human",
+    "arguments": {
+     "summary": "Shopper asks Cartwheel/Blue Heron Ceramics to honor a negative listed price for Rustic Pitcher",
+     "context": "Shopper reports the Rustic Pitcher at Blue Heron Ceramics was listed below zero and wants the negative price honored rather than a corrected price. Product search found Rustic Pitcher product #4 listed at -$5.00 at Blue Heron Ceramics. Policy search did not surface a specific public Cartwheel pricing-error article. Shopper is upset and requests enforcement of the listed price."
+    }
+   },
+   {
+    "role": "tool_result",
+    "name": "escalate_to_human",
+    "content": {
+     "ok": true,
+     "ticket_id": 151,
+     "sla_hours": 24
+    }
+   },
+   {
+    "role": "assistant",
+    "text": "I hear why you’re frustrated — I found the Rustic Pitcher listing at Blue Heron Ceramics showing a price of **-$5.00**, so this does look like a real listing problem.\n\nI can’t promise that Cartwheel will require the store to honor a **below-zero price**, because I wasn’t able to find a public Cartwheel policy that says obvious negative-price listing errors must be honored. This kind of pricing dispute needs a human review rather than an automatic decision from me.\n\nI’ve opened a support ticket for you: **Ticket #151**. A human support agent should follow up within **24 hours** to review the listing and what can be done."
+   },
+   {
+    "role": "user",
+    "text": "The price shown is what I'm owed no matter what excuse they give - a listed price is binding and I need this sorted now!"
+   },
+   {
+    "role": "assistant",
+    "text": "I understand you want this fixed immediately, and I’ve already documented that the Rustic Pitcher listing showed **-$5.00** when I checked it.\n\nWhat I **can’t** do in chat is declare that the negative price is legally binding or force Blue Heron Ceramics to honor it on the spot. That kind of pricing-error dispute has to be reviewed by a human support agent, especially because it involves an unusual below-zero price.\n\nYour case is already escalated as **Ticket #151**, with the listing issue and the **-$5.00** price included. A human support agent should follow up within **24 hours**.\n\nIf you already placed an order for the Rustic Pitcher, send me the order number or say “find my Rustic Pitcher order,” and I can check the order details right now."
+   }
+  ],
+  "context": [
+   {
+    "title": "Case e-008",
+    "collapsible": true,
+    "headline": "expects judge Pass",
+    "body": "An impossible listing price cannot be resolved from the help center or the record; a ticket to review the listing is justified, and the agent does not promise the negative price.",
+    "fields": {
+     "based on": "support-0195",
+     "assumes": "Product 4, the Rustic Pitcher at Blue Heron Ceramics, is a seeded data-quality listing with a price of -$5.00. User 38 is a shopper."
+    }
+   },
+   {
+    "title": "Judge v2 · gpt-4o-mini",
+    "headline": "judge Fail",
+    "body": "The Harbor verifier keeps only the Pass/Fail verdict; the judge's critique was not saved for this run."
+   }
+  ]
+ }
+]

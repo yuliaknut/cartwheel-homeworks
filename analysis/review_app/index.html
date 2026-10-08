@@ -60,6 +60,18 @@
   .dot.cneg, .dot.ppos { box-shadow: 0 0 0 2px var(--blue); }
   /* HW5: the selected judge disagrees with the human label on this trace */
   .dot.jdis { box-shadow: 0 0 0 2px var(--orange); }
+  /* Spotlight (analysis/review_app/spotlight.json): while it exists, every other ring is hidden and only these traces carry a ring. Delete the file to restore. */
+  .dot.spot { box-shadow: 0 0 0 2.5px var(--blue); opacity: 1; }
+  .dot.spotpool { outline: 1.5px dashed var(--blue); outline-offset: 1.5px; opacity: 1; }
+  .spotcard { border-color: var(--blue); }
+  mark.sp { background: rgba(83,155,245,.22); color: inherit; border-bottom: 2px solid var(--blue); border-radius: 2px; padding: 0 1px; }
+  .spotcard .why, .spotcard .concern { font-size: 13.5px; line-height: 1.5; }
+  .spotcard .why { color: var(--fg-muted); margin-bottom: 10px; }
+  .spotcard .concern { border-left: 2px solid var(--blue); padding-left: 10px; margin: 8px 0 10px; }
+  .spotcard .labs { display: grid; grid-template-columns: auto auto; gap: 2px 12px; font-size: 12.5px; font-family: var(--mono); margin-top: 6px; }
+  .spotcard .labs .present { color: var(--red); font-weight: 600; } .spotcard .labs .absent { color: var(--green); } .spotcard .labs .none { color: var(--fg-muted); }
+  .spotcard .slist a { color: var(--blue); cursor: pointer; margin-right: 8px; font-family: var(--mono); font-size: 12.5px; white-space: nowrap; display: inline-block; }
+  .spotcard .slist a.cur { color: var(--fg-strong); text-decoration: underline; }
   .jcard .jrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; font-size: 13.5px; }
   .jcard .v { font-weight: 600; } .jcard .v.pass { color: var(--green); } .jcard .v.fail { color: var(--red); }
   .jcard .agree { color: var(--green); } .jcard .dis { color: var(--orange); font-weight: 600; }
@@ -323,7 +335,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const state = { view: 'review', judges: [], judgeId: null, samples: [], annotations: [], patterns: { modes: [] }, suggestions: [], labels: {}, index: [], manifest: {},
+const state = { view: 'review', spotlight: null, judges: [], judgeId: null, samples: [], annotations: [], patterns: { modes: [] }, suggestions: [], labels: {}, index: [], manifest: {},
                 idx: 0, saveTimer: null, dirty: false, pendingSel: null, cursor: { row: 0, col: 0 }, snap: {}, p90: { tools: Infinity, reply: Infinity },
                 openTools: new Set(), openFor: null, openModes: new Set() };
 const api = {
@@ -377,6 +389,7 @@ async function load() {
   try { const backup = JSON.parse(localStorage.getItem('cartwheel_hw4_annotations') || 'null');
         if (localStorage.getItem('cartwheel_hw4_dirty') === '1' && Array.isArray(backup) && backup.length > state.annotations.length) { state.annotations = backup; showToast('restored unsaved notes from this browser'); scheduleSave(); }
         else localStorage.removeItem('cartwheel_hw4_dirty'); } catch {}
+  try { const sp = await api.get('/ui/spotlight.json'); state.spotlight = sp && sp.traces && Object.keys(sp.traces).length ? sp : null; } catch { state.spotlight = null; }
   computeP90();
   readHash();
   render();
@@ -539,21 +552,25 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') { e.preventDefault(); go(state.idx - 1); }
   // Up and down step between marked traces only -- the round in front of you.
   if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-    const marked = state.samples.map((s, i) => (closeNegOf(sidOf(s)) || pendingPosOf(sidOf(s))) ? i : -1).filter(i => i >= 0);
+    const marked = spotOn() ? spotIdx() : state.samples.map((s, i) => (closeNegOf(sidOf(s)) || pendingPosOf(sidOf(s))) ? i : -1).filter(i => i >= 0);
     if (!marked.length) return;
     e.preventDefault();
-    const fwd = e.key === 'ArrowDown';
+    const fwd = e.key === 'ArrowUp';   // up = next marked trace, down = previous (student's preference)
     const next = fwd ? (marked.find(i => i > state.idx) ?? marked[0])
                      : ([...marked].reverse().find(i => i < state.idx) ?? marked[marked.length - 1]);
     go(next);
     showToast(`marked ${marked.indexOf(next) + 1} of ${marked.length}`);
   }
 });
+const spotOn = () => !!state.spotlight;
+const spotOf = (s) => state.spotlight ? state.spotlight.traces[sidOf(s)] || null : null;
+const spotIdx = () => state.samples.map((s, i) => spotOf(s) ? i : -1).filter(i => i >= 0);
 function dotClass(s) {
   const a = openCode(s); let c = '';
   const f = labelFocus(s), fl = f ? labelOf(f, s) : null;
   if (a && a.scenario_issue) c = ' issue'; else if (fl === 1) c = ' lpresent'; else if (fl === 0) c = ' labsent';
   else if (a && a.no_failure) c = ' pass'; else if (noted(s)) c = ' fail';
+  if (spotOn()) { const e = spotOf(s); return c + (!e ? '' : e.tier === 'pool' ? ' spotpool' : ' spot'); }
   if (pendingFor(s).length) c += ' pending';
   if (judgeDisagrees(s)) c += ' jdis';
   return c;
@@ -605,11 +622,12 @@ function renderDots() {
     lastBatch = s.batch || null;
     const d = document.createElement('span');
     const cn = closeNegOf(sidOf(s)), pp = pendingPosOf(sidOf(s)), sn = wasSeen(s);
-    d.className = 'dot' + dotClass(s) + (pp || cn ? ' cneg' : '') + (sn ? ' seen' : '')
+    d.className = 'dot' + dotClass(s) + ((pp || cn) && !spotOn() ? ' cneg' : '') + (sn ? ' seen' : '')
       + (i === state.idx && state.view === 'review' ? ' current' : '');
     d.title = `${sidOf(s)}${s.batch ? ' · ' + s.batch : ''}\n${sn ? 'seen' : 'not seen yet'}`
       + (pp ? `\nproposed POSITIVE for ${pp.modes.join(', ')}` : '')
-      + (cn ? `\nproposed close negative for ${cn.modes.join(', ')}` : '');
+      + (cn ? `\nproposed close negative for ${cn.modes.join(', ')}` : '')
+      + (spotOf(s) ? `\nspotlight: ${state.spotlight.title}` : '');
     d.onclick = () => go(i); box.appendChild(d);
   });
 }
@@ -717,6 +735,20 @@ function renderContext(s) {
       ${s.reason ? `<span class="k">picked</span><span class="v">${esc(s.reason)}</span>` : ''}
     </div></div>`;
   return `<div class="card${open ? '' : ' collapsed'}" id="ctx"><h2 class="clickable" title="show or hide the scenario's extra metadata">Scenario context <span class="sub">· ${open ? 'extra metadata' : summary}</span><span class="tgl">${open ? '▾' : '▸'}</span></h2>${body}</div>`;
+}
+function renderSpot(s) {
+  const e = spotOf(s); if (!e) return '';
+  const sp = state.spotlight, idx = spotIdx();
+  const facts = Object.entries(e.facts || {}).map(([k, v]) => `<span class="k">${esc(k)}</span><span class="v">${esc(v)}</span>`).join('');
+  const labs = finalModes().map(m => { const l = labelOf(m.name, s); return `<span>${esc(m.name)}</span><span class="${l === 1 ? 'present' : l === 0 ? 'absent' : 'none'}">${l === 1 ? 'present' : l === 0 ? 'absent' : 'unlabeled'}</span>`; }).join('');
+  const links = idx.filter(i => spotOf(state.samples[i]).tier !== 'pool' || i === state.idx).map(i => { const t = state.samples[i]; return `<a data-i="${i}" class="${i === state.idx ? 'cur' : ''}" title="tracker ${i + 1}">${esc(sidOf(t))}</a>`; }).join('');
+  return `<div class="card spotcard"><h2>Spotlight <span class="sub">· ${esc(sp.title)} · ${e.tier === 'pool' ? 'pool' : e.tier === 'short' ? 'shortlist' : ''} · ${idx.indexOf(state.idx) + 1} of ${idx.length}</span></h2><div class="body">
+    <div class="why">${esc(sp.why || '')}</div>
+    <div class="kv">${facts}</div>
+    <div class="concern">${esc(e.concern || '')}</div>
+    <div class="lbl">Labels on this trace (all final modes)</div><div class="labs">${labs}</div>
+    <div class="slist" style="margin-top:10px">${links}</div>
+    <div class="hint">↑ next, ↓ previous in the spotlight. Other rings are hidden while it is on; nothing was deleted.</div></div></div>`;
 }
 function renderOpenCoding(s) {
   const a = codeFor(s);
@@ -836,7 +868,11 @@ function highlightQuotes(s) {
         // and text already covered by a human mark is skipped, so no mark at
         // all is the right outcome there.
         if (Number.isInteger(it.start) && wrapInBlock(b, it.start, it.end, cls, it.id, title)) return;
-        wrapQuote(b, it.quote, cls, it.id, title);
+        if (wrapQuote(b, it.quote, cls, it.id, title)) return;
+        // A quote that crosses formatting ("refunds **above $100** must") spans several text
+        // nodes, which wrapQuote cannot match; find it in the block's text and wrap by offsets.
+        const k = it.quote ? b.textContent.indexOf(it.quote) : -1;
+        if (k >= 0) wrapInBlock(b, k, k + it.quote.length, cls, it.id, title);
         return;
       }
     }
@@ -844,6 +880,7 @@ function highlightQuotes(s) {
   };
   for (const n of inlineFor(s)) apply(n, 'hl', n.note || 'open code');
   for (const x of pendingFor(s)) apply(x, 'sg', `suggestion · ${x.mode || ''}`);
+  for (const [k, h] of ((spotOf(s) || {}).highlights || []).entries()) apply({ ...h, id: `spot-${k}` }, 'sp', 'spotlight');
 }
 const marksFor = (id) => document.querySelectorAll(`mark[data-aid="${CSS.escape(id)}"]`);
 function focusMark(id) {
@@ -880,9 +917,10 @@ function renderReview() {
     ${s.permalink ? `<a href="${esc(s.permalink)}" target="_blank" rel="noopener">open in Langfuse ↗</a>` : `<span class="meta">trace <code>${esc(s.trace_id)}</code></span>`}
     <span class="tools-ctl"><button id="expand-all" title="show every tool result">expand all</button><button id="collapse-all" title="hide every tool result">collapse all</button></span>`;
   main.innerHTML = `<div class="conv">${renderConversation(s)}</div>
-    <div class="side">${renderContext(s)}${renderOpenCoding(s)}${renderLabelStrip(s)}${renderJudge(s)}${renderInline(s)}${renderSuggestions(s)}</div>`;
+    <div class="side">${renderSpot(s)}${renderContext(s)}${renderOpenCoding(s)}${renderLabelStrip(s)}${renderJudge(s)}${renderInline(s)}${renderSuggestions(s)}</div>`;
   highlightQuotes(s);
   wireJudge(s);
+  document.querySelectorAll('.spotcard .slist a').forEach(a => a.onclick = () => go(parseInt(a.dataset.i, 10)));
   const noteOpen = (tc, on) => { const k = parseInt(tc.dataset.tool, 10); if (!Number.isInteger(k)) return; on ? state.openTools.add(k) : state.openTools.delete(k); };
   main.querySelectorAll('.tool').forEach(tc => tc.addEventListener('click', (e) => {
     const sel = window.getSelection(); if (sel && !sel.isCollapsed && tc.contains(sel.anchorNode)) return;
