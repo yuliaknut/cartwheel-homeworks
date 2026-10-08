@@ -59,6 +59,8 @@ jobs:
       - name: Generate the classified Harbor tasks
         run: uv run python scripts/export_harbor_tasks.py
 
+      # Two trials at a time: each task asks for 2 CPUs and 4 GB, and the runner has
+      # 4 CPUs and 16 GB, so four at once could exhaust memory and crash trials.
       # The provider key reaches the containers through this job's env block:
       # the Cartwheel agent adapter forwards only its model's key to the agent
       # container, and each task's [verifier.env] forwards the judge's key.
@@ -70,6 +72,7 @@ jobs:
             -m "$CARTWHEEL_MODEL" \
             -e docker \
             --n-attempts 5 \
+            --n-concurrent 2 \
             --job-name hw6-evals \
             --jobs-dir .harbor/jobs \
             --yes
