@@ -85,7 +85,12 @@ def fetch_window(start: dt.datetime, end: dt.datetime, scenario_ids: set[str] | 
         page += 1
     if scenario_ids is not None:
         summaries = [s for s in summaries if _scenario_id(s) in scenario_ids]
-    return [normalize_trace(client.api.trace.get(s.id)) for s in summaries]
+    traces = []
+    for summary in summaries:
+        trace = normalize_trace(client.api.trace.get(summary.id))
+        trace["agent_cost_usd"] = float(getattr(summary, "total_cost", None) or 0)
+        traces.append(trace)
+    return traces
 
 
 def _model_matches(observed: str, configured: str) -> bool:
@@ -115,7 +120,11 @@ def build_conversations(
     model rejects the period.
     """
     replied = [t for t in traces if t.get("output") is not None]
-    report: dict[str, Any] = {"langfuse_traces": len(traces), "dropped_no_reply": len(traces) - len(replied)}
+    report: dict[str, Any] = {
+        "langfuse_traces": len(traces),
+        "dropped_no_reply": len(traces) - len(replied),
+        "agent_cost_usd": round(sum(t.get("agent_cost_usd", 0) for t in traces), 4),
+    }
 
     wrong_models = sorted({m for t in replied for m in t.get("models", []) if not _model_matches(m, model)})
     if wrong_models:
@@ -144,6 +153,7 @@ def build_conversations(
         tools = sorted({str(m["name"]) for m in messages if m.get("role") == "tool_call" and m.get("name")})
         record = {
             "id": group[-1]["trace_id"],
+            "timestamp": group[-1].get("timestamp"),
             "conversation": key,
             "trace_ids": [t["trace_id"] for t in group],
             "metadata": group[0].get("metadata") or {},
@@ -159,15 +169,36 @@ def build_conversations(
     return records, report
 
 
-def judge_with_gate(judge_id: str, records: list[dict[str, Any]]) -> dict[str, int]:
-    """The frozen HW5 judge: the code gate, then the model on escalated conversations."""
+def judge_with_gate(judge_id: str, records: list[dict[str, Any]]) -> tuple[dict[str, int], dict[str, Any]]:
+    """The frozen HW5 judge: the code gate, then the model on escalated conversations.
+
+    Also returns what the model calls cost, measured from LiteLLM's per-call
+    usage. Calls DocETL answers from its cache reach no provider and cost 0.
+    """
+    import litellm
+
     from monitoring.run_judges import judge_sample
+
+    usage = {"provider_calls": 0, "input_tokens": 0, "output_tokens": 0, "cost_usd": 0.0}
+
+    def _record(kwargs: dict[str, Any], response: Any, *_: Any) -> None:
+        usage["provider_calls"] += 1
+        tokens = getattr(response, "usage", None)
+        usage["input_tokens"] += int(getattr(tokens, "prompt_tokens", 0) or 0)
+        usage["output_tokens"] += int(getattr(tokens, "completion_tokens", 0) or 0)
+        usage["cost_usd"] += float(kwargs.get("response_cost") or 0)
 
     verdicts = {r["id"]: 0 for r in records if GATE_TOOL not in r["tools"]}
     escalated = [r for r in records if GATE_TOOL in r["tools"]]
-    if escalated:
-        verdicts.update(judge_sample(judge_id, [{"id": r["id"], "text": r["text"]} for r in escalated]))
-    return {r["id"]: verdicts[r["id"]] for r in records}
+    litellm.success_callback.append(_record)
+    try:
+        if escalated:
+            verdicts.update(judge_sample(judge_id, [{"id": r["id"], "text": r["text"]} for r in escalated]))
+    finally:
+        litellm.success_callback.remove(_record)
+    usage["cost_usd"] = round(usage["cost_usd"], 6)
+    usage["cost_basis"] = "measured" if usage["provider_calls"] else "cache"
+    return {r["id"]: verdicts[r["id"]] for r in records}, usage
 
 
 def run(label: str, start: dt.datetime, end: dt.datetime, scenario_ids: set[str] | None, yes: bool) -> dict[str, Any]:
@@ -210,7 +241,9 @@ def run(label: str, start: dt.datetime, end: dt.datetime, scenario_ids: set[str]
         print("  plan only: rerun with --yes to call the judge")
         return report
 
-    verdicts = judge_with_gate(config["judge_id"], plan["to_judge"])
+    verdicts, judge_usage = judge_with_gate(config["judge_id"], plan["to_judge"])
+    report["judge_usage"] = judge_usage
+    print(f"  judge usage: {judge_usage}")
     result = {
         **report,
         "judge_id": config["judge_id"],
@@ -233,7 +266,8 @@ def run(label: str, start: dt.datetime, end: dt.datetime, scenario_ids: set[str]
         config["judge_mode"], result["random_verdicts"], result["risk_verdicts"], estimate, label
     )
     (out_dir / "scores.json").write_text(json.dumps(scores, indent=1) + "\n", encoding="utf-8")
-    written = post_scores(scores, session_id=f"hw7-monitor-{label}")
+    stamps = {r["id"]: _parse_time(r["timestamp"]) for r in records if r.get("timestamp")}
+    written = post_scores(scores, session_id=f"hw7-monitor-{label}", timestamps=stamps, period_timestamp=end)
     flagged_risk = sum(result["risk_verdicts"].values())
     print(
         f"  raw {estimate['raw']}, corrected {estimate['corrected']} "
@@ -253,6 +287,7 @@ def run(label: str, start: dt.datetime, end: dt.datetime, scenario_ids: set[str]
         "risk_sample": report["risk_sample"],
         "risk_flagged": flagged_risk,
         "judge_calls": report["judge_calls"],
+        "judge_usage": report["judge_usage"],
         **{k: estimate[k] for k in ("raw", "corrected", "ci_low", "ci_high",
                                     "failure_sensitivity", "pass_specificity")},
         "threshold": config["threshold"],
@@ -273,6 +308,11 @@ def update_history(entry: dict[str, Any], config: dict[str, Any]) -> None:
     rows = []
     if HISTORY_PATH.exists():
         rows = [json.loads(line) for line in HISTORY_PATH.read_text().splitlines() if line.strip()]
+    previous = next((r for r in rows if r["period"] == entry["period"]), None)
+    if previous and entry["judge_usage"]["cost_basis"] == "cache" and previous.get("judge_usage"):
+        entry["judge_usage"] = previous["judge_usage"]  # a cached rerun cost nothing; keep the paid run's cost
+    if previous and "agent_usage" in previous:
+        entry["agent_usage"] = previous["agent_usage"]  # the cost of producing the period's traces (HW9)
     rows = [r for r in rows if r["period"] != entry["period"]] + [entry]
     order = {p["label"]: n for n, p in enumerate(config["periods"])}
     rows.sort(key=lambda r: order.get(r["period"], len(order)))

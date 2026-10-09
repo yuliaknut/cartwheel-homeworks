@@ -101,13 +101,21 @@ def build_score_records(
 # ---------------------------------------------------------------------------
 
 
-def post_scores(records: list[dict[str, Any]], session_id: str | None = None) -> int:
+def post_scores(
+    records: list[dict[str, Any]],
+    session_id: str | None = None,
+    timestamps: dict[str, Any] | None = None,
+    period_timestamp: Any = None,
+) -> int:
     """Write score records to Langfuse. Returns the number written.
 
     Uses the SDK's ``create_score`` with the ``score_id`` idempotency
     parameter, so writing a record again updates the existing score.
     Langfuse rejects a score with no target, so a record without a trace
     (the period prevalence) is attached to ``session_id`` when given.
+    ``timestamps`` (trace id -> datetime) and ``period_timestamp`` place each
+    score at the time of the conversation or period it describes, so the
+    dashboard's time axis separates the periods.
     """
     from analysis.helpers import langfuse_io
 
@@ -130,6 +138,9 @@ def post_scores(records: list[dict[str, Any]], session_id: str | None = None) ->
             kwargs["trace_id"] = record["trace_id"]
         elif session_id:
             kwargs["session_id"] = session_id
+        stamp = (timestamps or {}).get(record.get("trace_id")) if record.get("trace_id") else period_timestamp
+        if stamp is not None:
+            kwargs["timestamp"] = stamp
         if record.get("comment"):
             kwargs["comment"] = record["comment"]
         client.create_score(**kwargs)

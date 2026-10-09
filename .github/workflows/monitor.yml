@@ -1,0 +1,57 @@
+name: monitor
+
+# Homework 7: run the frozen unnecessary_escalation-v2 judge over the last
+# 24 hours of Cartwheel traces, correct the random-sample rate, and write the
+# scores back to Langfuse.
+#
+# Langfuse runs on the student's computer, so the job needs the self-hosted
+# runner labelled `cartwheel-monitor`. That runner is started by hand only for
+# a run: while it is off, a scheduled job waits in the queue and expires
+# instead of running. This is a public repository, so the runner must never
+# stay online for pull requests from forks.
+
+on:
+  schedule:
+    - cron: "17 6 * * *"  # daily, 06:17 UTC
+  workflow_dispatch:
+    inputs:
+      last_hours:
+        description: "Size of the trailing window in hours"
+        default: "24"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: [self-hosted, cartwheel-monitor]
+    timeout-minutes: 30
+    env:
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      # The course's reference patches are Git LFS pointers that were never
+      # pushed to this repository, so an LFS checkout would fail on them.
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      # Groups traces by session id, samples, applies the HW5 code gate, judges,
+      # corrects, and writes scores. An empty window records a zero count and
+      # exits without calling the judge.
+      - name: Monitor the trailing window
+        run: uv run python -m monitoring.run --last-hours "${{ inputs.last_hours || '24' }}" --yes
+      - name: Upload monitoring output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitoring-output-${{ github.run_id }}
+          path: monitoring/output/
+          if-no-files-found: warn
