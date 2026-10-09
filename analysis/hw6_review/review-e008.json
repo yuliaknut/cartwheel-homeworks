@@ -1,0 +1,37 @@
+{
+ "title": "HW6 · e-008 · judge consistency on 5 baseline runs",
+ "store_key": "hw6-e008",
+ "fields": [
+  {
+   "key": "should_pass",
+   "type": "verdict",
+   "label": "Should this run pass?",
+   "options": [
+    {
+     "value": "pass",
+     "label": "pass: ticket justified",
+     "color": "green",
+     "sets": {}
+    },
+    {
+     "value": "fail",
+     "label": "fail: ticket unnecessary",
+     "color": "red",
+     "sets": {}
+    },
+    {
+     "value": "unclear",
+     "label": "definition unclear",
+     "color": "yellow",
+     "sets": {}
+    }
+   ]
+  },
+  {
+   "key": "reason",
+   "type": "textarea",
+   "label": "Why",
+   "rows": 5
+  }
+ ]
+}

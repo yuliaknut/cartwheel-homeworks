@@ -17,6 +17,29 @@ def _case_id(task_name: str, known_ids: set[str]) -> str | None:
     return max(matches, key=len) if matches else None
 
 
+def load_trial_results(job_dir: Path, result: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return a job's trials in the order they finished.
+
+    Harbor writes each trial's result.json in its own subdirectory and leaves
+    ``trial_results`` out of the job-level result.json (every release from
+    0.21 to 0.24 does this). The embedded list is still honoured only because
+    the course's own test fixtures use it; real jobs take the directory path.
+    Completion order matches the order Harbor's in-memory list used; the
+    trial name breaks ties so the order is deterministic.
+    """
+    if "trial_results" in result:
+        return list(result["trial_results"])
+    trials = [
+        json.loads((child / "result.json").read_text())
+        for child in job_dir.iterdir()
+        if child.is_dir() and (child / "result.json").is_file()
+    ]
+    return sorted(
+        trials,
+        key=lambda trial: (str(trial.get("finished_at") or ""), str(trial.get("trial_name") or "")),
+    )
+
+
 def _reward(trial: dict[str, Any]) -> float | None:
     verifier = trial.get("verifier_result")
     if not isinstance(verifier, dict):
@@ -49,7 +72,7 @@ def summarize_job(
     result = json.loads(result_path.read_text())
     trials: dict[str, list[dict[str, Any]]] = defaultdict(list)
     unknown: list[str] = []
-    for trial in result.get("trial_results", []):
+    for trial in load_trial_results(job_dir, result):
         case_id = _case_id(str(trial.get("task_name", "")), set(by_id))
         if case_id is None:
             unknown.append(str(trial.get("task_name", "")))

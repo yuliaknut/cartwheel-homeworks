@@ -987,165 +987,40 @@
      "scenario_id": "support-0268"
     }
    ]
+  },
+  {
+   "batch": "b9-hw6-internal-detail",
+   "strategy": "ids",
+   "k": 15,
+   "dimension": null,
+   "clusters": null,
+   "value": null,
+   "mode": null,
+   "label_focus": "internal_detail_exposed",
+   "seed_trace": [],
+   "seed": 7,
+   "selected_at": "2026-10-07T01:21:55.436508+00:00",
+   "picks": [
+    {
+     "trace_id": "40c1823c1e2d8aefbbd0d9de459cfefe",
+     "reason": "hw6: only code-value leak (home_and_kitchen) on a blank-title data-quality listing",
+     "scenario_id": "support-0196"
+    }
+   ]
   }
  ],
  "source": "analysis/state/traces.json",
- "k": 30,
+ "k": 15,
  "strategy": "ids",
- "selected_at": "2026-10-01T03:20:56.199517+00:00",
+ "selected_at": "2026-10-07T01:21:55.436508+00:00",
  "picks": [
   {
-   "trace_id": "4968b57782d87547f8cd72156f12e005",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0282"
-  },
-  {
-   "trace_id": "2f34871dd26cb7ab70f0605442fdab55",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0266"
-  },
-  {
-   "trace_id": "31dacbbda217d02e4a3f7866cb5296a5",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0269"
-  },
-  {
-   "trace_id": "626d718d1fd60e7bcd77d95551769cd1",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0285"
-  },
-  {
-   "trace_id": "cecd86ef0777dbaa350100c4087e4702",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0280"
-  },
-  {
-   "trace_id": "846f52d368804cd8b9cf0ba276657f93",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0289"
-  },
-  {
-   "trace_id": "2898f8311b7246deab3eb3812220d8ac",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0271"
-  },
-  {
-   "trace_id": "2d433b5273c45f4909587c43e844312b",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0284"
-  },
-  {
-   "trace_id": "a76ded83c3099e75c51795829451f0f6",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0278"
-  },
-  {
-   "trace_id": "adba5098f61543f723328f059e8113c1",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0264"
-  },
-  {
-   "trace_id": "b68c931e0d8cd00cd82a9ab616cb3f3a",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0270"
-  },
-  {
-   "trace_id": "382118cad5cd65bf965ca509fb7a560a",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0274"
-  },
-  {
-   "trace_id": "6873f8ca6b3ddd79f298aa2879f9a91a",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0279"
-  },
-  {
-   "trace_id": "ec8f364df062322cd923af9b4ec4e8fa",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0276"
-  },
-  {
-   "trace_id": "e7a702767be816b22dd97604c934c28d",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0281"
-  },
-  {
-   "trace_id": "d37ad530b37047704f1a3cedf639181b",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0275"
-  },
-  {
-   "trace_id": "77d0ad9ffaebec5de6d23f0c40d06426",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0261"
-  },
-  {
-   "trace_id": "aacdb34417bb4793d69283acab1d16b2",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0288"
-  },
-  {
-   "trace_id": "85477a9a198aa0e68508140e5c16f7f9",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0286"
-  },
-  {
-   "trace_id": "ce1a9615a5785cd7f9d0e02b509d23fc",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0277"
-  },
-  {
-   "trace_id": "1219551e29a5a83ab66f7c7f4e8eb8f9",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0290"
-  },
-  {
-   "trace_id": "c4940b42a2642ac471bd679d8fd3983f",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0287"
-  },
-  {
-   "trace_id": "d104b066aae615eab3d01194000de998",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0263"
-  },
-  {
-   "trace_id": "917c3e21962bd5fb13521039b99a48e4",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0262"
-  },
-  {
-   "trace_id": "d9c29c8264f0c465fff76a359a102cff",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0283"
-  },
-  {
-   "trace_id": "69f057802f15d4eb182c098a0cb477fe",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0267"
-  },
-  {
-   "trace_id": "e2f7f9e0a1f5effb87c3ab75a4af18b4",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0265"
-  },
-  {
-   "trace_id": "473d7721df9cd28148ce5c4d0fb73f3c",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0273"
-  },
-  {
-   "trace_id": "938656bc1d94caf795d117c70781a23f",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0272"
-  },
-  {
-   "trace_id": "e716759941ea6e84ecf27a0772d21240",
-   "reason": "HW5 held-out set (generated, blind to v2; shuffled with seed 8)",
-   "scenario_id": "support-0268"
+   "trace_id": "40c1823c1e2d8aefbbd0d9de459cfefe",
+   "reason": "hw6: only code-value leak (home_and_kitchen) on a blank-title data-quality listing",
+   "scenario_id": "support-0196"
   }
  ],
- "total_sampled": 173,
+ "total_sampled": 174,
  "retracted_batches": [
   {
    "batch": "b2-difficulty",

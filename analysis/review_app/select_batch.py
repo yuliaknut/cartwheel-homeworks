@@ -41,6 +41,15 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 STATE_DIR = REPO_ROOT / "analysis" / "state"
 
 
+def _repo_relative(path: Path) -> str:
+    """Store paths inside the repo relative to its root, so the manifest holds no home directory."""
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(resolved)  # a store outside the repo keeps its full path
+
+
 def _utcnow() -> str:
     return _dt.datetime.now(_dt.timezone.utc).isoformat()
 
@@ -286,7 +295,7 @@ def main() -> None:
     }
     manifest.setdefault("batches", []).append(batch)
     manifest.update({
-        "source": str(store_path.resolve()),
+        "source": _repo_relative(store_path),
         "k": args.k,
         "strategy": args.strategy,
         "selected_at": batch["selected_at"],

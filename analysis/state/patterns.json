@@ -163,8 +163,8 @@
     {
       "name": "internal_detail_exposed",
       "status": "final",
-      "definition": "The user-facing reply exposes an internal representation: a policy identifier (cw-* or store-*-policy) instead of the policy's public title, or a raw data field name or tool-result key such as refund_eligible.",
-      "boundary": "Absent when the reply cites the policy by its public title (\"Cartwheel refund policy\") and states record facts in plain language (\"this order is not eligible for a refund\"). An internal identifier appearing only inside a tool result, never in the reply, is absent.",
+      "definition": "The user-facing reply exposes an internal representation: a policy identifier (cw-* or store-*-policy) instead of the policy's public title, a raw data field name or tool-result key such as refund_eligible, a raw code value such as home_and_kitchen, or an internal id such as a store id.",
+      "boundary": "Absent when the reply cites the policy by its public title (\"Cartwheel refund policy\") and states record facts in plain language (\"this order is not eligible for a refund\"). An internal identifier appearing only inside a tool result, never in the reply, is absent. Order, refund, ticket and product ids are user-facing and may be shown. Naming a kind of id without showing one (\"the numeric store id\") is absent.",
       "spec_ref": "RESP-1",
       "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why.",
       "notes": "Settled after batch 2. From batch 3 onward recorded with the \u201c+ policy id\u201d shortcut rather than a typed note, so those annotations carry source:\"shortcut\". internal_field_exposed was merged in after batch 4: one requirement covers both, and a mode at four traces could not stand alone.",
@@ -296,6 +296,10 @@
         {
           "ts": "2026-09-24T20:27:59.313729+00:00",
           "change": "Renamed from internal_policy_id_cited after internal_field_exposed was merged in. The old name named only one of the two surfaces; the scope is any internal representation reaching the reply."
+        },
+        {
+          "ts": "2026-10-07T00:51:46.839323+00:00",
+          "change": "Extended to raw code values and internal ids after an inventory of all 290 conversations for HW6; store ids are internal (support-0093), concept mentions are not (support-0138)."
         }
       ],
       "reviewer_notes": [],
@@ -319,16 +323,17 @@
           "decided_ts": "2026-09-24T23:34:57.417722+00:00"
         }
       ],
-      "finalised_at": "2026-09-25T21:24:49.966814+00:00"
+      "finalised_at": "2026-09-25T21:24:49.966814+00:00",
+      "evaluator_note": "Deterministic: the reply fails on any underscore-separated word, any policy id (cw-... or store-...-policy), or any \"<word> id <number>\" other than order, refund, ticket, product, request or listing ids."
     },
     {
       "name": "threshold_misapplied",
       "status": "final",
       "drafted_at": "2026-09-24T20:22:37.036336+00:00",
       "drafted_after": "b4-uniform",
-      "definition": "The agent applies the $100 automatic-refund threshold to an order that never reaches the eligibility check, either as a reason to open a ticket or as an unsolicited remark. The threshold governs issue_refund's queueing for orders that pass eligibility; it has no bearing on an ineligible one.",
-      "boundary": "Absent when the order is refund-eligible and the reply explains that the refund was queued for human review, which is correct handling under ESC-1. Absent when the threshold is not mentioned. Nearest neighbour: unnecessary_escalation, which covers tickets opened for other unsupported reasons.",
-      "spec_ref": "ESC-1, ESC-5",
+      "definition": "The agent cites the $100 automatic-refund threshold, in the reply or a ticket, when no refund for the order is queued for human approval. The threshold only explains why a refund was queued; without one, the mention implies a review that is not happening.",
+      "boundary": "Absent when explaining a refund that issue_refund queued (ESC-1). Absent when the user asked about refund approval or refund policy. Absent when the threshold is not mentioned. Nearest neighbours: unnecessary_escalation, for whether a ticket should exist at all (support-0211); irrelevant_policy_detail, for other rules that do not apply.",
+      "spec_ref": "ESC-1, RESP-5",
       "evaluator": "code check",
       "created_from": [
         "inline-support-0129-mudgp3x7",
@@ -384,14 +389,18 @@
           "response": "Agreed, evaluator changed to code check: threshold language in the reply plus orders.refund_eligible."
         }
       ],
-      "evaluator_note": "Deterministic: match the $100 threshold language in the reply, then check orders.refund_eligible for the order in question.",
+      "evaluator_note": "Deterministic: find threshold language in the reply or escalate_to_human arguments, then check the refunds table; a mention passes only if the order has a queued_for_approval refund. Applies to conversations about one order where the user did not ask about approval.",
       "close_negatives": [],
-      "close_negatives_note": "None recorded. The handout asks for three \"when the reviewed data permits them\"; this criterion is deterministic \u2014 threshold language in the reply plus orders.refund_eligible \u2014 so no trace sits near the line. Every absent trace is clearly absent, differing only in a database field, and the evaluator is a code check that reads that field directly.",
+      "close_negatives_note": "Threshold discussed legitimately with no queued refund: general refund-policy questions (support-0081, support-0172) and users asking whether a refund needs approval.",
       "finalised_at": "2026-09-25T21:24:49.966814+00:00",
       "revisions": [
         {
           "ts": "2026-09-25T23:30:49.696202+00:00",
           "change": "Nine positives added after review: traces where the reply invokes the $100 threshold on an order that was not refund-eligible, found by applying the criterion mechanically. Open coding had missed them because the stopping rule recorded a different first failure on each."
+        },
+        {
+          "ts": "2026-10-05T22:40:23.263381+00:00",
+          "change": "Anchored on the refund's state instead of the order's eligibility, and extended to ticket text. Four eligible-order positives (tickets beside a queued refund) belong to unnecessary_escalation; support-0005 stays present. Auto-approved refunds now count as present."
         }
       ],
       "spec_note": "Requirement now in SPEC.md; see analysis/report/spec_revisions.md for what changed and why."
