@@ -1,0 +1,19 @@
+{
+  "pull_request": "https://github.com/yuliaknut/cartwheel-homeworks/pull/1",
+  "case_id": "e-011",
+  "regression_run": {
+    "url": "https://github.com/yuliaknut/cartwheel-homeworks/actions/runs/37833288067",
+    "commit": "9a92a3c",
+    "change": "Reinstated the prompt instruction \"Cite the policy id (for example cw-returns) for every policy claim.\"",
+    "result": "failure",
+    "selected_case": "e-011 passed 0 of 5 and blocked (every reply cited cw-disputes); e-012 and e-013 also blocked"
+  },
+  "revert_run": {
+    "url": "https://github.com/yuliaknut/cartwheel-homeworks/actions/runs/37839280419",
+    "commit": "e2dde30",
+    "result": "failure",
+    "selected_case": "e-011 passed 5 of 5; e-012 and e-013 also passed 5 of 5"
+  },
+  "second_run_result": "failure",
+  "explanation": "The revert restored the original behavior: e-011, e-012 and e-013 passed all five runs. The second run still failed because regression case e-007 passed 3 of 5 with no infrastructure error. The agent opened near-identical 'verify the timeline for order 8001' tickets in four runs; the frozen unnecessary_escalation-v2 judge passed two and failed two, so the block reflects judge inconsistency rather than an agent regression. Kept as evidence, not rerun."
+}

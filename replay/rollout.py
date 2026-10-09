@@ -137,6 +137,9 @@ def _extract_turn(new_items: list[Any]) -> dict[str, Any]:
     calls: dict[str, dict[str, Any]] = {}
     ordered: list[dict[str, Any]] = []
     reply_parts: list[str] = []
+    # Message texts and tool calls in the order the agent produced them, so a
+    # judge can read the conversation as it happened (tool calls by index).
+    events: list[dict[str, Any]] = []
     for item in new_items:
         if isinstance(item, ToolCallItem):
             raw = item.raw_item
@@ -146,6 +149,7 @@ def _extract_turn(new_items: list[Any]) -> dict[str, Any]:
                 "result": None,
             }
             calls[getattr(raw, "call_id", None)] = record
+            events.append({"tool_call": len(ordered)})
             ordered.append(record)
         elif isinstance(item, ToolCallOutputItem):
             call_id = None
@@ -157,13 +161,18 @@ def _extract_turn(new_items: list[Any]) -> dict[str, Any]:
             if call_id in calls:
                 calls[call_id]["result"] = item.output
         elif isinstance(item, MessageOutputItem):
-            for part in getattr(item.raw_item, "content", []) or []:
-                text = getattr(part, "text", None)
-                if text:
-                    reply_parts.append(text)
+            texts = [
+                text
+                for part in getattr(item.raw_item, "content", []) or []
+                if (text := getattr(part, "text", None))
+            ]
+            reply_parts.extend(texts)
+            if texts:
+                events.append({"text": "\n".join(texts)})
     return {
         "reply": "\n".join(reply_parts),
         "tool_calls": ordered,
+        "events": events,
         "steps": len(new_items),
     }
 
@@ -307,6 +316,11 @@ def _one_check(
             check["text"].lower() not in reply.lower(),
             f"reply does not contain {check['text']!r}",
         )
+
+    if kind == "reply_not_matches":
+        found = re.search(check["pattern"], reply, re.IGNORECASE)
+        seen = f" (saw {found.group(0)!r})" if found else ""
+        return (found is None, f"reply does not match {check['pattern']!r}{seen}")
 
     if kind == "reply_asks_question":
         return ("?" in reply, "reply asks a clarifying question")

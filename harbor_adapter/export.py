@@ -9,6 +9,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from harbor_adapter.judge_input import HW5_JUDGE_INPUTS
 from replay.rollout import EVAL_CASES_PATH, load_frozen_judge
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -230,7 +231,8 @@ def cartwheel_code_checks(workspace: Path) -> bool:
 
 def _judge_py(mode: str, expected: str, judge: dict[str, Any]) -> str:
     """Run one frozen judge through the DocETL contract used in HW5."""
-    del mode
+    if mode in HW5_JUDGE_INPUTS:
+        return _hw5_judge_py(mode, expected, judge)
     template = '''from __future__ import annotations
 
 import json
@@ -313,6 +315,122 @@ def cartwheel_judge(workspace: Path) -> bool:
         .replace("__EXPECTED__", repr(expected))
     )
 
+
+def _hw5_judge_py(mode: str, expected: str, judge: dict[str, Any]) -> str:
+    """The student's HW5 judge with the input, gate, and parser it was validated on.
+
+    Same prompt wrapper and DocETL map as the default template; the trace text
+    comes from ``harbor_adapter.judge_input.hw5_judge_text``, the code gate
+    skips the model call when the gated tool was never called, and the parser
+    accepts only exactly ``Pass`` or ``Fail``. A malformed verdict raises, so
+    the trial has no reward and is rerun as an infrastructure error, as in HW5.
+    """
+    template = '''from __future__ import annotations
+
+import json
+import sqlite3
+import sys
+import tempfile
+from pathlib import Path
+
+from docetl.api import Dataset, MapOp, Pipeline, PipelineOutput, PipelineStep
+from rewardkit import criterion
+
+sys.path.insert(0, "/app")
+from harbor_adapter.judge_input import gate_passes, hw5_judge_text
+
+PROMPT = __PROMPT__
+MODEL = __MODEL__
+EXPECTED = __EXPECTED__
+GATE_TOOL = __GATE_TOOL__
+
+
+def _world_date(workspace: Path) -> str:
+    conn = sqlite3.connect(workspace / "data" / "cartwheel.db")
+    try:
+        row = conn.execute("SELECT value FROM meta WHERE key = 'world_asof'").fetchone()
+    finally:
+        conn.close()
+    if row is None:
+        raise ValueError("meta.world_asof missing from the task database")
+    return str(row[0])
+
+
+def _decode(row: dict) -> str:
+    critique = row.get("critique")
+    if not isinstance(critique, str) or not critique.strip():
+        raise ValueError("judge result needs a critique")
+    verdict = row.get("result")
+    if verdict not in ("Pass", "Fail"):
+        raise ValueError(f"judge result must be Pass or Fail, got {verdict!r}")
+    return verdict.lower()
+
+
+def _verdict(workspace: Path) -> str:
+    case = json.loads((workspace / "case.json").read_text())
+    evidence = json.loads((workspace / "cartwheel-result.json").read_text())
+    transcript = evidence["transcript"]
+    if gate_passes(transcript, GATE_TOOL):
+        print(json.dumps({"cartwheel_judge": {"result": "Pass", "critique": f"Code gate: no {GATE_TOOL} call, so no judge call."}}), flush=True)
+        return "pass"
+    content = hw5_judge_text(transcript, case["input"], _world_date(workspace))
+    with tempfile.TemporaryDirectory(prefix="cartwheel-judge-") as directory:
+        root = Path(directory)
+        input_path = root / "input.json"
+        output_path = root / "output.json"
+        input_path.write_text(
+            json.dumps([{"trace_id": "current", "content": content}])
+        )
+        operation = MapOp(
+            name="classify_failure_mode",
+            type="map",
+            model=MODEL,
+            prompt=(
+                PROMPT
+                + "\\n\\n--- Trace to evaluate ---\\n"
+                + "{{ input.content }}\\n\\n"
+                + "First write a critique of the trace against the criterion. "
+                + "Use specific evidence from the provided trace. Then return result "
+                + "as exactly Pass when the named failure is absent, or Fail when present."
+            ),
+            output={"schema": {"critique": "string", "result": "string"}},
+        )
+        pipeline = Pipeline(
+            name="cartwheel_judge",
+            datasets={"traces": Dataset(type="file", path=str(input_path))},
+            operations=[operation],
+            steps=[
+                PipelineStep(
+                    name="classify",
+                    input="traces",
+                    operations=["classify_failure_mode"],
+                )
+            ],
+            output=PipelineOutput(
+                type="file",
+                path=str(output_path),
+                intermediate_dir=str(root),
+            ),
+        )
+        pipeline.run()
+        rows = json.loads(output_path.read_text())
+    if len(rows) != 1:
+        raise ValueError("judge returned an unexpected number of results")
+    # Keep the judge's reasoning in verifier/test-stdout.txt; the reward keeps only the verdict.
+    print(json.dumps({"cartwheel_judge": {"result": rows[0].get("result"), "critique": rows[0].get("critique")}}, ensure_ascii=False), flush=True)
+    return _decode(rows[0])
+
+
+@criterion
+def cartwheel_judge(workspace: Path) -> bool:
+    return _verdict(workspace) == EXPECTED
+'''
+    return (
+        template.replace("__PROMPT__", repr(judge["prompt_text"]))
+        .replace("__MODEL__", repr(_judge_model(judge["model"])))
+        .replace("__EXPECTED__", repr(expected))
+        .replace("__GATE_TOOL__", repr(HW5_JUDGE_INPUTS[mode]["gate_tool"]))
+    )
 
 def _reward_toml(judge_names: list[str]) -> str:
     weights = {"checks": "1.0"}
