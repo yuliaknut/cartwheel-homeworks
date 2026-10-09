@@ -23,6 +23,9 @@ Steps for one period:
   8. Judge the union once: the HW5 code gate passes conversations with no
      ``escalate_to_human`` call, and the frozen model judges the rest.
   9. Save the random and risk verdicts separately (1 = failure present).
+ 10. Correct the random-sample rate with the judge's held-out test results,
+     write the Langfuse scores (stable ids, so a rerun updates them), and
+     record the period in ``monitoring/history.jsonl`` and the chart.
 """
 
 from __future__ import annotations
@@ -40,6 +43,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = REPO_ROOT / "monitoring" / "config.json"
 SCENARIOS_PATH = REPO_ROOT / "scenarios" / "monitoring_scenarios.jsonl"
 OUTPUT_DIR = REPO_ROOT / "monitoring" / "output"
+HISTORY_PATH = REPO_ROOT / "monitoring" / "history.jsonl"
+CHART_PATH = REPO_ROOT / "monitoring" / "prevalence.svg"
 GATE_TOOL = "escalate_to_human"
 
 
@@ -215,7 +220,65 @@ def run(label: str, start: dt.datetime, end: dt.datetime, scenario_ids: set[str]
         "risk_membership": {g: [r["id"] for r in rs] for g, rs in plan["risk_groups"].items()},
     }
     (out_dir / "verdicts.json").write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+
+    # Part C: correct the random-sample rate, write scores, record history.
+    from monitoring.correct import corrected_mode_prevalence
+    from monitoring.run_judges import judge_test_data
+    from monitoring.write_scores import build_score_records, post_scores
+
+    estimate = corrected_mode_prevalence(
+        list(result["random_verdicts"].values()), *judge_test_data(config["judge_id"])
+    )
+    scores = build_score_records(
+        config["judge_mode"], result["random_verdicts"], result["risk_verdicts"], estimate, label
+    )
+    (out_dir / "scores.json").write_text(json.dumps(scores, indent=1) + "\n", encoding="utf-8")
+    written = post_scores(scores, session_id=f"hw7-monitor-{label}")
+    flagged_risk = sum(result["risk_verdicts"].values())
+    print(
+        f"  raw {estimate['raw']}, corrected {estimate['corrected']} "
+        f"(95% CI {estimate['ci_low']}-{estimate['ci_high']}), threshold {config['threshold']}\n"
+        f"  risk groups flagged {flagged_risk} of {len(risk_ids)}; {written} Langfuse scores written"
+    )
+    entry = {
+        "period": label,
+        "judge_id": config["judge_id"],
+        "model": config["model"],
+        "from": report["from"],
+        "to": report["to"],
+        "langfuse_traces": report["langfuse_traces"],
+        "dropped_no_reply": report["dropped_no_reply"],
+        "conversations": report["conversations"],
+        "random_sample": report["random_sample"],
+        "risk_sample": report["risk_sample"],
+        "risk_flagged": flagged_risk,
+        "judge_calls": report["judge_calls"],
+        **{k: estimate[k] for k in ("raw", "corrected", "ci_low", "ci_high",
+                                    "failure_sensitivity", "pass_specificity")},
+        "threshold": config["threshold"],
+        "crossed": estimate["corrected"] > config["threshold"],
+    }
+    result["estimate"] = estimate
+    if scenario_ids is not None:
+        update_history(entry, config)
+    else:
+        (out_dir / "history_entry.json").write_text(json.dumps(entry, indent=1) + "\n", encoding="utf-8")
     return result
+
+
+def update_history(entry: dict[str, Any], config: dict[str, Any]) -> None:
+    """One line per comparison period (a rerun replaces its line), then redraw the chart."""
+    from monitoring.chart import prevalence_chart
+
+    rows = []
+    if HISTORY_PATH.exists():
+        rows = [json.loads(line) for line in HISTORY_PATH.read_text().splitlines() if line.strip()]
+    rows = [r for r in rows if r["period"] != entry["period"]] + [entry]
+    order = {p["label"]: n for n, p in enumerate(config["periods"])}
+    rows.sort(key=lambda r: order.get(r["period"], len(order)))
+    HISTORY_PATH.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    points = [{"label": r["period"], **{k: r[k] for k in ("corrected", "ci_low", "ci_high")}} for r in rows]
+    CHART_PATH.write_text(prevalence_chart(points, config["threshold"], config["judge_mode"]), encoding="utf-8")
 
 
 def main() -> None:
