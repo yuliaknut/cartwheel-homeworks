@@ -6,6 +6,16 @@
 <title>Trace review</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23539bf5'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/theme.css">
+<style>/* steps layout (config.conversation_layout = "steps"), copied from the HW4 viewer */
+  .step { margin: 0 0 18px 24px; padding: 0 0 0 14px; border-left: 2px solid var(--line); }
+  .step .msg.assistant { border: 0; border-radius: 0; background: transparent; padding: 0 0 6px; margin-bottom: 0; }
+  .step .msg.assistant .role::after { content: " · narration"; color: var(--fg-muted); font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .step .tool { margin-bottom: 8px; } .step .tool:last-child { margin-bottom: 0; }
+  .msg.reply { border-left-width: 6px; margin-top: 26px; }
+  .msg.reply .role::after { content: " · reply"; color: var(--fg-muted); font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .turn { display: flex; align-items: center; gap: 10px; margin: 18px 0 10px; color: var(--fg-muted); font-size: 13px; }
+  .turn::before, .turn::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+</style>
 <style>/* project hook: a sample may carry dot_class; ring = judge and human disagree */ .dot.ring { box-shadow: 0 0 0 2px var(--orange); } details.card > summary { list-style: none; cursor: pointer; } details.card > summary::-webkit-details-marker { display: none; } details.card[open] .tgl { transform: rotate(90deg); display: inline-block; } details.card .tgl { margin-left: auto; }
   details.summary { margin: 0; padding: 8px 20px 10px; background: var(--panel); border-bottom: 1px solid var(--line); font-size: 13px; }
   details.summary > summary { cursor: pointer; color: var(--fg-muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: 12px; margin-bottom: 6px; }
@@ -142,23 +152,63 @@ function summaryOf(content) {
   }
   return esc(JSON.stringify(v).slice(0, 90));
 }
+function toolCard(m, res) {
+  return `<div class="tool" title="click to show or hide the result"><div class="thead"><span class="tag">TOOL</span><span>${esc(m.name)}</span><span class="sum">result · ${res ? summaryOf(res.content) : '(none recorded)'}</span></div><pre class="args">${esc(pretty(m.arguments))}</pre>` +
+    (res ? `<pre class="result">${esc(pretty(res.content))}</pre>` : '') + `</div>`;
+}
+function msgCard(m, extra) {
+  const role = ['user', 'assistant', 'error'].includes(m.role) ? m.role : 'observation';
+  const label = m.label || (role === 'observation' ? (m.role || 'observation') : role);
+  const text = m.text ?? m.content ?? '';
+  const body = role === 'assistant' ? mdLite(typeof text === 'string' ? text : pretty(text)) : esc(typeof text === 'string' ? text : pretty(text));
+  return `<div class="msg ${role}${extra ? ' ' + extra : ''}"><span class="role">${esc(label)}</span>${body}</div>`;
+}
 function renderMessages(msgs) {
+  if (state.config && state.config.conversation_layout === 'steps') return renderSteps(msgs);
   const out = []; let i = 0;
   while (i < msgs.length) {
     const m = msgs[i];
     if (m.role === 'tool_call') {
       const res = msgs[i + 1] && msgs[i + 1].role === 'tool_result' ? msgs[i + 1] : null;
-      out.push(`<div class="tool" title="click to show or hide the result"><div class="thead"><span class="tag">TOOL</span><span>${esc(m.name)}</span><span class="sum">result · ${res ? summaryOf(res.content) : '(none recorded)'}</span></div><pre class="args">${esc(pretty(m.arguments))}</pre>` +
-        (res ? `<pre class="result">${esc(pretty(res.content))}</pre>` : '') + `</div>`);
-      i += res ? 2 : 1; continue;
+      out.push(toolCard(m, res)); i += res ? 2 : 1; continue;
     }
     if (m.role === 'tool_result') { out.push(`<div class="tool open"><div class="thead"><span class="tag">RESULT</span><span>${esc(m.name)}</span></div><pre class="result">${esc(pretty(m.content))}</pre></div>`); i++; continue; }
-    const role = ['user', 'assistant', 'error'].includes(m.role) ? m.role : 'observation';
-    const label = m.label || (role === 'observation' ? (m.role || 'observation') : role);
-    const text = m.text ?? m.content ?? '';
-    const body = role === 'assistant' ? mdLite(typeof text === 'string' ? text : pretty(text)) : esc(typeof text === 'string' ? text : pretty(text));
-    out.push(`<div class="msg ${role}"><span class="role">${esc(label)}</span>${body}</div>`); i++;
+    out.push(msgCard(m)); i++;
   }
+  return out.join('');
+}
+/* project hook: config.conversation_layout = "steps" draws the HW4 viewer's layout: per turn the user
+   message, then steps (narration plus the tool calls it made) nested on a rail, then the reply.
+   A new turn starts at a user message that follows anything but another user message. */
+function renderSteps(msgs) {
+  const lead = []; let i = 0;
+  while (i < msgs.length && !['user', 'assistant', 'tool_call', 'tool_result'].includes(msgs[i].role)) lead.push(msgCard(msgs[i++]));
+  const turns = []; let prev = null;
+  for (; i < msgs.length; i++) {
+    const m = msgs[i];
+    if (m.role === 'user' && prev !== 'user') turns.push([]);
+    if (!turns.length) turns.push([]);
+    turns[turns.length - 1].push(m); prev = m.role;
+  }
+  const out = [...lead];
+  turns.forEach((items, t) => {
+    if (turns.length > 1) out.push(`<div class="turn">turn ${t + 1} of ${turns.length}</div>`);
+    let k = 0;
+    while (k < items.length && items[k].role === 'user') out.push(msgCard(items[k++]));
+    let replyAt = -1; for (let j = items.length - 1; j >= k; j--) if (items[j].role === 'assistant') { replyAt = j; break; }
+    const middle = items.slice(k, replyAt < 0 ? items.length : replyAt);
+    let step = [];
+    const flush = () => { if (step.length) { out.push(`<div class="step">${step.join('')}</div>`); step = []; } };
+    for (let x = 0; x < middle.length; x++) {
+      const m = middle[x];
+      if (m.role === 'assistant') { flush(); step.push(msgCard(m)); continue; }
+      if (m.role === 'tool_call') { const nx = middle[x + 1]; const res = nx && nx.role === 'tool_result' ? nx : null; step.push(toolCard(m, res)); if (res) x++; continue; }
+      if (m.role === 'tool_result') { step.push(`<div class="tool open"><div class="thead"><span class="tag">RESULT</span><span>${esc(m.name)}</span></div><pre class="result">${esc(pretty(m.content))}</pre></div>`); continue; }
+      flush(); out.push(msgCard(m));
+    }
+    flush();
+    if (replyAt >= 0) { out.push(msgCard(items[replyAt], 'reply')); for (let j = replyAt + 1; j < items.length; j++) out.push(msgCard(items[j])); }
+  });
   return out.join('');
 }
 /* project hook: context may be one card or a list; collapsible: true makes a card foldable, collapsed: true starts it folded */

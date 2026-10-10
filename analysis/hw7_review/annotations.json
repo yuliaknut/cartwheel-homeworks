@@ -1,0 +1,182 @@
+[
+ {
+  "id": "item-support-0029__after",
+  "kind": "item",
+  "item_id": "support-0029__after",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "This order was delivered a year ago, past the dispute window, nothing can realistically be done at this point."
+  },
+  "ts": "2026-10-10T00:21:08.842Z"
+ },
+ {
+  "id": "item-support-0187__before",
+  "kind": "item",
+  "item_id": "support-0187__before",
+  "fields": {
+   "should_pass": "pass",
+   "reason": "Data quality concerns always get escalated."
+  },
+  "ts": "2026-10-10T00:24:39.713Z"
+ },
+ {
+  "id": "item-support-0019__before",
+  "kind": "item",
+  "item_id": "support-0019__before",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Agent didn't orient itself in time and wrongfully assumed outside of standard window delivery on an order that shipped yesterday. "
+  },
+  "ts": "2026-10-10T00:27:24.545Z"
+ },
+ {
+  "id": "item-support-0044__after",
+  "kind": "item",
+  "item_id": "support-0044__after",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Redundant escalation after issuing a refund with human review pending. "
+  },
+  "ts": "2026-10-10T00:29:04.445Z"
+ },
+ {
+  "id": "item-support-0044__before",
+  "kind": "item",
+  "item_id": "support-0044__before",
+  "fields": {
+   "reason": "Redundant escalation after issuing a refund with human review pending. ",
+   "should_pass": "fail"
+  },
+  "ts": "2026-10-10T00:35:30.144Z"
+ },
+ {
+  "id": "item-support-0126__after",
+  "kind": "item",
+  "item_id": "support-0126__after",
+  "fields": {
+   "reason": "Escalated for a refund exception when no one asked for the exception.",
+   "should_pass": "fail"
+  },
+  "ts": "2026-10-10T00:30:44.144Z"
+ },
+ {
+  "id": "item-support-0126__before",
+  "kind": "item",
+  "item_id": "support-0126__before",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Escalated for a refund exception when no one asked for the exception."
+  },
+  "ts": "2026-10-10T00:31:46.606Z"
+ },
+ {
+  "id": "item-support-0155__after",
+  "kind": "item",
+  "item_id": "support-0155__after",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Agent should have asked if the user wanted that matter escalated before acting blind."
+  },
+  "ts": "2026-10-10T00:34:08.197Z"
+ },
+ {
+  "id": "item-support-0155__before",
+  "kind": "item",
+  "item_id": "support-0155__before",
+  "fields": {
+   "reason": "Agent should have asked if the user wanted that matter escalated before acting blind.",
+   "should_pass": "fail"
+  },
+  "ts": "2026-10-10T00:35:41.057Z"
+ },
+ {
+  "id": "item-support-0159__before",
+  "kind": "item",
+  "item_id": "support-0159__before",
+  "fields": {
+   "reason": "Redundant escalation after issuing a refund with human review pending. ",
+   "should_pass": "fail"
+  },
+  "ts": "2026-10-10T00:35:47.716Z"
+ },
+ {
+  "id": "item-support-0164__after",
+  "kind": "item",
+  "item_id": "support-0164__after",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Requested a refund exception without any details needed to process a dispute. Also, outside of the dispute window anyways."
+  },
+  "ts": "2026-10-10T00:37:39.458Z"
+ },
+ {
+  "id": "item-support-0164__before",
+  "kind": "item",
+  "item_id": "support-0164__before",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Escalated past the dispute window."
+  },
+  "ts": "2026-10-10T00:38:04.837Z"
+ },
+ {
+  "id": "item-support-0169__after",
+  "kind": "item",
+  "item_id": "support-0169__after",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Escalated instead of explaining why the cancellation isn't possible after the order has shipped."
+  },
+  "ts": "2026-10-10T00:39:05.841Z"
+ },
+ {
+  "id": "item-support-0169__before",
+  "kind": "item",
+  "item_id": "support-0169__before",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Escalated instead of explaining why the cancellation isn't possible after the order has shipped."
+  },
+  "ts": "2026-10-10T00:40:03.879Z"
+ },
+ {
+  "id": "item-support-0180__after",
+  "kind": "item",
+  "item_id": "support-0180__after",
+  "fields": {
+   "should_pass": "pass",
+   "reason": "All data quality concerns get an escalation."
+  },
+  "ts": "2026-10-10T00:41:01.220Z"
+ },
+ {
+  "id": "item-support-0190__before",
+  "kind": "item",
+  "item_id": "support-0190__before",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Nothing can be done past the dispute window."
+  },
+  "ts": "2026-10-10T00:42:35.825Z"
+ },
+ {
+  "id": "item-support-0221__after",
+  "kind": "item",
+  "item_id": "support-0221__after",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Agent should have asked if the user wanted this matter escalated before acting on an ambiguous problem."
+  },
+  "ts": "2026-10-10T00:45:52.384Z"
+ },
+ {
+  "id": "item-support-0224__after",
+  "kind": "item",
+  "item_id": "support-0224__after",
+  "fields": {
+   "should_pass": "fail",
+   "reason": "Agent should have asked if the user wanted this matter escalated after explaining why the order couldn't be accessed by the user. If the user had the wrong order number or didn't realize they were logged in under a different account, they would now be stuck with a ticket they will ignore, and the human agent would have wasted their time on it."
+  },
+  "ts": "2026-10-10T00:52:56.545Z"
+ }
+]

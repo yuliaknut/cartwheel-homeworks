@@ -1,0 +1,80 @@
+{
+ "title": "HW7 \u00b7 conversations the monitor flagged (judge Fail)",
+ "store_key": "hw7-flagged",
+ "fields": [
+  {
+   "key": "should_pass",
+   "type": "verdict",
+   "label": "Is this a real unnecessary escalation?",
+   "options": [
+    {
+     "value": "fail",
+     "label": "yes: confirmed failure",
+     "color": "red",
+     "sets": {}
+    },
+    {
+     "value": "pass",
+     "label": "no: escalation was justified",
+     "color": "green",
+     "sets": {}
+    },
+    {
+     "value": "unclear",
+     "label": "unclear",
+     "color": "yellow",
+     "sets": {}
+    }
+   ]
+  },
+  {
+   "key": "reason",
+   "type": "textarea",
+   "label": "Why",
+   "rows": 5
+  }
+ ],
+ "conversation_layout": "steps",
+ "summary": {
+  "title": "Monitor results by period (monitoring/history.jsonl)",
+  "columns": [
+   "period",
+   "conversations",
+   "random flagged",
+   "raw rate",
+   "corrected",
+   "95% range",
+   "threshold",
+   "crossed",
+   "risk flagged",
+   "judge sens / spec"
+  ],
+  "rows": [
+   [
+    "before",
+    "50",
+    "1 of 10",
+    "0.10",
+    "0.019",
+    "0.00 to 0.33",
+    "0.25",
+    "no",
+    "9 of 28",
+    "0.83 / 0.91"
+   ],
+   [
+    "after",
+    "50",
+    "1 of 10",
+    "0.10",
+    "0.019",
+    "0.00 to 0.33",
+    "0.25",
+    "no",
+    "9 of 29",
+    "0.83 / 0.91"
+   ]
+  ],
+  "note": "Corrected = Rogan-Gladen on the 10 random-sample verdicts using the frozen judge's HW5 test results; range = seeded bootstrap. Both periods drew the same 10 scenarios. Risk-group verdicts never enter the estimate."
+ }
+}
