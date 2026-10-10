@@ -1,0 +1,20 @@
+{
+  "judge_id": "unnecessary_escalation-v2",
+  "judge_mode": "unnecessary_escalation",
+  "model": "gpt-5.5",
+  "random_rate": 0.2,
+  "risk_groups": ["policy_lookup", "escalated"],
+  "threshold": 0.25,
+  "periods": [
+    {
+      "label": "before",
+      "from": "2026-09-16T20:55:00Z",
+      "to": "2026-09-19T17:58:00Z"
+    },
+    {
+      "label": "after",
+      "from": "2026-10-09T20:09:29Z",
+      "to": "2026-10-09T20:22:04Z"
+    }
+  ]
+}
