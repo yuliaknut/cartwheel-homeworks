@@ -30,6 +30,7 @@ from typing import Any
 from agents.exceptions import MaxTurnsExceeded, ModelBehaviorError
 
 from replay.harness import ReplayInfraError, replay_case, summarize_rollouts
+from replay.hw5_judge import MalformedVerdict, judge_case, uses_hw5_input
 from replay.rollout import (
     apply_checks,
     judge_reply_with_text,
@@ -127,15 +128,28 @@ def make_runner(
             raise
         outcome = apply_checks(case, transcript, db_path)
         failure_modes = list(outcome["failed"])
+        if not transcript["final_reply"].strip():
+            # A silent run (e.g., a provider refusal) would otherwise pass
+            # every check and gate; an optimizer must not be able to score it.
+            failure_modes.append("empty_reply")
         docs = retrieved_docs_text(transcript)
         judge_reasons = {}
         for mode, judge in judges.items():
             expected = case["expected"]["judges"][mode]
             try:
-                verdict, judge_reasons[mode] = judge_reply_with_text(
-                    judge, transcript["final_reply"], docs
-                )
+                if uses_hw5_input(mode):
+                    # The input, gate, and parser the HW5 judge was validated on.
+                    verdict, judge_reasons[mode] = judge_case(
+                        mode, judge, transcript, case["input"], db_path
+                    )
+                else:
+                    verdict, judge_reasons[mode] = judge_reply_with_text(
+                        judge, transcript["final_reply"], docs
+                    )
                 judge_reasons[mode] = judge_reasons[mode][:1000]
+            except MalformedVerdict as exc:
+                # HW5 re-sampled malformed verdicts; rerun this rollout.
+                raise ReplayInfraError(f"{mode} judge: {exc}") from exc
             except Exception as exc:  # noqa: BLE001
                 if _is_infra_error(exc):
                     raise ReplayInfraError(str(exc)) from exc
