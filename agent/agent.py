@@ -399,7 +399,13 @@ def issue_refund(
 def escalate_to_human(
     wrapper: RunContextWrapper[AuthContext], summary: str, context: str
 ) -> dict[str, Any]:
-    """Open a ticket for a human support agent when a case is above your authority."""
+    """Open a ticket for a human support agent. Use it only for an account
+    change, for a dispute or request that the help center and the order record
+    cannot settle, or when you are genuinely unsure whether policy allows an
+    action. Do not use it for a refund that issue_refund has already queued,
+    for a case that already has a ticket, or to pass along a request where no
+    remedy remains because the return and dispute windows have closed; tell
+    the user that yourself."""
     return _call(wrapper, escalate_to_human_logic, summary, context)
 
 
