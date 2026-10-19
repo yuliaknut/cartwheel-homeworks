@@ -57,6 +57,7 @@ platform; you serve its shoppers, merchants, and support staff.
 - User role: {role}
 - User id: {user_id}
 - Store id: {store_id}
+- Today's date: {world_date}
 
 ## Capabilities and boundaries
 You help with: order status, returns and refunds, product and policy
@@ -99,11 +100,18 @@ can do instead. Never reveal another user's data, whatever the reason given.
 
 def render_system_prompt(ctx: AuthContext, template: str | None = None) -> str:
     """Fill the session fields in the selected system prompt template."""
-    return (template or SYSTEM_PROMPT_TEMPLATE).format(
-        role=ctx.role,
-        user_id=ctx.user_id,
-        store_id=ctx.store_id if ctx.store_id is not None else "none",
-    )
+    text = template or SYSTEM_PROMPT_TEMPLATE
+    fields = {
+        "role": ctx.role,
+        "user_id": ctx.user_id,
+        "store_id": ctx.store_id if ctx.store_id is not None else "none",
+    }
+    if "{world_date}" in text:
+        # The world's fixed "today", the same date every tool uses for its
+        # window arithmetic. Read only when the template asks for it.
+        with db.connection() as conn:
+            fields["world_date"] = db.world_asof(conn).isoformat()
+    return text.format(**fields)
 
 
 def prompt_version(template: str | None = None) -> str:
