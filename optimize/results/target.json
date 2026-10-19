@@ -1,0 +1,12 @@
+{
+  "failure_mode": "unnecessary_escalation",
+  "source": "Homework 5 failure report (analysis/report/hw5_summary.md) on the Homework 4 taxonomy; prevalence from HW4/HW5 human labels",
+  "prevalence": 0.18,
+  "requirement": "ESC-5",
+  "example_trace_ids": [
+    "b05345a5a81767eeb0c4910a896da25c",
+    "862496965d2e8079e51f8a4f714368f1",
+    "53e23366f76bb1851946e6ef6f219a9d"
+  ],
+  "why_agent_can_change_it": "In all three traces (support-0054, support-0127, support-0169) the agent had already retrieved the facts that settle the request: order 3767 delivered 179 days earlier with both windows closed, order 7839 outside Juniper's 14-day store window, order 3521 already shipped with a cancellation policy that names the post-shipment path. It opened a ticket anyway, so the failure is in how the prompt frames escalation (the Escalation section tells the agent to escalate when unsure or when a refund exceeds the threshold, and says nothing about resolving a closed case itself), not in missing tools or data. Prevalence: 45 of the 250 Homework 3 conversations; all 65 escalating conversations were human-labeled, 45 present, and a conversation without an escalate_to_human call cannot have this failure."
+}
