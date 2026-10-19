@@ -1,0 +1,18 @@
+{
+  "comparison_models": [
+    "gpt-6.1-sol",
+    "claude-opus-5-5",
+    "claude-haiku-5-5"
+  ],
+  "created_at": "2026-10-19T19:40:39.198280+00:00",
+  "development_model": "claude-haiku-5-5",
+  "development_result": "/Users/yuliaknut/repos/evals-course/cartwheel-homeworks/optimize/results/latest-development.json",
+  "development_score": 0.9,
+  "git_commit": "da22501a7e9b92499c9e2d068cb224742790609a",
+  "grader_sha256": "15325a333bbaa2d3ff7cafc4c2370dde298e94e3b1578c1f42b2eab3358d21ac",
+  "kind": "starting",
+  "model_selection_sha256": "9b5a7f0690e2a8db35a199018caf89cab6aa1e6c71b944bc324b4b0ebe059434",
+  "prompt_sha256_12": "7f2c0a371980",
+  "split_membership_sha256": "fc7f7a8093765aa975b79984eccf8485d247318059491a5f73e1727a9359bd39",
+  "write_pass_5": null
+}
