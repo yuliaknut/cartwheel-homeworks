@@ -29,7 +29,7 @@ from optimize.workflow import (
     write_json,
 )
 
-REQUIRED_FIELDS = ("{role}", "{user_id}", "{store_id}")
+REQUIRED_FIELDS = ("{role}", "{user_id}", "{store_id}", "{world_date}")
 SMOKE_METRIC_CALLS = 4
 
 
@@ -130,7 +130,7 @@ def main() -> None:
             dataset=units,
             objective=(
                 "Improve the Cartwheel system prompt so the agent passes the development "
-                "case checks and the saved Homework 5 judges. Keep the three session fields, "
+                "case checks and the saved Homework 5 judges. Keep the four session fields, "
                 "and do not weaken access control, confirmation, or refund safety rules."
             ),
             background=(
