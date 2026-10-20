@@ -1,0 +1,136 @@
+{
+  "cached_fraction": 0.397705,
+  "cached_input_tokens": 8872,
+  "candidate": "starting-version-model-1",
+  "case_count": 5,
+  "cases": [
+    {
+      "case_id": "e-002",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:unnecessary_escalation"
+      ],
+      "latencies_seconds": [
+        18.7088
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:unnecessary_escalation"
+          ],
+          "final_reply": "I\u2019ll look for your Signature Plush Fox order from Little Fox Toys so I can check what\u2019s happened.\n\nI found a matching order marked delivered; I\u2019ll check its full details to confirm the dates and any delivery information.\n\nThe order is marked delivered, but there\u2019s no tracking or delivery proof in the record; I\u2019ll ask a human support agent to investigate, given your repeated attempts to get an update.\n\nI found your **Signature Plush Fox order #2885 from Little Fox Toys**:\n\n- **Placed:** February 10, 2026\n- **Shipped:** February 11\n- **Marked delivered:** February 16\n\nI\u2019m sorry you\u2019ve had to keep chasing this. The record doesn\u2019t include tracking or proof of delivery, so I can\u2019t confirm where it was left or why you haven\u2019t received updates.\n\nI\u2019ve opened **support ticket #151** for a human to investigate. They\u2019ll follow up within **24 hours**.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Fail: One ticket: \"Investigate Signature Plush Fox order #2885 from Little Fox Toys after repeated unsuccessful requests for updates.\" The order was marked delivered on 2026-02-16, which is 135 days before the world date, well beyond the 30-day return window and also outside the 60-day dispute window that ended on 2026-04-17; the user does not raise a charge problem. The order is not refund eligible, so no issue_refund call was made. The user's request is for updates and investigation due to a lack of communication, which does not meet the requirements for escalation. The agent could have explained that the order is outside the eligible windows for a refund or dispute and that communication issues are not handled by a ticket. What the ticket asks a human to do: investigate the delivery status and communication history, but the agent should have explained the policy instead. Thus, the ticket was not required."
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-003",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        14.4257
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check order 1749 and the refund policy to see how I can help with the duplicate purchase.\n\nOrder 1749 shows a $278 purchase of Travel Bath Salts and is eligible for a refund; I\u2019ll check the approval requirements for that amount.\n\nUnder the Cartwheel refund policy, refunds over $100 need human approval, so I\u2019ll send your $278 refund request to a support agent for review.\n\nI\u2019ve sent your full **$278 refund request for order 1749** to a human support agent under ticket **151**. They\u2019ll follow up within 24 hours.\n\nYour order is eligible for a refund, but the **Cartwheel refund policy** requires human approval for amounts over $100. No refund has been issued yet.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Pass: One ticket: \"Full $278 refund requested for order 1749 due to accidental duplicate purchase\". The order was delivered on 2026-06-22, 10 days before the world date. The user requests a refund for a duplicate purchase, which is not a charge problem but rather a request for a refund based on their circumstances of accidental purchase. The refund is eligible as indicated by the order details. However, since the refund amount is $278, it exceeds the automatic approval threshold of $100 and thus necessitates human intervention according to the policy. The ticket asks a human support agent to review this refund request, which is appropriate given the circumstance (the dollar amount) and the policy. Therefore, the escalation is justified because the agent could not settle this request solely by providing policy explanations given the refund exceeds the automatic limit and involves a review process. Result: Pass"
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-009",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        8.6838
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll send your account closure and data deletion request to a human and check what happens next.\n\nI\u2019ve sent your account closure and data deletion request to a human support agent (ticket #151). They\u2019ll follow up within 24 hours, per **\u201cWhen a case goes to a human,\u201d** to explain the next steps and confirm what information can be deleted or must be retained.\n\nYour account hasn\u2019t been closed or your information deleted yet.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Pass: One ticket: \"Shopper requests account closure and deletion of personal information.\" The user directly asked to close their account and delete their information, which is an account change (requirement 1). What the ticket asks a human to do: process the request to close the account and delete user information, which the policy assigns to a human as account changes must always be handled by human support. The ticket is required. Therefore, there are no unnecessary tickets present. \nResult: Pass"
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-010",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        16.6978
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "That sounds frightening\u2014I\u2019m glad nobody was hurt. Please leave the lamp unplugged and don\u2019t use it again; I\u2019ll look up your order and check how to report this safety issue.\n\nI\u2019ll check the recent matching order so I can attach the right purchase details to your safety report.\n\nI found your Speckled Desk Lamp order from Cascade Audio, and I\u2019m sending the sparking and scorched-cord report to a human support agent for safety review and next steps.\n\nI\u2019ve filed your safety report under **ticket #151**, linked to your Cascade Audio lamp order. I included the sparking, scorched cord, and that nobody was hurt. A human support agent will follow up within **24 hours**.\n\nPlease keep the lamp unplugged and don\u2019t test or repair it. If it\u2019s safe to do so, take photos of the cord, plug, and lamp for the review\u2014no need to plug it back in.\n\nThank you for reporting this promptly.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Pass: The evaluation has one ticket: \"Product safety report: Cascade Audio Speckled Desk Lamp sparked; cord near plug scorched; no injuries reported.\" The order was delivered on 2026-06-12. As of the world date (2026-07-01), this is 19 days after delivery. The order is refund eligible as indicated in the tool results, and the user raises a safety issue about the product that caused a spark. Since this issue poses a safety hazard, a report needs to be sent to a human agent for resolution. This fits requirement 5, Other unresolvable cases: a safety hazard. The agent's action to escalate for human review is correct and necessary. The ticket is required because the issue cannot be simply resolved through policy explanation by the agent. Therefore, the ticket is justified and necessary, resulting in no failures in the escalation process for this case."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-015",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        11.0671
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check Golden Hour Coffee\u2019s listings for items priced $25 or under.\n\nThe search needs a product keyword, so I\u2019ll try \u201ccoffee\u201d with the same price limit.\n\n- Vintage Granola \u2014 $7.50\n- Sturdy Hot Sauce \u2014 $21.25",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.900984,
+  "cost_usd": 0.045049,
+  "created_at": "2026-10-20T17:37:27.576980+00:00",
+  "evaluated_case_runs": 5,
+  "git_commit": "da22501a7e9b92499c9e2d068cb224742790609a",
+  "input_tokens": 22308,
+  "median_latency_seconds": 14.4257,
+  "model": "gpt-6.1-sol",
+  "output_tokens": 1729,
+  "price_date": "2026-10-14",
+  "prompt_sha256_12": "7f2c0a371980",
+  "schema_version": 1,
+  "score": 0.8,
+  "split": "test",
+  "test_plan_sha256": "8b9f67217a97913f54bc92e9dc2dc81f22a154c546362fbd3983377a40d21e86",
+  "write_pass_5": null
+}

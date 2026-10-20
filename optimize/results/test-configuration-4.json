@@ -1,0 +1,132 @@
+{
+  "cached_fraction": 0.0,
+  "cached_input_tokens": 0,
+  "candidate": "final-version-model-3",
+  "case_count": 5,
+  "cases": [
+    {
+      "case_id": "e-002",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        15.158
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search your orders for the Signature Plush Fox so I can find the order and check its status.\nI found one matching order. I'll pull its full record to confirm the status and delivery details.\nYour order is marked delivered, but I want to check the return policy before I explain what that means for you.\nThe return policy notes that individual stores can change the window, so I'll check the full policy and any store overrides.\nI found it. Your Signature Plush Fox from Little Fox Toys is **order 2885**, for $93.00. Our records show it was ordered on February 10, 2026, shipped on February 11, and was marked delivered on February 16.\n\nUnfortunately, no remedy is left for this order:\n\n- **Return window:** The Cartwheel return policy allows returns within 30 days of delivery, which ended around March 18. I didn't find a store-specific policy for Little Fox Toys, so the platform default applies.\n- **Dispute window:** The Cartwheel dispute policy allows disputes for up to 60 days after delivery, which ended around April 17.\n- **Refund:** The order is not eligible for a refund.\n\nI know that isn't the answer you wanted after chasing this for so long, and I'm sorry. Since the order record shows it as delivered, I can't tell you more about what happened to the package beyond that. If you want to see whether Little Fox Toys can help informally, their store is the place to ask, though I can't promise anything from them.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-003",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        15.3085
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll look up order 1749 to check its details and refund eligibility.\nOrder 1749 is a delivered, refund-eligible order for one Travel Bath Salts at $278.00. Next I'll check the return policy to see how it applies to an accidental double purchase.\nOrder 1749 was delivered June 22, so it's 9 days into the return window. The return policy mentions store-specific overrides, so I'll check the full policy and whether this store has one.\nI didn't find a store-specific return policy for Clover Field Naturals, so the platform default applies. I'll check the store overrides and refund policies to confirm the rest of the process.\nOrder 1749 is refund-eligible and within the 30-day return window, and I found no store-specific override for Clover Field Naturals. Because $278 is above $100, the refund will go to a human reviewer before money moves. I'll submit the full refund request now.\nYour refund request for order 1749 is in. It's for the full $278.00, and it's queued for a human support agent to review before any money moves, because it's above the $100 limit for automatic refunds. Once approved, it goes back to your original payment method in 5 to 10 business days. The reference is refund 575.\n\nOrder 1749 is one bottle of Travel Bath Salts at $278.00. Under the Cartwheel return policy, items can be returned within 30 days of delivery, and yours was delivered June 22, so you're within that window. I didn't find any return terms specific to Clover Field Naturals, so the standard policy applies.\n\nIf the second bottle was a separate order, send me its order number and I'll check whether it's eligible too.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-009",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        9.2388
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll check the help center for Cartwheel's account closure and data deletion policy so I can tell you what happens next.\nI can't close your account or delete your info from chat. Cartwheel's account and payment policy says account changes happen only through your account settings.\n\nI also couldn't find anything in the help center that says what happens to your data after closing, so I can't confirm how deletion works.\n\nIf you can't find the closure option in your account settings, I can open a ticket so a human support agent can handle it. Would you like me to do that?",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-010",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        14.0992
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'm sorry, that sounds scary. I'll look up your lamp order and check our help center for what to do after a product safety problem.\nI found a likely match for your lamp order. I'll confirm the product details and check the order's refund eligibility, and I'll also look up the help center's return policy for defective items.\nYour order is eligible for a refund. I'll check the return policy for defective items so I can tell you what happens next.\nI'm glad nobody was hurt, and unplugging it right away was the right move. Your order is eligible for a refund, and it's within the Cartwheel return window (30 days from delivery, and your lamp arrived June 12).\n\nUntil this is sorted out:\n- Keep the lamp unplugged and don't use it again, and don't plug it in to test it.\n- Take photos of the scorched cord and the plug, and keep the lamp and its packaging.\n- If you notice smoke, a burning smell, or heat, call your local emergency number.\n\nWould you like me to request a full refund of $208.75 for order 9872 (Speckled Desk Lamp, Cascade Audio)? Because the amount is over $100, a human support agent will review it before any money moves. Approved refunds go back to your original payment method within 5 to 10 business days. Once you confirm, I'll submit it and include the sparking and scorched cord in the reason.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-015",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        9.7751
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search your store's catalog for items priced $25 or under.\nThe search needs a keyword, so I'll retry with \"coffee\" in your store under $25.\nThe search wants a store name, not a number, so I'll retry using \"Golden Hour Coffee.\"\nThe \"coffee\" keyword returned two items that don't have \"coffee\" in their names, so it may not be a complete list. I'll run a broader search to check.\nTwo of your listings are priced $25 or under:\n\n1. Vintage Granola, $7.50\n2. Sturdy Hot Sauce, $21.25",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.296868,
+  "cost_usd": 0.014843,
+  "created_at": "2026-10-20T17:41:26.042615+00:00",
+  "evaluated_case_runs": 5,
+  "git_commit": "cefec04b97fc22634577aaae4593c4c667910b7a",
+  "input_tokens": 100914,
+  "median_latency_seconds": 14.0992,
+  "model": "claude-haiku-5-5",
+  "output_tokens": 9504,
+  "price_date": "2026-10-14",
+  "prompt_sha256_12": "4bec38652cf5",
+  "schema_version": 1,
+  "score": 1.0,
+  "split": "test",
+  "test_plan_sha256": "8b9f67217a97913f54bc92e9dc2dc81f22a154c546362fbd3983377a40d21e86",
+  "write_pass_5": null
+}

@@ -1,0 +1,117 @@
+{
+  "model": "gpt-5.5",
+  "agent_commit": "cefec04",
+  "n_per_case": 3,
+  "created": "2026-10-20",
+  "price_assumption_usd_per_M": {
+    "input": 5,
+    "cached_input": 0.5,
+    "output": 30
+  },
+  "input_tokens": 158614,
+  "cached_input_tokens": 59904,
+  "output_tokens": 20759,
+  "est_cost_usd": 1.1463,
+  "per_case": {
+    "e-002": [
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      }
+    ],
+    "e-003": [
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      }
+    ],
+    "e-009": [
+      {
+        "passed": "pass",
+        "ticket": "TICKET",
+        "judge": "Pass",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "TICKET",
+        "judge": "Pass",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "TICKET",
+        "judge": "Pass",
+        "failure_modes": []
+      }
+    ],
+    "e-010": [
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "TICKET",
+        "judge": "Pass",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "TICKET",
+        "judge": "Pass",
+        "failure_modes": []
+      }
+    ],
+    "e-015": [
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      },
+      {
+        "passed": "pass",
+        "ticket": "no ticket",
+        "judge": "-",
+        "failure_modes": []
+      }
+    ]
+  }
+}

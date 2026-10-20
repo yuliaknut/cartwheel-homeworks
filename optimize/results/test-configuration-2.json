@@ -1,0 +1,132 @@
+{
+  "cached_fraction": 0.0,
+  "cached_input_tokens": 0,
+  "candidate": "starting-version-model-2",
+  "case_count": 5,
+  "cases": [
+    {
+      "case_id": "e-002",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        19.5928
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search your orders for the Signature Plush Fox so we don't need the order number.\nI found one matching order. Next I'll pull its full details and confirm the product and store so I know it's the right one.\nI'll check the help center for what to do when an order shows as delivered but never arrived, in case that's what happened here.\nI found your order. It's **order #2885**: one Signature Plush Fox from Little Fox Toys, $93.00, placed February 10, 2026.\n\n- **Shipped:** February 11, 2026, the day after you ordered. That's within the 3 days stores are allowed under the Cartwheel shipping policy.\n- **Delivered:** Our records show it was delivered on **February 16, 2026**.\n\nSo on our side, the order went through and was marked delivered. I'm sorry nobody told you that. You shouldn't have had to keep chasing it.\n\n**Did the fox actually reach you?**\n\n- **If it never arrived:** Tell me and I'll pass it to a human support agent straight away. They can look into a delivery marked complete that you didn't get. I'll include all the details above so you won't have to explain it again.\n- **If it arrived but something's wrong with it:** Under the Cartwheel return policy, you have 30 days from the delivery date to return an item. This order is past that window, so I can't refund it myself. If something's wrong, tell me what and I can still have a human look at it.\n\nWhich of these fits? I'll take it from there.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-003",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        18.5056
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll pull up order 1749 to check the details and whether it can be refunded.\nOrder 1749 can be refunded. Next I'll check the return policy and look through your recent orders for the duplicate purchase.\nOrder 1749 is within the return window, and since it's over $100 the refund will go to a person for review. I'll submit it now.\nI've asked for a full refund of **$278.00** on order 1749 (Travel Bath Salts from Clover Field Naturals). Your refund number is **575**.\n\n- **It needs a quick review first.** The Cartwheel refund policy sends any refund over $100 to a support agent for approval, so it isn't final yet. A person will look at it and follow up with you.\n- **If it's approved,** the money goes back to your original payment method. It usually shows up within 5 to 10 business days.\n- **You're within the return window.** The Cartwheel return policy gives you 30 days from delivery, and this order arrived on June 22. Check with Clover Field Naturals before sending anything back, since the item may need to be in the condition their listing describes.\n\nI only found **one** Travel Bath Salts order on your account: order 1749, with one item. If you have a second order number, maybe from a different account or a separate checkout, please send it and I'll look it up. I added a note about this to the refund request so the reviewer knows too.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-009",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        12.787
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll check the help center to see what closing your account and deleting your data involves.\nClosing an account is something a human agent has to handle, so I'm opening a ticket for them now.\nI've sent your request to our support team. Your ticket number is **151**.\n\n**What happens next:**\n- Under our policy \"When a case goes to a human,\" account changes are handled by a person, not by me in chat.\n- A human agent will reply within **24 hours**. They'll handle closing your account and deleting your info.\n- They'll also tell you about anything that could affect it, like open orders or pending refunds.\n\nIf you have any open orders you want to deal with first, like a cancellation or a return, I can help with those now.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Pass: One ticket: \"Shopper requests account closure and deletion of personal data\". The user asked to close their account, which is requirement 1, account change. The agent's decision to open this ticket is supported by the policy stipulating that account changes are handled by human agents, so it is required. The ticket asks a human to close the account and delete personal data, which the policy assigns to a human. There are no unnecessary tickets in this exchange, as everything requires human intervention and is properly addressed through escalation."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-010",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        26.3067
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'm really glad you unplugged it right away and that nobody got hurt. Please keep the lamp unplugged and don't use it again. I'll look up your lamp order and check our help center for how product safety reports are handled.\nI couldn't find a specific safety policy, so I'll confirm order 9872 is the lamp and look up the return and refund rules.\nI'll pull up the full order record to confirm it's eligible for a refund, then pass your safety report to our team.\nYour order is eligible for a refund. Because this is a safety issue, I'm sending it to a human support agent so it gets handled properly.\nI've reported this to our support team, ticket **#151**. A person will follow up within about 24 hours.\n\n**What happens next**\n- **Safety review:** I flagged it as a possible electrical hazard so the team can look into it with Cascade Audio.\n- **Your refund:** Your order (#9872, $208.75) is eligible for a refund. Under the Cartwheel refund policy, refunds over $100 need a person to approve them, so the agent will handle yours. Once it's approved, the money goes back to your original payment method in 5 to 10 business days.\n- **Returning the lamp:** The agent will tell you whether to send it back or get rid of it.\n\n**For now**\n- Keep the lamp unplugged and don't use it again.\n- If you can, take a few photos of the burnt cord and plug. They'll help the agent.\n- Hold onto the lamp until you hear back in case it needs to be sent back.\n\nI'm sorry this happened. That would rattle anyone, and you were smart to unplug it right away. If you have more details or questions before the agent reaches out, just message me here.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Pass: One ticket: \"Safety report: Speckled Desk Lamp (order 9872, Cascade Audio) sparked, cord scorched near plug\". The order was delivered on 2026-06-12, 19 days before the world date, so it is still within the 30-day return window. The user reports a safety hazard (the lamp sparked and the cord is scorched), which is not a simple return request but a product safety hazard. The ticket asks a human to handle the report for a possible electrical hazard and review of the product, which is a valid reason for escalation as it falls under requirement 6, unresolvable cases. The agent appropriately directed this to a human for further action and review. There's also an automatic refund query due to the lamp's price being over $100. The issue_refund is not explicitly executed, as the escalation ticket handles it; however, the scenario aligns with safety concerns that involve human review and could not be settled by the agent directly or via policy. Therefore, the escalation is deemed necessary"
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-015",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        16.5474
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search your store's catalog for listings priced $25 or under.\nThe search needs a keyword, so I'll try a broad one.\nStore filtering seems to go by name, so I'll retry with \"Golden Hour Coffee\".\nI'll run a couple more broad searches to make sure nothing was missed.\nGolden Hour Coffee has two listings at $25 or under:\n\n- Vintage Granola: $7.50\n- Sturdy Hot Sauce: $21.25\n\nI searched three different ways and got these same two each time. The search only works by keyword, so it can't pull up your whole catalog at once. If you think something's missing, tell me its name and I'll check it.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 7.56144,
+  "cost_usd": 0.378072,
+  "created_at": "2026-10-20T17:39:10.571307+00:00",
+  "evaluated_case_runs": 5,
+  "git_commit": "da22501a7e9b92499c9e2d068cb224742790609a",
+  "input_tokens": 61778,
+  "median_latency_seconds": 18.5056,
+  "model": "claude-opus-5-5",
+  "output_tokens": 6548,
+  "price_date": "2026-10-14",
+  "prompt_sha256_12": "7f2c0a371980",
+  "schema_version": 1,
+  "score": 1.0,
+  "split": "test",
+  "test_plan_sha256": "8b9f67217a97913f54bc92e9dc2dc81f22a154c546362fbd3983377a40d21e86",
+  "write_pass_5": null
+}

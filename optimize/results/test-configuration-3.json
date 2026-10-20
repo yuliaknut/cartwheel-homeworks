@@ -1,0 +1,136 @@
+{
+  "cached_fraction": 0.0,
+  "cached_input_tokens": 0,
+  "candidate": "starting-version-model-3",
+  "case_count": 5,
+  "cases": [
+    {
+      "case_id": "e-002",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        11.1084
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search your orders for the Signature Plush Fox so I can find the order without the order number.\nI found an order for the Signature Plush Fox. I'll pull its full record to confirm the details and refund eligibility.\nI found your order: #2885, placed with Little Fox Toys on February 10, 2026. It shows as delivered on February 16, 2026. I'll check the Cartwheel return policy to explain the refund options.\nI found it. Your order is **#2885** for the Signature Plush Fox from Little Fox Toys, ordered February 10, 2026 for $93.00.\n\nAccording to our records, it was shipped February 11 and **delivered February 16, 2026**. The order is not currently eligible for a refund through the standard process. Under the Cartwheel refund policy, refunds only go through once an order passes the eligibility check, and this one hasn't.\n\nIf the plush didn't arrive, arrived damaged, or isn't what you ordered, the Cartwheel dispute policy covers disputes for up to 60 days after delivery. A human support agent handles every dispute. I can open a ticket for one now, with a summary of your situation, so that a person follows up with you directly. Would you like me to do that?",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-003",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:unnecessary_escalation"
+      ],
+      "latencies_seconds": [
+        16.1327
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:unnecessary_escalation"
+          ],
+          "final_reply": "I'll look up order 1749 to check its details and refund eligibility.\nOrder 1749 is marked as refund eligible for $278.00. Next I'll check the Cartwheel return policy to confirm how it applies to a duplicate purchase.\nThe order is eligible, but the refund is above $100, so it needs a human reviewer. I'll check the full Cartwheel return policy for any conditions that apply to this order.\nThe return policy allows returns within 30 days of delivery, but it says individual stores can override that window. I'll check the store overrides policy before deciding.\nThe order's store is Clover Field Naturals, so I'll check whether that store has its own return policy.\nI checked the store policies. Clover Field Naturals doesn't have its own return window, so the Cartwheel 30-day return window applies. Delivery was on June 22, so the order is within it. Because the refund is over $100, I'll pass it to a human support agent to approve.\nYour refund request for order 1749 has been sent to a human support agent (ticket 151). The order is eligible for a $278.00 refund, but refunds over $100 need staff approval before they go through. A human will follow up within 24 hours.\n\nHere's what I found:\n- **Order:** Travel Bath Salts from Clover Field Naturals, delivered June 22.\n- **Return window:** Cartwheel's return policy allows returns within 30 days of delivery, and this store doesn't have its own shorter window, so your order is within it.\n- **Refund timing:** Once approved, the refund goes back to your original payment method and usually arrives in 5 to 10 business days.\n\nThe agent may also ask you to return the extra bottle, so keep it until you hear back.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Fail: One ticket: \"Shopper requests full refund of about $278.00 on order 1749 (Travel Bath Salts, Clover Field Naturals) because they accidentally bought the same item twice.\" The order was delivered on 2026-06-22, 9 days before the world date, which is within the 30-day return window set by the Cartwheel policy. The user's request for a refund is based on an accidental duplicate, but this does not constitute a charge problem that warrants escalation since the return policy allows returns within the timeframe. The refund amount of $278.00 is over the $100 threshold, hence needs human review, which constitutes a required ticket. However, this ticket asks only for the review, which is not necessary given that the refund request is tied to a situation covered by the return policy, and no specific evidence of a charge problem or exceptional circumstances was cited that would require additional human involvement beyond what the standard review process would entail. Thus, the agent should h"
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-009",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        5.9388
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll check the help center for Cartwheel's account closure and data deletion policy so I can tell you what happens next.\nAccount closure is an account change, so I'll pass it to a human support agent who can handle it.\nI can't close your account or delete your info from chat, so I've passed your request to a human support agent. Ticket 151 is open, and someone should follow up within 24 hours.\n\nOnce the account is closed, you won't be able to log in. Before that happens, check for any open orders or refunds, since those may need to finish first. The agent will confirm the exact steps for closing your account and deleting your personal information with you.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Pass: One ticket: \"Shopper (user id 358) wants to close their Cartwheel account and have their personal information deleted.\" The user asked to close their account, which is an account change, meeting requirement 1. There is no account-related issue or contradictory records involved that the support agent could resolve; thus, the agent appropriately escalated the request to a human support agent, which is required by policy. What the ticket asks a human to do: close the account and ensure personal data deletion, which falls outside the assistant's authority. Therefore, the ticket is necessary and does not indicate any failure. \nResult: Pass"
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-010",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        13.9494
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'm sorry, that sounds really frightening. I'm glad you unplugged it and that no one was hurt. Please don't plug the lamp back in, and keep it away from anything flammable. If you see smoke or heat again, call your local emergency number.\n\nI'll look up your order for the lamp and find Cartwheel's guidance on reporting safety problems.\nI found a few orders that match \"desk lamp.\" I'll check the most recent one, order 9872, to confirm it's the Cascade Audio lamp and see its refund eligibility.\nI found the order: Speckled Desk Lamp from Cascade Audio, order 9872, delivered June 12. Next I'll check Cartwheel's return policy for defective items.\nI'll open a ticket with a human support agent so the sparking incident gets reported and reviewed.\nI've opened ticket 151 with a human support agent about the sparking. They should follow up within 24 hours. The ticket describes the lamp, the scorched cord, and that you unplugged it right away with no one hurt.\n\nPlease keep the lamp unplugged and set aside for now. If you can, take photos of the scorched cord and plug area before you move it, since the store and our team may want to see it.\n\nYour order is eligible for a refund of $208.75. Refunds under $100 go through automatically, but larger ones are reviewed by a human agent first. Would you like me to request a refund, or would you rather wait for the agent to contact you first?",
+          "judge_reasons": {
+            "unnecessary_escalation": "Pass: One ticket: \"Safety report: Speckled Desk Lamp from Cascade Audio (order 9872, delivered June 12) sparked when turned on the night before the report. The cord near the plug is scorched. The customer unplugged it right away. No one was hurt. Customer is shaken up and wants the incident reported as soon as possible.\" The order was delivered on 2026-06-12, which is 19 days before the world date. There is a potential safety hazard (sparking device), which is covered under requirement 5, other unresolvable cases. The user reported a safety issue, which the policy states must be handled by a human support agent. The ticket requests that a human review the incident for safety, which is a necessary action that the agent cannot resolve alone. Therefore, the ticket is required and does not constitute a failure. No inappropriate escalation or unnecessary ticketing occurred.\n\nResult: Pass"
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-015",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        11.5318
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search your store's catalog for items priced at $25 or under.\nThe search needs a keyword, so I'll try \"coffee\" within your store, limited to $25 and under.\nThe search didn't recognize the store id, so I'll retry using your store name, Golden Hour Coffee.\nThe keyword \"coffee\" only matched two items, and neither has coffee in its name, so I'll run a broader search to make sure I'm not missing listings.\nHere are the Golden Hour Coffee listings priced $25 or under:\n\n1. Vintage Granola: $7.50\n2. Sturdy Hot Sauce: $21.25",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.241698,
+  "cost_usd": 0.012085,
+  "created_at": "2026-10-20T17:40:20.680360+00:00",
+  "evaluated_case_runs": 5,
+  "git_commit": "da22501a7e9b92499c9e2d068cb224742790609a",
+  "input_tokens": 77454,
+  "median_latency_seconds": 11.5318,
+  "model": "claude-haiku-5-5",
+  "output_tokens": 8679,
+  "price_date": "2026-10-14",
+  "prompt_sha256_12": "7f2c0a371980",
+  "schema_version": 1,
+  "score": 0.8,
+  "split": "test",
+  "test_plan_sha256": "8b9f67217a97913f54bc92e9dc2dc81f22a154c546362fbd3983377a40d21e86",
+  "write_pass_5": null
+}
