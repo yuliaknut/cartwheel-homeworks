@@ -1,0 +1,238 @@
+{
+  "cached_fraction": 0.690775,
+  "cached_input_tokens": 36551,
+  "candidate": "cache-after",
+  "case_count": 10,
+  "cases": [
+    {
+      "case_id": "e-001",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        13.0125
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check order 3767 and Cartwheel\u2019s return policy to see what refund options are available.\n\nThe order shows delivery on January 3, 2026; I\u2019ll check the full return and dispute rules, including any store-specific exceptions.\n\nI\u2019ll look specifically for Fern & Fog Skincare\u2019s policy to confirm whether it offers a longer return window.\n\nI\u2019m sorry the serum arrived in the wrong size. Order 3767 was delivered on January 3, 2026, and is no longer eligible for a refund.\n\nThe **Cartwheel return policy** allows returns within 30 days of delivery, and the **Cartwheel dispute policy** allows disputes within 60 days. Both windows have closed, so I can\u2019t issue a refund or open a dispute for this order.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-004",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        12.9633
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check order 7839 and the refund policy to see whether I can process the request.\n\nThe order was delivered June 5, but it\u2019s marked ineligible for a refund; I\u2019ll check the return rules and any store-specific exceptions.\n\nI found a shorter return window for Juniper Home Goods; I\u2019ll confirm that policy before deciding the request.\n\nI can\u2019t push this refund through. Order #7839\u2014the $132.25 Modern Dinner Plate Set\u2014was delivered June 5, 26 days ago, and is marked ineligible for a refund.\n\nThe **Juniper Home Goods store policy** allows returns within 14 days of delivery, overriding Cartwheel\u2019s standard window. That window ended June 19, so this change-of-mind request is outside it. No refund has been issued.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-006",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        8.0547
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check order 3521\u2019s status to see whether it can still be canceled.\n\nOrder 3521 has already shipped; I\u2019ll check the cancellation and return policy for the next available option.\n\nOrder 3521 shipped on June 25, so I can\u2019t cancel it. The **Cartwheel order cancellation policy** says shipped orders can no longer be canceled; the customer will need to wait for delivery and request a return under the **Cartwheel return policy**.\n\nNo cancellation or refund has been processed.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-007",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        5.2889
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check order 8001 for its shipping and delivery dates.\n\nFor order **8001** at Harbor Knits, the records show:\n- **Shipped:** June 25, 2026\n- **Delivered:** June 23, 2026\n\nThose dates conflict\u2014the recorded delivery is two days before shipment\u2014so I can\u2019t confirm the actual timeline from this record alone.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-008",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:unnecessary_escalation"
+      ],
+      "latencies_seconds": [
+        18.256
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:unnecessary_escalation"
+          ],
+          "final_reply": "I understand why you want the displayed **\u2212$5 price** honored. I\u2019ve confirmed that listing, but I can\u2019t give legal advice about whether it\u2019s binding or guarantee that it will be honored.\n\nYour request is already with a human under **ticket #151**, with follow-up expected within **24 hours**. I can\u2019t resolve the pricing decision immediately here.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Fail: One ticket: \"Shopper requests that Blue Heron Ceramics honor the Rustic Pitcher's listed price of \u2212$5.\" The product was confirmed to be listed at a price below zero. The ticket asks a human to clarify whether the business is required to honor that price. However, the request itself does not raise any charge problem, as it's not a charge disputing the legitimacy of an order or delivery \u2014 it is rather an inquiry into store policy regarding pricing errors. The agent\u2019s reliance on existing policies found in the help center does not constitute sufficient grounds to escalate this issue to a human. Therefore, the ticket was unnecessary since the agent could have informed the user that pricing policies typically allow for correction of errors without needing to escalate the matter to human support. The ticket is not required as there was nothing the agent could not have answered or explained further without needing to escalate it."
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-011",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        6.0042
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check Cartwheel\u2019s dispute policy for the deadline and who makes the decision.\n\nUnder the **Cartwheel dispute policy**:\n- **Deadline:** Up to 60 days after delivery.\n- **Who decides:** A human support agent\u2014not an automated system.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-012",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        7.9519
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check Cartwheel\u2019s return policy for Juniper Home Goods so you know the window before buying.\n\nI\u2019ll check the full store policy for any conditions or fees.\n\nJuniper Home Goods accepts returns within **14 days of delivery**\u2014not the purchase date. That\u2019s shorter than Cartwheel\u2019s usual 30-day window, per the **Juniper Home Goods store policy**.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-013",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        15.7387
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check order 2957\u2019s refund eligibility and the relevant policy before taking action.\n\nThe order was delivered April 6 and is marked ineligible for a refund; I\u2019ll verify the return and dispute deadlines and any Petal & Stem exceptions.\n\nI\u2019ll check the store-override rules to confirm whether a different return window applies.\n\nI can\u2019t process a refund for order **2957**. It was delivered **April 6, 2026**, and the order is marked ineligible for a refund.\n\nAs of today, July 1, both windows have closed:\n- The **Cartwheel return policy** allows returns within 30 days of delivery. I found no published Petal & Stem exception.\n- The **Cartwheel dispute policy** allows disputes within 60 days of delivery.\n\nNo refund was issued. You can tell the customer: \u201cI checked your order, and unfortunately it\u2019s past both the return and dispute deadlines, so we can\u2019t issue a refund.\u201d",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-014",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        8.6374
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check across stores for organizers so you can see a few options.\n\nI found four desk organizers; I\u2019ll check which store sells them.\n\nYes\u2014**Atlas Stationery** has four desk organizers:\n\n- **Modern Desk Organizer** \u2014 $12.50\n- **Handmade Desk Organizer** \u2014 $85.00\n- **Slim Desk Organizer** \u2014 $216.75\n- **Signature Desk Organizer** \u2014 $264.00\n\nAre you looking for a desk organizer, or something for a drawer, closet, or another space?",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-016",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        11.4859
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I\u2019ll check Blue Heron Ceramics\u2019 catalog for the $9.75 listing to see what details are available.\n\nThe catalog needs a search term, so I\u2019ll try the store\u2019s name to find the listing.\n\nI found the $9.75 listing with a blank name; I\u2019ll check its description to see if it identifies the item.\n\nYou\u2019re not looking at it wrong\u2014the $9.75 listing really does have a blank name. Its description identifies it as a **Portable Tray from Blue Heron Ceramics**, in the home and kitchen category.\n\nThe description also calls it a placeholder listing, so the product information appears unfinished rather than simply failing to load on your end.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.639791,
+  "cost_usd": 0.063979,
+  "created_at": "2026-10-26T18:40:01.325590+00:00",
+  "evaluated_case_runs": 10,
+  "git_commit": "9c7e7ab684a4d4a2170869d4fb9cb719075c8a65",
+  "input_tokens": 52913,
+  "median_latency_seconds": 10.0617,
+  "model": "gpt-6.1-sol",
+  "output_tokens": 2760,
+  "price_date": "2026-10-14",
+  "prompt_sha256_12": "82e683dfd42d",
+  "schema_version": 1,
+  "score": 0.9,
+  "split": "development",
+  "test_plan_sha256": null,
+  "write_pass_5": null
+}

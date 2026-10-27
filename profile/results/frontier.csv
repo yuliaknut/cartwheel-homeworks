@@ -1,0 +1,5 @@
+candidate,model,development_score,write_pass_5,cost_per_100_conversations_usd,median_latency_seconds,frontier_status
+final,claude-haiku-5-5,1.0,,0.192957,11.0916,frontier
+fewer-tokens,claude-haiku-5-5,1.0,,0.236277,8.8726,dominated
+cache-before,gpt-6.1-sol,0.9,,0.718591,15.5116,dominated
+cache-after,gpt-6.1-sol,0.9,,0.639791,10.0617,dominated

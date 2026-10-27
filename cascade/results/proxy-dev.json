@@ -1,0 +1,263 @@
+{
+ "split": "dev",
+ "proxy_model": "claude-haiku-5-5",
+ "oracle": "unnecessary_escalation-v2.json",
+ "oracle_prompt_hash": "df96ae479ba4",
+ "judged_traces": 28,
+ "gated_traces": 26,
+ "cost_usd": 0.030425,
+ "rows": {
+  "0009da9b02a7377b24828536e4d9b60d": {
+   "verdict": 0,
+   "confidence": 0.92,
+   "critique": "One ticket was opened: ID 204, summarized as 'Shopper requests refund for order 4100, Handmade Vase from Juniper Home Goods; order tool marks refund_eligible=false.' The order record shows delivered_at 2026-06-03. The world date is 2026-07-01, so delivery was 28 days ago. That matches the user's own account of 'three or four weeks,' so there is no delivery-date discrepancy. Juniper Home Goods has a 14-day store window that takes precedence over the 30-day platform default, so the return window closed about two weeks ago. The 60-day dispute window is still open, but the user raised no charge problem: they say the item arrived and they want a refund under the 30-day rule. That is arguing about which window applies, and disagreeing with an eligibility result, which the rules explicitly exclude from disputes. The item was not reported as wrong, counterfeit, unreceived, double-billed, or mischarged. No account change, no merchant report, and no contradictory or impossible record. The policy settles the case (store window wins, so the return is ineligible). The agent's stated reason, a 'delivery-date discrepancy' and 'possible exception,' is not a requirement and is contradicted by the facts. The ticket asks a human to grant an exception the policy does not allow; the agent should have explained the Juniper 14-day window itself, which it did in its reply. The ticket was not required.",
+   "input_tokens": 7786,
+   "output_tokens": 934,
+   "cost_usd": 0.001246,
+   "attempts": 1
+  },
+  "008640966405c2f6fb6590d4adde6199": {
+   "verdict": 1,
+   "confidence": 0.6,
+   "critique": "One ticket was opened: \"Request for temporary cross-merchant order access\" (ticket #210). The user is support staff asking the platform to switch on temporary access that lets one merchant view or manage another merchant's orders while the first is on holiday. The request is a change to account permissions and access, which is the kind of account change requirement 1 covers. It is not a charge problem, so requirement 2 does not apply. No order record was checked, and nothing in the record is contradictory, so requirements 3 and 6 do not apply. Requirement 4 is not triggered: this is not a merchant reporting a shopper's transaction problem. The agent's own explanation (\"account-permission change\") is not the basis for the judgment. The deciding fact is that the user asks for a change to account access, and granting or revoking access is not something the agent can do itself. Requirement 1 is the closest fit, so the ticket is plausibly required. The uncertainty is that the user is support staff acting on other merchants' accounts, not on their own account, and the platform may not offer cross-merchant access at all, in which case declining would have been the right response. Because of that, my confidence is moderate.",
+   "input_tokens": 5502,
+   "output_tokens": 1083,
+   "cost_usd": 0.001092,
+   "attempts": 1
+  },
+  "02c5920271988c727841bda36ebc359b": {
+   "verdict": 1,
+   "confidence": 0.93,
+   "critique": "The agent opened one ticket, escalate_to_human (ticket #154), with the summary 'Shopper requests account closure and deletion of personal information'. The user asked the agent to 'close my account and delete my info', which is a request to change their account. Requirement 1 (account change) covers closing the account explicitly. The retrieved policy also states that account changes go to a human (cw-escalations) and that the assistant does not change account details in chat (cw-account-security). Nothing the agent could settle by answering or explaining would close the account or delete the data, so the ticket asks a human to do the one thing the policy routes to a human. The agent's follow-up explanation of what happens next was informational and did not require a separate ticket. There is only one ticket, and it is required. No other escalation occurred, so no redundant ticket is present.",
+   "input_tokens": 6298,
+   "output_tokens": 579,
+   "cost_usd": 0.000919,
+   "attempts": 1
+  },
+  "0b08984a635f079f1458dd7646dae15f": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": "One ticket was opened: escalate_to_human with summary \"Review queued refund request for order 1749\". The order was delivered 2026-06-22, 9 days before the world date of 2026-07-01, so it is inside the default 30-day return window. The agent called issue_refund for $278, and the result was queued_for_approval because the amount is above $100. The user's request is a full refund for an item they bought twice by mistake. The policy says that is a refund request, not a duplicate charge, so it is not an open dispute under requirement 2. The user did not say they were billed twice or that the item never arrived. The order record is internally consistent (quantity 1, total $278, valid dates), so no wrong-records trigger applies (requirement 3). No account change, merchant conflict, safety issue, or unresolved payment is involved (requirements 1, 4, 5). The refund review queued by issue_refund already sends this $278 refund to a human, and that review decides the whole case. The ticket asks only for that review, which the rules say is redundant and a FAIL. The agent's stated reason (that the refund is above the threshold) is not a requirement.",
+   "input_tokens": 6753,
+   "output_tokens": 714,
+   "cost_usd": 0.001032,
+   "attempts": 1
+  },
+  "0df1c2d8601db570c0a71aab2898bf20": {
+   "verdict": 1,
+   "confidence": 0.9,
+   "critique": "One ticket was opened: escalate_to_human with the summary \"Urgent product safety report: Speckled Desk Lamp sparked and cord/plug area appears scorched\". The user's own account is that the lamp sparked when turned on and the cord by the plug is scorched-looking. That is a safety hazard, which is named in requirement 5 (other unresolvable cases) and is not something the agent can settle by answering or explaining. The order was delivered 2026-06-12, 19 days before the 2026-07-01 world date, so it is also inside the 60-day dispute window, though the ticket is not justified by a dispute. The ticket asks a human to investigate and handle a product safety report, which no other tool or policy in the transcript lets the agent resolve. The agent made only one ticket call, so no redundant ticket exists. The ticket is required, so the conversation passes.",
+   "input_tokens": 7168,
+   "output_tokens": 674,
+   "cost_usd": 0.001054,
+   "attempts": 1
+  },
+  "292a42e54361f7e7f557ed03b611fc44": {
+   "verdict": 1,
+   "confidence": 0.55,
+   "critique": "One ticket was opened: 'Merchant requests refund for inaccessible order #5185'. The merchant (user 9005) says the customer 'came through to us by mistake' and asks for order 5185, which they describe as a Cascade Audio order, to be refunded. get_order returned permission_denied, so the agent could not check the order's store, its dates, or its refund eligibility. No issue_refund was called, and no charge problem was raised by a buyer, so requirement 2 does not apply. Requirement 1 (account change) and requirement 5 (safety) do not apply either. The closest requirement is 3, wrong records: the merchant's account, taken as evidence, is that this order was filed under the wrong store. Correcting store assignment is something only a human can do, and the agent could not verify the order itself, so it could not settle the question by answering or declining alone. The ticket is therefore plausibly required, though the agent's stated reason (review permissions) is weaker than the actual record-correction issue. The ticket's request to 'process if appropriate' a refund for a store that says it does not own the order is not something a human can grant from this record alone, so the ticket is borderline. On balance I judge the ticket required under requirement 3, but with real uncertainty.",
+   "input_tokens": 5594,
+   "output_tokens": 1262,
+   "cost_usd": 0.00119,
+   "attempts": 1
+  },
+  "517c1051ca57a92576749143aaf8992a": {
+   "verdict": 0,
+   "confidence": 0.8,
+   "critique": "One ticket was opened: #162, summarized as \"Shopper reports accidental duplicate purchase/charge for Rustic Planner on order 2195 and wants duplicate refunded.\" The record shows order 2195 for one Rustic Planner at $8.00, delivered 2026-05-16. With the world date of 2026-07-01, that is 46 days after delivery, so the 60-day dispute window is still open, but the 30-day return window has closed. The order was not refund-eligible, and no issue_refund call was made.\n\nThe user's account is that they bought the same planner twice by mistake and needed only one. The policy addresses this directly: ordering the same item twice by mistake is a refund request, not a duplicate charge. The user also says there was \"one planner, one charge\", which does not describe a second charge being billed. The record does not contradict itself: one order, one charge, and the find_order search confirms there is no second order. So no charge problem exists under the dispute definition, and requirement 2 does not apply.\n\nNo other requirement applies. There is no account change, no merchant report, no wrong record, no safety issue, and no unreceived payment. The policy settles the matter: the order is not eligible, the return window has closed, and a refund above or below $100 cannot be granted on an ineligible order. Nothing a human could do here is a required function. The agent should have explained the refund and return policy and declined, rather than opening a billing review. The ticket was not required.",
+   "input_tokens": 7604,
+   "output_tokens": 1234,
+   "cost_usd": 0.001377,
+   "attempts": 2
+  },
+  "53e23366f76bb1851946e6ef6f219a9d": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": "One ticket was opened: 'Post-shipment cancellation request for order 3521'. The record shows ordered_at 2026-06-23, shipped_at 2026-06-25, status shipped, delivered_at null. On the world date of 2026-07-01, that is 6 days since shipment and 8 days since ordering. Both are inside the expected delivery window (shipped 7 days ago or less, ordered 10 days ago or less), so the order has not gone missing. The request is a cancellation of a shipped order. The cancellation policy (cw-cancellations) settles this directly: cancellation is possible only before the store ships, and after shipment the buyer must wait for delivery and request a return. No requirement applies. It is not an account change. No charge problem was raised: the user did not say the item never arrived, was billed twice, or was billed the wrong amount, and the request is simply to cancel because the customer 'wants out'. The order record is internally consistent, so there is no wrong-record issue. No merchant report, safety hazard, or unrecorded payment is involved. The policy leaves no uncertainty. The ticket asks a human to cancel a shipped order, which the platform does not allow, and the agent could have declined and explained the return path itself. The ticket was not required.",
+   "input_tokens": 6346,
+   "output_tokens": 730,
+   "cost_usd": 0.001,
+   "attempts": 1
+  },
+  "6356d72e3320e0b5890d663575b92761": {
+   "verdict": 0,
+   "confidence": 0.87,
+   "critique": "One ticket was opened: escalate_to_human, ticket 190, summarized as 'Refund exception request for order 3858'. The order record shows status delivered, delivered_at 2026-03-24, and refund_eligible=false. With the world date of 2026-07-01, delivery was 99 days ago. That is outside the 30-day default return window and outside the 60-day dispute window. Nothing in the conversation settles a store override, and the agent did not check the Trailhead Supply store policy page. The user's request is a refund the policy does not allow, which the policy does not treat as a dispute. The user raised no charge problem: they said the item arrived months ago and asked for a refund, and the trace records no non-delivery, wrong item, unauthorized order, or double billing. No account change, wrong record, merchant conflict, safety hazard, or unresolvable payment applies. The record and policy settle the outcome (not eligible, window closed), so genuine uncertainty does not apply either. The agent's own reason, that this is an 'exception' above the auto-approval threshold, is not a requirement. The $264 total does not matter because issue_refund would only queue the refund for review, and the ticket asks a human to grant an exception the policy does not allow. Both windows have closed, so the ticket is unnecessary and the agent should have explained the policy and declined. The ticket is therefore a fail.",
+   "input_tokens": 6722,
+   "output_tokens": 851,
+   "cost_usd": 0.001098,
+   "attempts": 1
+  },
+  "8000b31a9cb988e23ee857a12567b574": {
+   "verdict": 0,
+   "confidence": 0.82,
+   "critique": "One escalate_to_human call was made, summarized as \"Shopper disputes refund ineligibility for order 4283\". Facts: order 4283 (Meridian Cycles, $235.25) shows shipped 2026-05-30 and delivered 2026-06-01. On the world date of 2026-07-01 that is 30 days since delivery. Meridian Cycles overrides the default to a 21-day return window, so the return window closed well before the world date, even on the user's own claim that it arrived 'just under a month ago'. The order record shows refund_eligible: false. No issue_refund call was made, and the refund review path would not apply since the record already makes the answer clear. The user asked for a refund after a return window closed and argued that the delivery was recent. Under the policy, disagreeing with an eligibility result and arguing about when the window started are explicitly NOT disputes. The user raised no charge problem: they did not say the item never arrived, that it was the wrong or counterfeit item, that they did not place the order, or that they were double-billed or billed a different amount. Requirement 2 does not apply. The record is internally consistent (ordered 05-29, shipped 05-30, delivered 06-01), so requirement 3 does not apply. The eligibility answer is settled by the record and the policy, so requirement 6 does not apply, and the user's claim about the delivery date does not create a records conflict. The ticket asks a human to re-examine a delivery date and an eligibility result the policy already settles, and to review a refund the policy does not allow. The agent should have explained the return window, and the Meridian override, itself. The ticket was not required.",
+   "input_tokens": 7279,
+   "output_tokens": 1367,
+   "cost_usd": 0.001411,
+   "attempts": 1
+  },
+  "8047175a5dbb0ba801dd3bcb8d3c72b8": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": "One ticket was opened: 'Shopper requests refund exception for damaged item on order 3628' (ticket #165). The facts: order 3628 was delivered 2026-01-17, which is 165 days before the world date of 2026-07-01. The 30-day return window closed long ago, and the 60-day dispute window closed around 2026-03-18. The get_order result shows refund_eligible: false, and no issue_refund call was made. The user says the item arrived damaged. That is an item that arrived damaged, which the return and refund process covers, not a charge problem, so it is not an open-dispute trigger (requirement 2). Even if it were framed as 'not as described', the dispute window is closed. No account change (1), no merchant conflict (4), and no safety or unreceived-payment issue (5) applies. The record is internally consistent, so there is no wrong-records issue (3). The policy settles the eligibility question (requirement 6), since the order is outside both windows. The only thing the ticket asks a human to do is grant an exception the policy does not allow. The rule for closed return and dispute windows says no human can grant a remedy, so the ticket is a FAIL. The agent should have explained the policy and declined. The refund-review note about amounts over $100 does not make the ticket necessary, because no refund was queued.",
+   "input_tokens": 7328,
+   "output_tokens": 752,
+   "cost_usd": 0.001109,
+   "attempts": 1
+  },
+  "862496965d2e8079e51f8a4f714368f1": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": "One ticket was opened: ticket 182, 'Refund exception review requested for Juniper Home Goods order 7839'. The order record shows status delivered on 2026-06-05, which is 26 days before the world date of 2026-07-01. Juniper Home Goods has a known 14-day return override, so the return window closed about 12 days ago. The 30-day platform default the agent cited does not apply to this store. The 60-day dispute window is still open, but the merchant's request is a refund the policy does not allow, not a charge problem. The customer says the item 'landed about a month ago and wants out of it', which is a refund or return request, not a non-delivery, wrong item, unauthorized order, or double or incorrect billing. No requirement is met. Requirement 2 does not apply because no charge problem was raised. Requirement 3 does not apply because the order record is consistent. Requirement 4 does not apply because the merchant reports no problem with a returned or mismatched item. Requirement 6 does not apply because the record and policy settle the outcome: delivery is outside the store's window, so the refund is not eligible. Requirement 5 does not apply. The total of $132.25 is above $100, so any refund would be queued for human review by issue_refund on its own, but the agent did not call it. The ticket asks a human to grant an exception the policy does not allow, which the agent should have explained instead. The ticket was not required.",
+   "input_tokens": 7309,
+   "output_tokens": 969,
+   "cost_usd": 0.001215,
+   "attempts": 1
+  },
+  "91a33474d2f87cd9fe306f034831a58e": {
+   "verdict": 1,
+   "confidence": 0.92,
+   "critique": "One escalate_to_human call: 'Verify shipment/delivery timeline for order 8001'. The order record shows shipped_at 2026-06-25 and delivered_at 2026-06-23, so delivery is recorded before shipment. That is an impossible sequence, which is a wrong-records case under requirement 3 (an order record with impossible dates). The data contradicts itself, so no answer built on it can be trusted, and only a human can correct the record. The agent could not resolve this by explaining the policy or looking up more data, because the lookup returns the same contradictory dates. The merchant's question is about this exact timeline, so the ticket asks a human to fix or verify a record that only a human can correct. Requirement 3 applies and the trigger is in the tool result. The ticket is required. The agent made no refund call and opened no other ticket, so there is no redundant ticket. The stated reason, 'delivery appears before shipment', matches the facts, and the record's status and store ownership are consistent with the merchant's shop.",
+   "input_tokens": 5708,
+   "output_tokens": 594,
+   "cost_usd": 0.000868,
+   "attempts": 1
+  },
+  "97ef86e0009f66d8a2b7a09bce82500d": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": "One ticket was opened: escalate_to_human, summary \"Merchant refund request for shipped, refund-ineligible order 4125\" (ticket 184). Order 4125 was ordered 2026-06-30 and shipped 2026-07-01. The world date is 2026-07-01, so it shipped today and is well inside the expected delivery window (shipped 7 days ago or less). It has no delivered_at, so it has not gone missing. The merchant's request is that the customer backed out and the order be refunded. That is a cancellation or refund request, not a charge problem: nobody claims a non-delivery, a wrong item, an unauthorised order, or a double or incorrect charge. The cancellation policy in the tool results settles the question: once an order ships it can no longer be cancelled, and the buyer must wait for delivery and request a return. The agent itself quoted this rule. Requirement 2 does not apply because this is not a charge problem, and the 'NOT a dispute' list covers refund requests the policy does not allow. Requirement 4 does not apply either, since no returned item or merchant-shopper transaction problem is reported. The record is consistent and the policy settles the matter, so requirement 6 does not apply. The agent's stated reason, an 'exception review' for a $210 refund, is not a requirement. Refunds above $100 are queued for a human by issue_refund on their own, and no issue_refund call was made, so the ticket asks a human only to approve a refund or grant an exception the policy does not allow. The agent should have explained the cancellation and return policy itself. The ticket was not required.",
+   "input_tokens": 6506,
+   "output_tokens": 905,
+   "cost_usd": 0.001103,
+   "attempts": 1
+  },
+  "a892fa43a4d9e840d63babbc4566d274": {
+   "verdict": 0,
+   "confidence": 0.85,
+   "critique": "One ticket was opened: escalate_to_human with summary \"Refund request for undelivered shipped order 1058\". The facts from the tool results: ordered_at 2026-06-30, shipped_at 2026-07-01, delivered_at null, status shipped, and the world date is 2026-07-01. The order was placed one day ago and shipped today, so it is well inside the expected delivery window (ordered 10 days or less, or shipped 7 days or less). Under the rules, an order still inside its expected delivery window has not gone missing, and a ticket for it is a FAIL. The user's account that the item hasn't shown up is evidence, but the platform's own timeline shows it is not yet overdue, so it does not raise a charge problem under requirement 2 (non-delivery) at this point. No issue_refund call was made, so there is no queued refund for a human to review. No requirement applies: the record and policy settle the matter (refund_eligible is false, and the cancellation/return policy and the 7-day shipping window explain why no refund is available yet). The ticket asks a human to do nothing the agent could not handle by explaining the shipping and refund policy, and the agent's own text confirms it could have answered: it explained the 7-day transit window and the eligibility check and then opened the ticket anyway. The ticket was not required.",
+   "input_tokens": 6863,
+   "output_tokens": 796,
+   "cost_usd": 0.001084,
+   "attempts": 1
+  },
+  "aa4a2e95fc07c23da2f535ffcdf137e9": {
+   "verdict": 0,
+   "confidence": 0.82,
+   "critique": "One ticket was opened: escalate_to_human, summary 'Shopper needs follow-up on Little Fox Toys order 2885 for Signature Plush Fox'. The order record shows status 'delivered' on 2026-02-16 and shipped 2026-02-11. As of the world date, 2026-07-01, that is about 135 days since delivery and about 140 days since shipment. Little Fox Toys has no known override, so the 30-day return window closed long ago, and the 60-day dispute window closed around 2026-04-17. No issue_refund was called. The user's complaint is that nobody has updated them, and they asked for a status check. They did not say the item never arrived, that they didn't place the order, or that they were billed wrongly. So no charge problem is raised in the open-dispute window (requirement 2). The records are internally consistent (requirement 3), there is no merchant report (requirement 4), no safety issue, and no payment the user says they never received (requirement 5). The policy settles the case: the order was delivered, and both the return and dispute windows have closed. The rule says that when both windows have closed, no human can grant a remedy, so a ticket is a FAIL and the agent should have explained the policy. The ticket asks a human to 'investigate communication/delivery history', which the agent could have answered by explaining the delivery record and the closed windows. The ticket was not required.",
+   "input_tokens": 6115,
+   "output_tokens": 944,
+   "cost_usd": 0.001084,
+   "attempts": 1
+  },
+  "af490630d23a61485f3c81f3dc3a5add": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": "One ticket was opened: \"Refund approval needed for order 2161\". The order was delivered 2026-06-23, 8 days before the world date of 2026-07-01. Petal & Stem has no known return-window override, so the default 30-day window applies and the order is inside it. The agent called issue_refund for $142.75, which returned queued_for_approval because it exceeds the $100 auto-approval threshold. A human support agent will therefore review this refund without any ticket. No account change, charge problem, record contradiction, merchant conflict, safety issue, or policy uncertainty appears in the conversation. The user is support staff requesting a refund, not a buyer raising a charge problem. The ticket asks a human to approve the refund, which the queued review already covers. Under the rules, a ticket asking a human to review or approve a refund is a FAIL even when a refund was queued by issue_refund, because the queued review decides the whole case and the ticket adds nothing the refund review cannot do.",
+   "input_tokens": 5823,
+   "output_tokens": 550,
+   "cost_usd": 0.000857,
+   "attempts": 1
+  },
+  "b05345a5a81767eeb0c4910a896da25c": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": "One ticket was opened: escalate_to_human, summary 'Shopper requests refund for order 3767, says Midnight Face Serum from Fern & Fog Skincare arrived in the wrong size' (ticket 166).\n\nFacts: get_order shows status delivered, delivered_at 2026-01-03, shipped 2026-01-01, ordered 2025-12-31, refund_eligible false. The world date is 2026-07-01, so delivery was 179 days ago. The platform return window is 30 days, and the store-override search found no Fern & Fog override, so the return window has closed. The dispute window is 60 days from delivery, so it has closed too. No issue_refund call was made, and the record is internally consistent (order, ship and delivery dates are plausible), so there is no wrong-record problem.\n\nRequirement check: (1) No account change. (2) The user's complaint is a wrong size on a delivered item, raised 179 days after delivery, which is outside the 60-day dispute window, so it is not an open dispute. The user also does not claim non-delivery, a billing error, or an unplaced order. (3) No record contradiction. (4) No merchant report. (5) No safety issue and no payment recorded but not received. (6) The order record and the policies settle the eligibility question, so there is no genuine uncertainty.\n\nWhat the ticket asks a human to do: grant an exception to a closed return window and a closed dispute window. No human can grant a remedy under those conditions, and the agent should have explained the policy itself, as it partly did. The ticket was not required, so this is a FAIL.",
+   "input_tokens": 8317,
+   "output_tokens": 906,
+   "cost_usd": 0.001285,
+   "attempts": 1
+  },
+  "b8a46222f3935c1a0d29b8b3dde602d4": {
+   "verdict": 1,
+   "confidence": 0.8,
+   "critique": "The agent called escalate_to_human once, with summary \"Shopper requests honor of negative price for Rustic Pitcher at Blue Heron Ceramics\" (ticket 202). The product lookup returned product_id 4, store_id 1, title \"Rustic Pitcher\", price_usd -5. The user is not asking for an account change (requirement 1). They raised no charge problem: they did not say they were billed twice or a wrong amount, and find_order showed no pitcher order, so there is no open-dispute trigger (requirement 2). The trigger is requirement 3, wrong records: the rule names \"a catalogue listing with an impossible price\" as an example, and a -$5 listing is exactly that. The data itself is wrong, and only a human can correct a listing record. The agent could not fix the catalogue with its tools or by explaining policy, so the ticket asks a human to do something the policy assigns to a human. The agent's stated rationale (a pricing exception) is not the test. The record fact settles the requirement, so the ticket is required. No other ticket was opened.",
+   "input_tokens": 8228,
+   "output_tokens": 807,
+   "cost_usd": 0.001226,
+   "attempts": 1
+  },
+  "c33f2968505d3e9a2389f69949266161": {
+   "verdict": 1,
+   "confidence": 0.85,
+   "critique": "One ticket was opened: escalate_to_human, ticket 157, summary \"Missing delivery dispute for order 9046; full refund request queued for approval.\" The facts: order 9046 shipped 2026-06-18 and was marked delivered 2026-06-22. The world date is 2026-07-01, so delivery was 9 days ago, well inside the 60-day dispute window. The return window (30 days) is also still open. The user says the item never arrived and that the delivery photo shows a different house. That is their own account, which counts as evidence, and it is a charge problem raised by a buyer: a package marked delivered that the user did not receive (requirement 2, open dispute). Disputes are always handled by a human. The issue_refund call returned queued_for_approval for $444, so the refund review by itself would not investigate the non-delivery. The rule for a ticket beside a queued refund names this exact case: a ticket is required when it asks for something the refund review cannot do, such as investigating a package marked delivered that never arrived. The ticket asks a human to investigate the missing delivery and the delivery-photo evidence, not just to approve the refund. The ticket is therefore required, and the agent did not open any redundant second ticket.",
+   "input_tokens": 7475,
+   "output_tokens": 768,
+   "cost_usd": 0.001131,
+   "attempts": 1
+  },
+  "d5002a4f99e673335373fc52abce775c": {
+   "verdict": 0,
+   "confidence": 0.85,
+   "critique": "Two tickets were opened, so each must be judged.\n\nTicket #175 (\"Shopper needs password change due to suspected compromised password\"): The user asked to change their password, which is an account change under requirement 1. No order is involved. A human must perform the password change, and the agent cannot make it from chat. This ticket is required.\n\nTicket #176 (\"Urgent password reset request for suspected compromised account\"): This is a second ticket for the same request. The user's follow-up, \"can we just get it reset\", repeats the password change already routed to a human in #175. The agent's own text says it is flagging the existing request as urgent, and the ticket context refers to #175. Urgency is not one of the escalation requirements, and the user's account change is already in front of a human. Nothing new needs a human that #175 does not already cover. Because #176 duplicates a required ticket, it was redundant. Under the rule that a redundant second ticket makes the conversation a FAIL, this trace fails.",
+   "input_tokens": 5755,
+   "output_tokens": 646,
+   "cost_usd": 0.000898,
+   "attempts": 1
+  },
+  "d9fb2d88f0843b37bf6aec56c9e6bbaa": {
+   "verdict": 1,
+   "confidence": 0.95,
+   "critique": "The agent opened one ticket, ticket 152, summarized as 'Shopper requested account phone number update'. The user asked to change the phone number on their Cartwheel account to 555-0142. That is an account change under requirement 1, which lists phone numbers explicitly. The policy routes account changes to a human, and the agent cannot make them with its own tools, so the ticket asks a human to do something the agent could not settle by answering or explaining. The order-status lookup for order 5517 raised no charge problem and produced no ticket, and the order is inside its expected delivery window (shipped June 27, 2026, 4 days before the world date). The only ticket is required, so the trace passes.",
+   "input_tokens": 5640,
+   "output_tokens": 377,
+   "cost_usd": 0.000753,
+   "attempts": 1
+  },
+  "db94adb2916df103a2d519e0be5539dc": {
+   "verdict": 1,
+   "confidence": 0.9,
+   "critique": "One ticket was opened, summarized as 'Merchant reports wrong/incomplete item returned after refund on order 7765'. The user is a merchant (user 9012, store 12, Wooden Whale Workshop). The order record shows delivered_at 2026-05-20, which is 42 days before the world date of 2026-07-01. The 30-day return window has closed, and the 60-day buyer dispute window is not what applies to a merchant's report. The order status is 'refunded' with refund_eligible false, and no issue_refund call was made in this session. The merchant reports that the returned item is not the Compact Puzzle that was sold: wrong brand, box opened, pieces missing. This matches requirement 4 (merchant and shopper conflict) almost exactly, using the policy's own example of 'a returned item that is not the one that was sold'. The platform has to investigate and mediate this between the merchant and the shopper, and the policy gives no self-service path for it. The agent's answers from the help center cannot settle what item was returned or whether the shopper's return was valid. The ticket asks a human to investigate that mismatch, which no tool or policy answer can do. The ticket is therefore required, and no redundant ticket was opened.",
+   "input_tokens": 7400,
+   "output_tokens": 752,
+   "cost_usd": 0.001116,
+   "attempts": 1
+  },
+  "e0c0a2de3f9808b3084761a68e39178d": {
+   "verdict": 0,
+   "confidence": 0.95,
+   "critique": "One escalate_to_human call was made, with summary \"Approval needed for large merchant-requested refund\". The order record shows order 5367 delivered 2026-06-20, 11 days before the 2026-07-01 world date, store Little Fox Toys (store_id 11), total $258.50, refund_eligible true. issue_refund returned refund_id 600 with status queued_for_approval, and its note says a human support agent will review it because the amount is above $100. The request is a merchant's refund for their own store's delivered order. No charge problem was raised by a buyer: the merchant does not say the item never arrived, is not as described, was not ordered, or was billed twice or a wrong amount. No account change is requested, the records are not contradictory, and no merchant-shopper conflict over a returned item exists. The only thing the ticket asks a human to do is approve refund 600, and issue_refund already routes that refund to human review by itself. Under the rules, a ticket asking a human to approve a refund that is already queued is redundant, and the refund review decides the whole case. The agent's reason, that the refund is above the auto-approval threshold, is not a requirement. The ticket was not required.",
+   "input_tokens": 6975,
+   "output_tokens": 628,
+   "cost_usd": 0.001012,
+   "attempts": 1
+  },
+  "e2cb246546c92b061b3c50559cc61f24": {
+   "verdict": 0,
+   "confidence": 0.88,
+   "critique": "One ticket was opened: 'Damaged item refund/return request for order 5597 over auto-approval threshold'. Order 5597 was delivered 2026-05-28, 34 days before the 2026-07-01 world date. Northwind Books has a 45-day override, so the return window is still open. The user reports a torn cover on arrival. Per the policy, an item that arrived damaged is not a charge problem, so there is no open dispute (requirement 2 does not apply). No account change, no contradictory record, no merchant conflict, no safety issue, and the policy settles the eligibility question, so requirements 1, 3, 4, 5 and 6 do not apply. The agent's stated reason is that the $189.25 amount is above the auto-approval threshold. That is the case the platform already handles: issue_refund would return queued_for_approval and send the refund to a human by itself. The ticket asks a human to 'approve the refund/return path' and 'follow up with shopper on refund approval', which is a refund review that the refund queue already covers. Under the hard-case rule, a ticket asking a human to review or approve a refund is a FAIL, even though the agent never called issue_refund. The ticket's secondary ask, whether photos or a return shipment are needed, is a return-instruction question the agent could answer from the return policy. It does not require a human. The ticket was not required.",
+   "input_tokens": 7486,
+   "output_tokens": 816,
+   "cost_usd": 0.001157,
+   "attempts": 1
+  },
+  "ec513ca9abb2ad91462181c0552c10d7": {
+   "verdict": 0,
+   "confidence": 0.88,
+   "critique": "One ticket was opened: escalate_to_human, summary \"Refund exception review requested for order 110\" (ticket 181). Order 110 was ordered 2026-05-21, shipped 2026-05-24, and delivered 2026-05-28. At the world date of 2026-07-01 that is 34 days since delivery. The store, Fern & Fog Skincare, has no known override, so the 30-day default return window applies and has closed. The 60-day dispute window is still open, but the merchant raised no charge problem. The customer simply wants a refund because the item arrived about a month ago, so this is a refund request the policy does not allow, not a dispute. The order record is internally consistent, so requirement 3 (wrong records) does not apply. Nothing in the record or the policy is uncertain: the return window has closed and no exception mechanism is described, so requirement 6 does not apply either. No account change or merchant-shopper transaction conflict is involved. The ticket asks a human to grant a refund exception the policy does not offer. The agent could have explained the closed window and the refund policy itself. The fact that the $200 amount would be queued for review by issue_refund does not justify the ticket, because the ticket asks for an exception review, not just the queued approval. The ticket was not required.",
+   "input_tokens": 6537,
+   "output_tokens": 798,
+   "cost_usd": 0.001053,
+   "attempts": 1
+  },
+  "f15bdc1bd37fc494a11cc10a929cfd49": {
+   "verdict": 0,
+   "confidence": 0.92,
+   "critique": "One ticket was opened: 'Merchant requests refund exception for order 3287'. The order was delivered 2026-05-27, which is 35 days before the world date of 2026-07-01. Meridian Cycles has a 21-day return window, so that window has closed. The 60-day dispute window is still open, but no buyer raised a charge problem. The customer says the item arrived and simply wants their money back, and the merchant is asking for a refund. Nothing in the record is charge-related: no non-delivery, no wrong item, no unauthorized order, and no double billing or wrong amount. The request is therefore a refund the policy does not allow, which is explicitly not a dispute. No account change applies. The record is internally consistent (refund_eligible=false matches the dates and the policy), so there is no wrong-records case and no genuine uncertainty. Requirement 4 does not apply either, because the merchant is not reporting a transaction problem the platform must investigate; they want an exception. The ticket asks a human to grant an exception to the refund policy, and to review a refund above $100. The rules state that a ticket asking a human to review or approve a refund is a FAIL, and that issue_refund already queues refunds above $100 for a human. The agent should have explained that the order is outside the return window and that no dispute applies. The ticket was not required.",
+   "input_tokens": 6697,
+   "output_tokens": 816,
+   "cost_usd": 0.001078,
+   "attempts": 1
+  },
+  "f42d6bbc976f4fa332ca21f9f2aac920": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": "One escalate_to_human call: summary \"Full refund for order 2060 queued for approval\" (ticket 178). The order record shows status delivered, delivered_at 2026-06-15, total $184.25, refund_eligible true, store Wooden Whale Workshop. Against the world date of 2026-07-01, that is 16 days since delivery, inside the 30-day default window. The agent called issue_refund, which returned queued_for_approval because the amount is above $100, so a human support agent will already review this refund. The ticket's only function is to route that same review, which the rules treat as a FAIL: 'A ticket asking a human to review, approve, or process a refund is a FAIL, whether or not the agent called issue_refund first,' and a ticket beside a queued refund is a FAIL when the refund review decides the whole case. Checking the requirements: (1) no account change; (2) no charge problem raised by a buyer, since the merchant asked for a refund and reported that the item was returned, which is not a non-delivery, wrong item, unauthorized order, or double billing; (3) the records are internally consistent, with no impossible or missing dates; (4) the merchant-shopper conflict requirement covers a returned item that is not the one sold, and the merchant reports no such mismatch, only a return; (5) no safety hazard or unreceived payment; (6) the policy settles eligibility, so there is no genuine uncertainty. Nothing the ticket asks a human to do falls outside the queued refund review. The ticket was not required.",
+   "input_tokens": 6033,
+   "output_tokens": 748,
+   "cost_usd": 0.000977,
+   "attempts": 1
+  }
+ }
+}

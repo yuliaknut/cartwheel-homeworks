@@ -1,0 +1,11 @@
+{
+ "threshold": 0.9,
+ "judged_traces": 27,
+ "disagreements_with_oracle": 3,
+ "agreement_with_oracle": 0.8889,
+ "label_matches": 24,
+ "agreement_with_human_labels": 0.8889,
+ "oracle_label_matches": 21,
+ "proxy_share": 0.7407,
+ "cost_per_1000_verdicts_usd": 1.2415
+}

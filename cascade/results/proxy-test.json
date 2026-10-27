@@ -1,0 +1,275 @@
+{
+ "split": "test",
+ "proxy_model": "claude-haiku-5-5",
+ "oracle": "unnecessary_escalation-v2.json",
+ "oracle_prompt_hash": "df96ae479ba4",
+ "judged_traces": 27,
+ "gated_traces": 26,
+ "complete": true,
+ "cost_usd": 0.028335,
+ "notes": [
+  "Traces 1-17 transcribed from the console of the first test run (2026-10-27), which stopped at trace 18 when Haiku omitted confidence twice and saved nothing; each keeps its first draw (verdict, confidence rounded to 2 places, cost). Critiques and token counts for these 17 were not saved. Two failed calls on trace 18 (~$0.0024) are not in cost_usd."
+ ],
+ "rows": {
+  "1019e05452f1286a63e2497c40f9e2f3": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00118,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "13635baf9e7dc4693a59df188fcddbe0": {
+   "verdict": 1,
+   "confidence": 0.95,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00073,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "168f0fae6c250264b4fceb199b6d10bb": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00118,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "1e4a3e349df8ac0ad403f1a7fd5094f1": {
+   "verdict": 1,
+   "confidence": 0.6,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00127,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "21841a0b57b83438fa09bbb765f9ec8e": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00094,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "21b46942fb05a50565b337c848b100cc": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.0013,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "2c33ce3d8911d788e8160e168fc701fc": {
+   "verdict": 0,
+   "confidence": 0.72,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00118,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "30ebfa92c28550381f90c5143bf2224b": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00101,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "5ca016d6a611d4567751873687485235": {
+   "verdict": 0,
+   "confidence": 0.95,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00096,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "6467a5ecd0667c3d427a877292619f6d": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00109,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "6dbd9ac733bb5b29e07aa48fc0ec5f36": {
+   "verdict": 1,
+   "confidence": 0.95,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00076,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "7b402289e6a56bb7b907d700d30d7f31": {
+   "verdict": 1,
+   "confidence": 0.72,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.001,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "8824cf8e2f1013bd9bf291d16704bc3b": {
+   "verdict": 0,
+   "confidence": 0.85,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00091,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "8a3b4f213ed9607d89365e1d5cd81b8f": {
+   "verdict": 1,
+   "confidence": 0.9,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00097,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "8f51052b3d73e9268d98fde5efeb43b9": {
+   "verdict": 1,
+   "confidence": 0.9,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.0012,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "99f4391a24295025601bf7422988ae02": {
+   "verdict": 0,
+   "confidence": 0.85,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00109,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "a388ab9ff83e713569b4fafbf0ebcbb6": {
+   "verdict": 0,
+   "confidence": 0.95,
+   "critique": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": 0.00091,
+   "attempts": 1,
+   "transcribed": true
+  },
+  "a4cae72e59db2ca7b190c8695355ee3c": {
+   "verdict": 1,
+   "confidence": 0.85,
+   "critique": "One ticket was opened: escalate_to_human, summary \"Refund not received for Little Fox Toys order 6041\" (ticket 156). Facts from the trace: order 6041 has status \"refunded\", total $50.25, delivered 2026-05-26. The world date is 2026-07-01. issue_refund was never called; the record shows the refund as already processed. Because $50.25 is at or below $100, the refund would have executed automatically, so no queued-for-approval review applies. The user says the refund was approved about three weeks ago and the money never reached their bank: nothing is pending or posted. Under the procedure, the user's account of the money not arriving is evidence. This is a payment the records say was made (status refunded) that the user never received, which is requirement 5 (other unresolvable cases). Nothing in the policy lets the agent or the help center trace a payment that the processor sent or failed to send. The agent's own stated reason (a refund trace) is not what makes the ticket required; the payment discrepancy is. The ticket asks a human to trace the payment with the processor, which a human must do. Only one ticket exists, and it is required, so the conversation has no unnecessary ticket.",
+   "input_tokens": 7191,
+   "output_tokens": 946,
+   "cost_usd": 0.001192,
+   "attempts": 1
+  },
+  "bdf49ae59e1df4c230e3dfb205918c21": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": "One ticket was opened: escalate_to_human, ticket 177, summary \"Full refund approval needed for Copperline Tools order 3124\". The order was delivered 2026-06-08, about 23 days before the world date (2026-07-01), so it is inside the default 30-day return window. The agent called issue_refund for $256.50, and the result was queued_for_approval because the amount exceeds $100. A human will therefore review this refund automatically. The ticket asks a human to approve that same refund, which the queued review already covers, so it is redundant. No charge problem was raised: the merchant reports a customer return and asks for a full refund, which is a refund request, not a dispute. The merchant does not claim the returned item is the wrong one or otherwise contradicts the sale, so requirement 4 (merchant and shopper conflict) does not apply. The record is consistent (dates in order, refund_eligible true), so there is no wrong-record issue (requirement 3), and nothing is uncertain (requirement 6). The ticket asks only for refund approval, which is not a requirement, and nothing else in the ticket needs a human. The ticket was not required.",
+   "input_tokens": 6062,
+   "output_tokens": 560,
+   "cost_usd": 0.000886,
+   "attempts": 1
+  },
+  "cbd79fe025981744b8ddbbd4487039cb": {
+   "verdict": 1,
+   "confidence": 0.9,
+   "critique": "One escalate_to_human call, summarized as \"Shopper reports order 6446 has not been received despite system status showing delivered.\" The order record shows ordered 2026-06-09, shipped 2026-06-10, and marked delivered 2026-06-12. On the world date of 2026-07-01, that is 21 days since shipment and 19 days since delivery. The delivery window (up to 7 days after shipment) has passed, so this is not an order still in transit. The return window (30 days from delivery) is still open, and so is the 60-day dispute window. The user says the item has not arrived, \"still nothing\" after three weeks, and that account counts as evidence. A non-delivery is a charge problem raised by a buyer on an order delivered within 60 days, which triggers requirement 2 (open dispute). Disputes are always handled by a human, so the ticket asks a human to investigate the non-delivery, which the policy assigns to a human and which the agent could not settle by answering or declining. The refund-over-$100 note in the ticket is not the reason for the ticket, but the dispute requirement independently justifies it. The ticket is required. There is no second ticket, and the agent did not issue a refund.",
+   "input_tokens": 6966,
+   "output_tokens": 700,
+   "cost_usd": 0.001047,
+   "attempts": 1
+  },
+  "cd216e0e83a4b7792b9536d9a583733c": {
+   "verdict": 0,
+   "confidence": 0.93,
+   "critique": "One escalate_to_human call was made, summarized as \"Shopper requests refund/return exception for order 7903 outside return window\" (ticket 164). Order 7903 was delivered 2026-03-15 and the world date is 2026-07-01, so it has been delivered for 108 days. That is outside the 30-day default return window, and Little Fox Toys is not among the known store overrides, so the window stays at 30 days. It is also outside the 60-day dispute window. The shopper says the item \"turned up\" and they no longer want it. That is a request for a return or refund the policy does not allow, not a charge problem: they do not say the item never arrived, that it is not as described, that they did not order it, or that they were billed twice or the wrong amount. No issue_refund was called. Against the requirements: (1) no account change; (2) no open dispute, since the charge problem is absent and the dispute window has closed anyway; (3) the records are consistent, with no impossible or missing dates; (4) no merchant report; (5) no safety hazard and no unreceived payment; (6) the order record and policy settle the outcome (no return window left, no dispute window, and no store override), so there is no genuine uncertainty. The agent's stated reason, a \"possible exception,\" is not a requirement. Both windows have closed, so no human can grant a remedy under the policy. The agent should have explained the return window and dispute window itself. The ticket was not required.",
+   "input_tokens": 7638,
+   "output_tokens": 790,
+   "cost_usd": 0.001159,
+   "attempts": 1
+  },
+  "cdbefbd17acddf6d23b92cd797df9401": {
+   "verdict": 0,
+   "confidence": 0.95,
+   "critique": "One escalate_to_human call: summary \"Refund approval needed for order 3757\". Order 3757 shows status delivered on 2026-06-10, 21 days before the 2026-07-01 world date, and refund_eligible is true. The agent called issue_refund for $115.50, and the tool returned queued_for_approval because the amount is above the $100 auto-approval threshold, so a human support agent will already review the refund. The ticket's summary and context ask a human to approve that refund, which the queued review already covers. The rules state that a ticket asking a human to review or approve a refund is a FAIL even when a refund was queued by issue_refund. No requirement applies. The merchant raises no charge problem (no non-delivery, wrong item, duplicate billing, or unrecognized order), and the case is not a merchant-shopper conflict requiring mediation, since the merchant only reports a returned item and asks for a refund. Nothing in the record is wrong or contradictory, no account change is requested, and no safety or payment-discrepancy issue exists. The refund review alone decides the case, so ticket 179 was redundant. What the ticket asks a human to do is approve refund 591, which issue_refund already routes to a human by itself.",
+   "input_tokens": 5847,
+   "output_tokens": 657,
+   "cost_usd": 0.000913,
+   "attempts": 1
+  },
+  "d47f7cdbd719cd62a8c2246e59a4b2cd": {
+   "verdict": 0,
+   "confidence": 0.95,
+   "critique": "One ticket was opened: escalate_to_human, summary 'Refund exception review requested for order 693 (Slim Daypack)'. The order was delivered 2026-05-31 and the world date is 2026-09-19, so delivery was 111 days ago. The 30-day Cartwheel return window closed long ago. The store is Trailhead Supply, which is not on the known-overrides list, so the default applies. The 60-day dispute window also closed (day 60 was about 2026-07-30). Neither window is open, so no human can grant a remedy under the policy. The shopper asked for a refund because the item has 'been sitting here about a month'. They did not describe a charge problem: no non-arrival, wrong item, unrecognized order, duplicate billing, or wrong amount. Account change, wrong records, merchant conflict, and safety/unresolvable payment do not apply. The record is consistent and the policy settles the outcome, so there is no genuine policy uncertainty (requirement 6). The agent's stated reason, that a refund over $100 needs human review, is not a requirement: issue_refund was never called, and a refund review cannot grant an exception to a closed window. The ticket asks a human to make a policy exception the policy does not allow. The agent should have explained that the return and dispute windows had closed. Under the hard-case rule, a ticket when both windows are closed is a FAIL.",
+   "input_tokens": 7635,
+   "output_tokens": 730,
+   "cost_usd": 0.001128,
+   "attempts": 1
+  },
+  "e513ed20656726dcddfa4c5d69db1a46": {
+   "verdict": 0,
+   "confidence": 0.7,
+   "critique": "Two tickets were opened: #159 (initial counterfeit report, order 520) and #160 (supplemental details on the same order).\n\nFacts: Order 520 was delivered 2026-05-30. On the world date of 2026-07-01 that is 32 days after delivery, so the 30-day return window (Cascade Audio follows the platform default) has closed, but the 60-day dispute window is open. No issue_refund call was made; the refund_eligible flag is false.\n\nTicket #159 (\"Shopper reports possible counterfeit/inauthentic Signature Power Bank from Cascade Audio, order 520\"): The user says the item is a knockoff. That is a charge problem raised by a buyer (the item is not what was described, i.e. counterfeit) on an order delivered 32 days ago, inside the 60-day dispute window. Requirement 2 applies, and disputes are always handled by a human. The ticket is required.\n\nTicket #160 (\"Additional details for suspected counterfeit report on order 520 / ticket 159\"): The user added evidence (plain white box, printed sticker, smudged text) to the same counterfeit claim. The open dispute already sits with a human under #159, and the new details are supporting evidence for that same investigation. Nothing in this ticket asks a human to do anything the policy assigns to a human that is not already covered by #159. The agent could have told the user to keep the packaging and send the photos or details to the reviewer handling #159. The agent itself admitted it had no ticket-update tool, so the second ticket was a duplicate of the first, not a new requirement. Because the second ticket is redundant, the conversation fails.",
+   "input_tokens": 8140,
+   "output_tokens": 1303,
+   "cost_usd": 0.001466,
+   "attempts": 1
+  },
+  "ecae59b1cac629287b5990b7ace5704c": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": "One escalate_to_human call was made: 'Refund request for ineligible delivered order 3211'. Order 3211 was delivered 2026-03-14, which is 109 days before the world date of 2026-07-01. The 30-day return window has closed (Trailhead Supply has no known override), and the 60-day dispute window has also closed. The requester is support staff relaying a customer's demand for a refund, not a buyer raising a charge problem, so no open dispute exists. The order record is internally consistent (ordered 03-07, shipped 03-10, delivered 03-14, refund_eligible=false), so there are no wrong records, and no account change or merchant conflict is involved. The request is for a refund the policy does not allow. The agent's stated reason, that the refund is 'above my authority', is not an escalation requirement. The ticket asks a human to grant an exception that no human can grant under the policy, when the agent should have explained the return window and dispute window. No requirement applies, so the ticket was unnecessary.",
+   "input_tokens": 6839,
+   "output_tokens": 663,
+   "cost_usd": 0.001015,
+   "attempts": 1
+  },
+  "eda107deba7a7d5b4d337a9616a29a9c": {
+   "verdict": 1,
+   "confidence": 0.95,
+   "critique": "One ticket was opened: 'Shopper needs to update expired credit card on account' (ticket #174). The shopper asked to change the payment method on their account because the card on file expired. Payment method is listed under requirement 1 (account change), so the user's request triggers it. No order is involved, no issue_refund was called, and no charge problem was raised. The policy assigns payment-method changes to a human, and the agent has no tool to make that change itself, so the ticket asks a human to do something the agent could not settle by answering or declining. The ticket was required, and the agent did not open a redundant second one.",
+   "input_tokens": 5296,
+   "output_tokens": 351,
+   "cost_usd": 0.000705,
+   "attempts": 1
+  },
+  "f03b837cec08702d54fae1b7a4d68667": {
+   "verdict": 0,
+   "confidence": 0.9,
+   "critique": "One ticket was opened: 'Return-window confirmation needed for order 7289'. The facts: the order was delivered 2026-06-16, which is 15 days before the world date of 2026-07-01. Meridian Cycles' store policy sets a 21-day return window, so the window runs to 2026-07-07 and is still open with 6 days left. The order record shows refund_eligible=true, which agrees with that open window. The agent's stated reason, a 'mismatch' between the policy and the flag, does not exist: the agent miscounted the window as already closed, when 2026-07-07 is after the world date. Checking the requirements: (1) no account change; (2) the user raised no charge problem, only a question about return time, and a return-window question has an answer in policy, so it is not a dispute; (3) the record is not wrong or self-contradictory, since delivery date, store window, and eligibility flag all agree; (4) no merchant report; (5) no safety issue or unreceived payment; (6) the order record and policy settle the question (returnable until July 7), so there is no genuine uncertainty. The ticket asks a human to confirm something the agent could have answered directly from the policy and the order record. It was not required. The agent's own wrong calculation about the deadline is outside this evaluation.",
+   "input_tokens": 7225,
+   "output_tokens": 843,
+   "cost_usd": 0.001144,
+   "attempts": 1
+  }
+ }
+}

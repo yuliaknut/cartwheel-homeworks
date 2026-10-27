@@ -1,0 +1,234 @@
+{
+  "cached_fraction": 0.0,
+  "cached_input_tokens": 0,
+  "candidate": "fewer-tokens",
+  "case_count": 10,
+  "cases": [
+    {
+      "case_id": "e-001",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        16.1716
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll pull up order 3767 to check its details and refund eligibility.\nI've confirmed the order details. It was delivered on January 3, 2026, and the system shows it isn't eligible for a refund. I'll check the return policy to see what options remain.\nThe standard return window is 30 days and the dispute window is 60 days, but stores can override the return window. I'll check whether Fern & Fog Skincare has its own longer window.\nI checked order 3767 for the Midnight Face Serum from Fern & Fog Skincare. It was delivered on January 3, 2026, and it isn't eligible for a refund.\n\nUnder the Cartwheel return policy, items can be returned within 30 days of delivery. That window closed around February 2, 2026. Fern & Fog Skincare doesn't have its own longer return window on its store policy page, so the standard 30 days applies.\n\nThe Cartwheel dispute policy allows disputes for up to 60 days after delivery, which closed around March 4, 2026. That means I can't offer a refund or open a dispute for this order.\n\nYou could still contact Fern & Fog Skincare directly to ask whether they'd make an exception for a wrong-size item. That's entirely their decision, but it's the only option left.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-004",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        15.3706
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll check order 7839's details and refund eligibility before doing anything.\nOrder 7839 is in your store, but the system shows it as not refund-eligible. I'll check the return policy to see why.\nThe refund policy doesn't set a return window, so I'll check the Cartwheel return policy for the time limit.\nDelivery was June 5, so today is 26 days later, inside the 30-day window. The system still marks the order as not eligible, so I'll read the full return and dispute policies.\nThe return policy says individual stores can override the 30-day window, so I'll check whether Juniper Home Goods has an override.\nI can't push this refund through. Order 7839 is not refund-eligible, so I haven't issued anything.\n\n- **Why:** Your store policy, Juniper Home Goods store policy, sets returns at 14 days from delivery, which overrides the Cartwheel return policy's standard 30 days. The order was delivered June 5, so the window closed June 19. The 30-day platform window wouldn't have covered it either, since today is July 1.\n- **What's still open:** The Cartwheel dispute policy lets a buyer dispute a charge for up to 60 days after delivery. For this order that runs through August 4. Disputes are reviewed by a human support agent, not decided automatically. If the customer files one, any pending refund on the order is paused while it's reviewed.\n\nYour customer can file that dispute through the usual channel before August 4. If you want to offer a refund outside your 14-day policy as a goodwill gesture, that's your call as the merchant, but I can't issue it on an order the system has marked ineligible. Do you want me to check anything else on this order or another one?",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-006",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        11.8818
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll look up order 3521 first to confirm it hasn't shipped, since only unshipped orders can be cancelled.\nOrder 3521 has already shipped (on June 25) and hasn't been marked delivered, so I can't cancel it. I'll check the return policy for what options the customer has now.\nThe cancellation policy says a shipped order can't be cancelled, so the customer's route is a return after delivery. I'll pull the full return policy to see the exact terms.\nThe return policy says the 30-day window starts at delivery, and this order has no delivery date yet. Individual stores can override that window, so I'll check the store overrides policy.\nI can't cancel order 3521. It shipped on June 25 and the system shows no delivery yet, and the Cartwheel order cancellation policy says a shipped order can't be cancelled.\n\nThe customer's route is a return once the order is delivered. Under the Cartwheel return policy, they have 30 days from the delivery date to return an item in the condition the store's listing describes. I found no separate return window for Atlas Stationery, so the standard 30 days applies. Because the order isn't delivered yet, there's nothing to refund right now.\n\nI haven't opened a ticket, since the policies already answer this. If the customer wants out sooner, they can wait for delivery and request the return then. Is there anything else on this order I can check?",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-007",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        4.4724
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll look up order 8001 to find its shipping and delivery dates.\nOrder 8001 for Woven Wool Socks (Harbor Knits) shows these dates:\n\n- **Ordered:** January 14, 2025\n- **Shipped:** June 25, 2026\n- **Delivered:** June 23, 2026\n\nThe delivery date is two days before the shipping date, which can't be right. Either the shipped date or the delivered date was entered incorrectly. I can't see which one from here, so someone with access to your fulfillment records would need to check the original shipping and carrier scans. The order is marked as delivered and is not refund-eligible.",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-008",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        13.3421
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll check your recent orders to see whether you already bought The Rustic Pitcher, since that affects what can be done.\nI checked your recent orders, and none of them is for The Rustic Pitcher, so there's no purchase or charge at that price on your account. That means I have no order to refund or adjust. I also can't honor a negative price, since it isn't a real amount I can charge.\n\nIf you want the store to look at the listing and the price you saw, I can open a ticket for a human support agent, who will follow up with you. If you have an order number for a purchase you made at that price, send it and I'll check it right away. Should I open the ticket?",
+          "judge_reasons": {
+            "unnecessary_escalation": "Code gate: no escalate_to_human call, so no judge call."
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-011",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        4.9186
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll check the help center for Cartwheel's dispute policy.\nI'll pull the full Cartwheel dispute policy to confirm the deadline and who makes the decision.\nYou have **60 days after delivery** to dispute a charge. The clock runs from when the order was delivered, so if the charge is tied to an order, that delivery date is what counts.\n\nA **human support agent** makes the decision. Disputes are never resolved automatically. Under the Cartwheel dispute policy, opening a dispute also pauses any pending refund on the same order.\n\nIf you give me the order number or the product name, I can check the order and its delivery date for you.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-012",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        4.6381
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll check the help center for Cartwheel's return policy so I can tell you the return window.\nI'll pull up the full Cartwheel return policy and check whether Juniper Home Goods has its own store policy.\nJuniper Home Goods has a shorter return window than most of Cartwheel. Under the Juniper Home Goods store policy, you have **14 days from delivery** to return an item. The Cartwheel return policy's standard 30 days doesn't apply to their orders, since the store's own policy overrides it.\n\nThe clock starts when the package arrives, not when you buy. Items also need to be in the condition described in the store's listing.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-013",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        21.6802
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll pull up order 2957 first to check its delivery date and refund eligibility before deciding anything.\nOrder 2957 is marked as not refund eligible. I'll check the Cartwheel return policy to see what the window and exceptions say.\nI checked order 2957 and can't process a refund for it. The order record shows it isn't eligible.\n\n- **Delivered:** April 6, 2026, which is 86 days ago.\n- **Return window:** The Cartwheel return policy allows returns within 30 days of delivery, so it closed around May 6.\n- **Dispute window:** The Cartwheel dispute policy allows disputes for 60 days after delivery, so it closed around June 5.\n\nI also checked for a store-specific exception. The Cartwheel policy lets stores set their own windows, but only if it's stated on the store's own policy page. I couldn't find one for Petal & Stem, so the standard windows apply.\n\nSince both windows have closed, there's no refund or return remedy I can offer on this order, and I haven't opened a ticket because nothing is left to escalate. If the customer says the gloves arrived damaged or not as described, that's worth noting on the account, but the standard windows still apply. If you think his case needs a judgment call beyond these policies, tell me and I can open a ticket for a human to review.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-014",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        2.6588
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search the catalog for organizers across all stores.\nYes, I found four organizers, all from the same store:\n\n- **Modern Desk Organizer**: $12.50\n- **Handmade Desk Organizer**: $85.00\n- **Slim Desk Organizer**: $216.75\n- **Signature Desk Organizer**: $264.00\n\nIf you want a particular style or a price limit, tell me and I can narrow the list.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-016",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        5.8633
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll search Blue Heron Ceramics' catalog for items priced around $9.75 to see if I can match the listing.\nI found one item in Blue Heron Ceramics at $9.75 with a blank title, which is likely the listing you mean. I'll pull up its full details.\nThe listing is item #3 at Blue Heron Ceramics, priced at $9.75. The name is missing from the record itself, so it isn't a display problem on your end. Its description says it's a **Portable Tray** in the home and kitchen category, and it calls the listing a placeholder, which probably explains the blank name.\n\nIf you want to ask the store about it, mention item #3 and the $9.75 price. I can also look for other items from Blue Heron Ceramics if you'd like to keep browsing.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.236277,
+  "cost_usd": 0.023628,
+  "created_at": "2026-10-21T20:55:01.853838+00:00",
+  "evaluated_case_runs": 10,
+  "git_commit": "b6212c6d94effcfb4a01260d61a8a3378f6cc821",
+  "input_tokens": 166732,
+  "median_latency_seconds": 8.8726,
+  "model": "claude-haiku-5-5",
+  "output_tokens": 13909,
+  "price_date": "2026-10-14",
+  "prompt_sha256_12": "4bec38652cf5",
+  "schema_version": 1,
+  "score": 1.0,
+  "split": "development",
+  "test_plan_sha256": null,
+  "write_pass_5": null
+}
